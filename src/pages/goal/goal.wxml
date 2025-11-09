@@ -1,0 +1,148 @@
+<!--pages/goal/goal.wxml-->
+<view class="goal-page">
+  <view class="page-header">
+    <text class="page-title">🎯 目标设置</text>
+    <text class="page-subtitle">设定明确目标，坚持就是胜利</text>
+  </view>
+
+  <!-- 当前状态 -->
+  <view class="current-status">
+    <text class="section-title">当前状态</text>
+    <view class="status-grid">
+      <view class="status-item">
+        <text class="status-label">体重</text>
+        <text class="status-value">{{profile.weight}} kg</text>
+      </view>
+      <view class="status-item">
+        <text class="status-label">体脂率</text>
+        <text class="status-value">{{profile.bodyFat}}%</text>
+      </view>
+      <view class="status-item">
+        <text class="status-label">BMI</text>
+        <text class="status-value">{{profile.bmi}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 理想体重范围 -->
+  <view class="info-card">
+    <text class="info-title">💡 参考数据</text>
+    <view class="info-item">
+      <text class="info-label">理想体重范围</text>
+      <text class="info-value">{{idealWeightRange.min}} - {{idealWeightRange.max}} kg</text>
+    </view>
+    <view class="info-item">
+      <text class="info-label">基础代谢率 (BMR)</text>
+      <text class="info-value">{{bmr}} 卡/天</text>
+    </view>
+    <view class="info-item">
+      <text class="info-label">每日热量需求 (TDEE)</text>
+      <text class="info-value">{{tdee}} 卡/天</text>
+    </view>
+  </view>
+
+  <!-- 目标设置表单 -->
+  <view class="goal-form">
+    <text class="section-title">设定目标</text>
+    
+    <view class="form-section">
+      <text class="form-section-title">体重目标</text>
+      
+      <view class="form-item">
+        <text class="form-label">目标体重 (kg)</text>
+        <input 
+          class="form-input" 
+          type="digit"
+          placeholder="例如：60"
+          value="{{goals.targetWeight}}"
+          data-field="targetWeight"
+          bindinput="onInputChange"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">目标体脂率 (%)</text>
+        <input 
+          class="form-input" 
+          type="digit"
+          placeholder="例如：18"
+          value="{{goals.targetBodyFat}}"
+          data-field="targetBodyFat"
+          bindinput="onInputChange"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">目标日期</text>
+        <picker 
+          mode="date" 
+          value="{{goals.targetDate}}" 
+          bindchange="onDateChange"
+          start="{{today}}"
+        >
+          <view class="picker-view">
+            {{goals.targetDate || '选择日期'}}
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="form-section">
+      <text class="form-section-title">每日目标</text>
+      
+      <view class="form-item">
+        <text class="form-label">每日热量摄入 (卡)</text>
+        <input 
+          class="form-input" 
+          type="number"
+          placeholder="例如：2000"
+          value="{{goals.dailyCalories}}"
+          data-field="dailyCalories"
+          bindinput="onInputChange"
+        />
+        <text class="form-hint">建议: {{tdee}} 卡（维持体重）</text>
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">每日运动时长 (分钟)</text>
+        <input 
+          class="form-input" 
+          type="number"
+          placeholder="例如：30"
+          value="{{goals.dailyExercise}}"
+          data-field="dailyExercise"
+          bindinput="onInputChange"
+        />
+        <text class="form-hint">建议: 至少30分钟</text>
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">每日饮水量 (杯)</text>
+        <input 
+          class="form-input" 
+          type="number"
+          placeholder="例如：8"
+          value="{{goals.dailyWater}}"
+          data-field="dailyWater"
+          bindinput="onInputChange"
+        />
+        <text class="form-hint">建议: 8杯（约2000ml）</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="save-section">
+    <button class="save-btn" bindtap="saveGoals">保存目标</button>
+  </view>
+
+  <!-- 温馨提示 -->
+  <view class="tips-card">
+    <text class="tips-title">📝 温馨提示</text>
+    <text class="tips-text">• 目标应该合理可行，不要过于激进</text>
+    <text class="tips-text">• 健康减重速度为每周0.5-1kg</text>
+    <text class="tips-text">• 配合运动和饮食控制效果更佳</text>
+    <text class="tips-text">• 持之以恒是成功的关键</text>
+  </view>
+</view>
+

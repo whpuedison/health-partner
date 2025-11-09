@@ -1,0 +1,255 @@
+<!--pages/health/health.wxml-->
+<view class="health-page">
+  <!-- 标签切换 -->
+  <view class="tabs">
+    <view 
+      class="tab-item {{activeTab === index ? 'active' : ''}}" 
+      wx:for="{{tabs}}" 
+      wx:key="index"
+      data-index="{{index}}"
+      bindtap="onTabChange"
+    >
+      {{item}}
+    </view>
+  </view>
+
+  <!-- 健康数据页 -->
+  <view class="tab-content" wx:if="{{activeTab === 0}}">
+    <!-- 健康评分卡片 -->
+    <view class="score-card" style="background: {{statusColor}};">
+      <text class="score-label">健康评分</text>
+      <text class="score-value">{{healthScore}}</text>
+      <text class="score-status">{{healthStatus}}</text>
+      <button class="edit-btn" bindtap="openEditDialog">编辑资料</button>
+    </view>
+
+    <!-- BMI 卡片 -->
+    <view class="bmi-card">
+      <view class="card-header">
+        <text class="card-title">体重指数 (BMI)</text>
+        <text class="card-value">{{bmi}}</text>
+      </view>
+      
+      <view class="bmi-bar">
+        <view class="bmi-section underweight"></view>
+        <view class="bmi-section normal"></view>
+        <view class="bmi-section overweight"></view>
+        <view class="bmi-section obese"></view>
+        <view class="bmi-indicator" style="left: {{(bmi - 15) / 25 * 100}}%"></view>
+      </view>
+      
+      <view class="bmi-labels">
+        <text class="bmi-label">偏瘦</text>
+        <text class="bmi-label">正常</text>
+        <text class="bmi-label">偏重</text>
+        <text class="bmi-label">肥胖</text>
+      </view>
+      
+      <view class="bmi-status">
+        <text class="status-text">当前状态：{{bmiStatus}}</text>
+      </view>
+    </view>
+
+    <!-- 身体数据 -->
+    <view class="body-data">
+      <view class="data-row">
+        <view class="data-item">
+          <text class="data-icon">📏</text>
+          <view class="data-info">
+            <text class="data-label">身高</text>
+            <text class="data-value">{{profile.height}} cm</text>
+          </view>
+        </view>
+        
+        <view class="data-item">
+          <text class="data-icon">⚖️</text>
+          <view class="data-info">
+            <text class="data-label">体重</text>
+            <text class="data-value">{{profile.weight}} kg</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="data-row">
+        <view class="data-item">
+          <text class="data-icon">🎂</text>
+          <view class="data-info">
+            <text class="data-label">年龄</text>
+            <text class="data-value">{{profile.age}} 岁</text>
+          </view>
+        </view>
+        
+        <view class="data-item">
+          <text class="data-icon">💧</text>
+          <view class="data-info">
+            <text class="data-label">体脂率</text>
+            <text class="data-value">{{profile.bodyFat}}%</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 健康建议 -->
+    <view class="advice-card">
+      <text class="advice-title">💡 健康建议</text>
+      <view class="advice-list">
+        <text class="advice-item" wx:if="{{bmi < 18.5}}">• 您的BMI偏低，建议增加营养摄入</text>
+        <text class="advice-item" wx:elif="{{bmi >= 18.5 && bmi < 24}}">• 您的BMI正常，请保持当前状态</text>
+        <text class="advice-item" wx:elif="{{bmi >= 24 && bmi < 28}}">• 您的BMI偏高，建议控制饮食和增加运动</text>
+        <text class="advice-item" wx:else>• 您的BMI较高，建议咨询专业医生</text>
+        
+        <text class="advice-item" wx:if="{{profile.bodyFat > 25 && profile.gender === '男'}}">• 男性体脂率建议控制在15-25%</text>
+        <text class="advice-item" wx:if="{{profile.bodyFat > 30 && profile.gender === '女'}}">• 女性体脂率建议控制在20-30%</text>
+        
+        <text class="advice-item">• 每天坚持30分钟以上有氧运动</text>
+        <text class="advice-item">• 保持充足睡眠，每天7-8小时</text>
+        <text class="advice-item">• 多吃蔬菜水果，少吃高热量食物</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 体征记录页 -->
+  <view class="tab-content" wx:if="{{activeTab === 1}}">
+    <view class="records-header">
+      <text class="records-title">体征记录</text>
+      <button class="add-record-btn" bindtap="showAddDialog">+ 添加</button>
+    </view>
+
+    <view class="records-list" wx:if="{{records.length > 0}}">
+      <view class="record-item" wx:for="{{records}}" wx:key="id">
+        <view class="record-main">
+          <view class="record-type-badge">{{item.type}}</view>
+          <view class="record-info">
+            <text class="record-value">{{item.value}}</text>
+            <text class="record-date">{{item.date}} {{item.time}}</text>
+          </view>
+        </view>
+        <text class="delete-btn" bindtap="deleteRecord" data-id="{{item.id}}">✕</text>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:else>
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无体征记录</text>
+      <text class="empty-hint">点击右上角添加您的第一条记录</text>
+    </view>
+  </view>
+
+  <!-- 编辑资料对话框 -->
+  <view class="dialog-mask" wx:if="{{showEditDialog}}" bindtap="closeEditDialog">
+    <view class="dialog-content" catchtap="">
+      <view class="dialog-header">
+        <text class="dialog-title">编辑健康资料</text>
+        <text class="dialog-close" bindtap="closeEditDialog">✕</text>
+      </view>
+      
+      <view class="dialog-body">
+        <view class="form-item">
+          <text class="form-label">身高 (cm)</text>
+          <input 
+            class="form-input" 
+            type="number"
+            placeholder="例如：170"
+            value="{{editHeight}}"
+            bindinput="onHeightInput"
+          />
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">体重 (kg)</text>
+          <input 
+            class="form-input" 
+            type="number"
+            placeholder="例如：65"
+            value="{{editWeight}}"
+            bindinput="onWeightInput"
+          />
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">年龄</text>
+          <input 
+            class="form-input" 
+            type="number"
+            placeholder="例如：25"
+            value="{{editAge}}"
+            bindinput="onAgeInput"
+          />
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">性别</text>
+          <radio-group class="radio-group" bindchange="onGenderChange">
+            <label class="radio-label">
+              <radio value="男" checked="{{editGender === '男'}}" />
+              <text>男</text>
+            </label>
+            <label class="radio-label">
+              <radio value="女" checked="{{editGender === '女'}}" />
+              <text>女</text>
+            </label>
+          </radio-group>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">体脂率 (%)</text>
+          <input 
+            class="form-input" 
+            type="digit"
+            placeholder="例如：20.5 (可选)"
+            value="{{editBodyFat}}"
+            bindinput="onBodyFatInput"
+          />
+        </view>
+      </view>
+      
+      <view class="dialog-footer">
+        <button class="dialog-btn cancel" bindtap="closeEditDialog">取消</button>
+        <button class="dialog-btn confirm" bindtap="saveProfile">保存</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加体征记录对话框 -->
+  <view class="dialog-mask" wx:if="{{showAddModal}}" bindtap="hideAddDialog">
+    <view class="dialog-content" catchtap="">
+      <view class="dialog-header">
+        <text class="dialog-title">添加体征记录</text>
+        <text class="dialog-close" bindtap="hideAddDialog">✕</text>
+      </view>
+
+      <view class="dialog-body">
+        <view class="form-item">
+          <text class="form-label">记录类型</text>
+          <view class="type-selector">
+            <view
+              class="type-option {{currentType === item ? 'active' : ''}}"
+              wx:for="{{recordTypes}}"
+              wx:key="index"
+              bindtap="selectType"
+              data-type="{{item}}"
+            >
+              {{item}}
+            </view>
+          </view>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">数值</text>
+          <input
+            class="form-input"
+            type="text"
+            placeholder="请输入数值"
+            value="{{currentValue}}"
+            bindinput="onValueInput"
+          />
+        </view>
+      </view>
+
+      <view class="dialog-footer">
+        <button class="dialog-btn cancel" bindtap="hideAddDialog">取消</button>
+        <button class="dialog-btn confirm" bindtap="saveRecord">保存</button>
+      </view>
+    </view>
+  </view>
+</view>

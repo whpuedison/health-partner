@@ -1,0 +1,194 @@
+<!--pages/diet/diet.wxml-->
+<view class="diet-page">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">饮食计划</text>
+    <text class="page-subtitle">记录每一餐，掌握营养摄入</text>
+  </view>
+
+  <!-- 卡路里总览 -->
+  <view class="calorie-card">
+    <view class="calorie-main">
+      <text class="calorie-value">{{totalCalories}}</text>
+      <text class="calorie-unit">/ {{targetCalories}} 卡</text>
+    </view>
+    <view class="calorie-progress">
+      <view class="calorie-fill" style="width: {{totalCalories / targetCalories * 100}}%"></view>
+    </view>
+    <view class="calorie-status">
+      <text>{{totalCalories >= targetCalories ? '已达标 ✓' : '剩余 ' + (targetCalories - totalCalories) + ' 卡'}}</text>
+    </view>
+  </view>
+
+  <!-- 标签切换 -->
+  <view class="tabs">
+    <view 
+      class="tab-item {{activeTab === index ? 'active' : ''}}" 
+      wx:for="{{tabs}}" 
+      wx:key="index"
+      data-index="{{index}}"
+      bindtap="onTabChange"
+    >
+      {{item}}
+    </view>
+  </view>
+
+  <!-- 今日记录 -->
+  <view class="tab-content" wx:if="{{activeTab === 0}}">
+    <!-- 快捷添加 -->
+    <view class="quick-meals">
+      <view 
+        class="meal-btn" 
+        wx:for="{{quickMeals}}" 
+        wx:key="name"
+        style="background: {{item.color}}20; border-color: {{item.color}};"
+        data-type="{{item.name}}"
+        bindtap="openAddDialog"
+      >
+        <text class="meal-icon">{{item.icon}}</text>
+        <text class="meal-name">{{item.name}}</text>
+        <text class="meal-time">{{item.time}}</text>
+      </view>
+    </view>
+
+    <!-- 记录列表 -->
+    <view class="records-list" wx:if="{{todayRecords.length > 0}}">
+      <view class="record-item" wx:for="{{todayRecords}}" wx:key="id">
+        <view class="record-main">
+          <view class="record-info">
+            <text class="record-meal">{{item.mealType}}</text>
+            <text class="record-food">{{item.food}}</text>
+            <text class="record-time">{{item.time}}</text>
+          </view>
+          <view class="record-calories">
+            <text class="calories-value">{{item.calories}}</text>
+            <text class="calories-unit">卡</text>
+          </view>
+        </view>
+        <view class="record-actions">
+          <text class="delete-btn" data-id="{{item.id}}" bindtap="deleteRecord">删除</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:else>
+      <text class="empty-icon">🍽️</text>
+      <text class="empty-text">还没有记录，点击上方添加今日饮食</text>
+    </view>
+  </view>
+
+  <!-- 推荐食谱 -->
+  <view class="tab-content" wx:if="{{activeTab === 1}}">
+    <view class="recipe-grid">
+      <view class="recipe-card" wx:for="{{recommendations}}" wx:key="id">
+        <image class="recipe-image" src="{{item.image}}" mode="aspectFill"></image>
+        <view class="recipe-info">
+          <text class="recipe-name">{{item.name}}</text>
+          <view class="recipe-tags">
+            <text class="recipe-tag">{{item.category}}</text>
+            <text class="recipe-tag">{{item.calories}}卡</text>
+          </view>
+          <text class="recipe-desc">{{item.description}}</text>
+        </view>
+        <view class="recipe-actions">
+          <button class="recipe-btn detail" data-recipe="{{item}}" bindtap="viewRecipeDetail">查看详情</button>
+          <button class="recipe-btn primary" data-recipe="{{item}}" bindtap="useRecipe">使用</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 营养分析 -->
+  <view class="tab-content" wx:if="{{activeTab === 2}}">
+    <view class="nutrition-card">
+      <text class="nutrition-title">今日营养摄入</text>
+      
+      <view class="nutrition-item">
+        <view class="nutrition-header">
+          <text class="nutrition-name">🥩 蛋白质</text>
+          <text class="nutrition-value">{{nutrition.protein}}g</text>
+        </view>
+        <view class="nutrition-bar">
+          <view class="nutrition-fill protein" style="width: {{nutrition.protein / 100 * 100}}%"></view>
+        </view>
+      </view>
+
+      <view class="nutrition-item">
+        <view class="nutrition-header">
+          <text class="nutrition-name">🍚 碳水化合物</text>
+          <text class="nutrition-value">{{nutrition.carbs}}g</text>
+        </view>
+        <view class="nutrition-bar">
+          <view class="nutrition-fill carbs" style="width: {{nutrition.carbs / 250 * 100}}%"></view>
+        </view>
+      </view>
+
+      <view class="nutrition-item">
+        <view class="nutrition-header">
+          <text class="nutrition-name">🥑 脂肪</text>
+          <text class="nutrition-value">{{nutrition.fat}}g</text>
+        </view>
+        <view class="nutrition-bar">
+          <view class="nutrition-fill fat" style="width: {{nutrition.fat / 70 * 100}}%"></view>
+        </view>
+      </view>
+
+      <view class="nutrition-item">
+        <view class="nutrition-header">
+          <text class="nutrition-name">🌾 膳食纤维</text>
+          <text class="nutrition-value">{{nutrition.fiber}}g</text>
+        </view>
+        <view class="nutrition-bar">
+          <view class="nutrition-fill fiber" style="width: {{nutrition.fiber / 30 * 100}}%"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="nutrition-tips">
+      <text class="tips-title">💡 营养建议</text>
+      <text class="tips-text">• 建议每日蛋白质摄入约 100g</text>
+      <text class="tips-text">• 碳水化合物控制在 250g 左右</text>
+      <text class="tips-text">• 脂肪摄入不超过 70g</text>
+      <text class="tips-text">• 膳食纤维至少 25-30g</text>
+    </view>
+  </view>
+
+  <!-- 添加对话框 -->
+  <view class="dialog-mask" wx:if="{{showAddDialog}}" bindtap="closeAddDialog">
+    <view class="dialog-content" catchtap="">
+      <view class="dialog-header">
+        <text class="dialog-title">添加{{currentMealType}}</text>
+        <text class="dialog-close" bindtap="closeAddDialog">✕</text>
+      </view>
+      
+      <view class="dialog-body">
+        <view class="form-item">
+          <text class="form-label">食物名称</text>
+          <input 
+            class="form-input" 
+            placeholder="例如：鸡胸肉沙拉"
+            value="{{foodInput}}"
+            bindinput="onFoodInput"
+          />
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">热量（卡路里）</text>
+          <input 
+            class="form-input" 
+            type="number"
+            placeholder="例如：350"
+            value="{{caloriesInput}}"
+            bindinput="onCaloriesInput"
+          />
+        </view>
+      </view>
+      
+      <view class="dialog-footer">
+        <button class="dialog-btn cancel" bindtap="closeAddDialog">取消</button>
+        <button class="dialog-btn confirm" bindtap="addRecord">确定</button>
+      </view>
+    </view>
+  </view>
+</view>
+

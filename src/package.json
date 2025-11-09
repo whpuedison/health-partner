@@ -1,0 +1,25 @@
+{
+  "name": "health-partner-miniapp",
+  "version": "1.0.0",
+  "description": "健康伙伴小程序",
+  "main": "app.js",
+  "scripts": {
+    "lint": "eslint \"src/**/*.js\"",
+    "lint:fix": "eslint \"src/**/*.js\" --fix",
+    "prettier": "prettier --write \"src/**/*.{js,json,wxml,wxss}\""
+  },
+  "keywords": [
+    "miniprogram",
+    "wechat",
+    "health"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@vant/weapp": "^1.11.6"
+  },
+  "devDependencies": {
+    "eslint": "^8.45.0",
+    "prettier": "^3.0.0"
+  }
+}

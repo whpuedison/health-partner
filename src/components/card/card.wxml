@@ -1,0 +1,11 @@
+<!--components/card/card.wxml-->
+<view class="card" style="padding: {{padding}}" bindtap="onCardTap">
+  <view class="card-header" wx:if="{{title}}">
+    <text class="card-title">{{title}}</text>
+    <slot name="header-right"></slot>
+  </view>
+  <view class="card-body">
+    <slot></slot>
+  </view>
+</view>
+

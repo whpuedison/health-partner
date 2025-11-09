@@ -1,0 +1,128 @@
+<!--pages/profile/profile.wxml-->
+<view class="profile-page">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <view class="user-header">
+      <block wx:if="{{hasUserInfo}}">
+        <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+        <view class="user-info">
+          <text class="nickname">{{userInfo.nickName}}</text>
+          <view class="user-data">
+            <text class="data-item">身高 {{profile.height}}cm</text>
+            <text class="data-divider">|</text>
+            <text class="data-item">体重 {{profile.weight}}kg</text>
+            <text class="data-divider">|</text>
+            <text class="data-item">BMI {{profile.bmi}}</text>
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="avatar-placeholder">👤</view>
+        <view class="user-info">
+          <text class="nickname">点击登录</text>
+          <text class="login-hint" bindtap="getUserProfile">获取用户信息 ></text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 统计数据 -->
+  <view class="stats-section">
+    <view class="stats-card">
+      <view class="stat-item">
+        <text class="stat-value">{{stats.totalDays}}</text>
+        <text class="stat-label">坚持天数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.dietRecords}}</text>
+        <text class="stat-label">饮食记录</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.exerciseRecords}}</text>
+        <text class="stat-label">运动记录</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.healthRecords}}</text>
+        <text class="stat-label">健康记录</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 我的目标 -->
+  <view class="goals-section">
+    <view class="section-header">
+      <text class="section-title">我的目标</text>
+      <text class="section-subtitle">设定目标，持续进步</text>
+    </view>
+    
+    <view class="goals-grid">
+      <view 
+        class="goal-card" 
+        wx:for="{{goals}}" 
+        wx:key="id"
+        style="background: {{item.color}}15; border-color: {{item.color}};"
+        data-goal="{{item}}"
+        bindtap="openGoalDialog"
+      >
+        <text class="goal-icon">{{item.icon}}</text>
+        <text class="goal-title">{{item.title}}</text>
+        <view class="goal-value-box">
+          <text class="goal-value">{{item.value}}</text>
+          <text class="goal-unit">{{item.unit}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-list">
+      <view 
+        class="menu-item" 
+        wx:for="{{menuItems}}" 
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onMenuTap"
+      >
+        <view class="menu-left">
+          <text class="menu-icon">{{item.icon}}</text>
+          <text class="menu-title">{{item.title}}</text>
+        </view>
+        <text class="menu-arrow" wx:if="{{item.arrow}}">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 清除数据按钮 -->
+  <view class="clear-section">
+    <button class="clear-btn" bindtap="clearData">清除所有数据</button>
+  </view>
+
+  <!-- 目标设置对话框 -->
+  <view class="dialog-mask" wx:if="{{showGoalDialog}}" bindtap="closeGoalDialog">
+    <view class="dialog-content" catchtap="">
+      <view class="dialog-header">
+        <text class="dialog-title">{{editingGoal.icon}} {{editingGoal.title}}</text>
+        <text class="dialog-close" bindtap="closeGoalDialog">✕</text>
+      </view>
+      
+      <view class="dialog-body">
+        <view class="form-item">
+          <text class="form-label">目标值 ({{editingGoal.unit}})</text>
+          <input 
+            class="form-input" 
+            type="digit"
+            placeholder="请输入目标值"
+            value="{{goalValue}}"
+            bindinput="onGoalInput"
+          />
+        </view>
+      </view>
+      
+      <view class="dialog-footer">
+        <button class="dialog-btn cancel" bindtap="closeGoalDialog">取消</button>
+        <button class="dialog-btn confirm" bindtap="saveGoal">保存</button>
+      </view>
+    </view>
+  </view>
+</view>

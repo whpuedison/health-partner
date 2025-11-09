@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "运动计划",
+  "navigationBarBackgroundColor": "#4ECDC4",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F7FAFC",
+  "enablePullDownRefresh": true
+}
+

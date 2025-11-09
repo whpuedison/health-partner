@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "饮食计划",
+  "navigationBarBackgroundColor": "#FF6B6B",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F7FAFC",
+  "enablePullDownRefresh": true
+}
+

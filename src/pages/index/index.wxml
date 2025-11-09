@@ -1,0 +1,119 @@
+<!--pages/index/index.wxml-->
+<view class="index-page">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <view class="user-info">
+      <block wx:if="{{hasUserInfo}}">
+        <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+        <view class="user-text">
+          <text class="greeting">你好，{{userInfo.nickName}}</text>
+          <text class="status-text">{{healthData.status}}</text>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="avatar-placeholder">👤</view>
+        <view class="user-text">
+          <text class="greeting">欢迎使用</text>
+          <text class="status-text" bindtap="getUserProfile">点击登录 ></text>
+        </view>
+      </block>
+    </view>
+    
+    <!-- 健康数据概览 -->
+    <view class="health-overview" wx:if="{{healthData.weight > 0}}">
+      <view class="health-item">
+        <text class="health-value">{{healthData.bmi}}</text>
+        <text class="health-label">BMI</text>
+      </view>
+      <view class="health-divider"></view>
+      <view class="health-item">
+        <text class="health-value">{{healthData.weight}}</text>
+        <text class="health-label">体重(kg)</text>
+      </view>
+      <view class="health-divider"></view>
+      <view class="health-item">
+        <text class="health-value">{{healthData.bodyFat}}%</text>
+        <text class="health-label">体脂率</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日数据 -->
+  <view class="today-section">
+    <view class="section-header">
+      <text class="section-title">今日目标</text>
+      <text class="section-subtitle">坚持打卡</text>
+    </view>
+    
+    <view class="stats-grid">
+      <view class="stat-card">
+        <text class="stat-icon">🔥</text>
+        <text class="stat-value">{{todayStats.calories}}</text>
+        <text class="stat-label">/ {{todayStats.targetCalories}} 卡路里</text>
+        <view class="progress-bar">
+          <view class="progress-fill" style="width: {{todayStats.calories / todayStats.targetCalories * 100}}%"></view>
+        </view>
+      </view>
+      
+      <view class="stat-card">
+        <text class="stat-icon">⏱️</text>
+        <text class="stat-value">{{todayStats.exercise}}</text>
+        <text class="stat-label">/ {{todayStats.targetExercise}} 分钟</text>
+        <view class="progress-bar">
+          <view class="progress-fill" style="width: {{todayStats.exercise / todayStats.targetExercise * 100}}%"></view>
+        </view>
+      </view>
+      
+      <view class="stat-card">
+        <text class="stat-icon">💧</text>
+        <text class="stat-value">{{todayStats.water}}</text>
+        <text class="stat-label">/ {{todayStats.targetWater}} 杯水</text>
+        <view class="progress-bar">
+          <view class="progress-fill" style="width: {{todayStats.water / todayStats.targetWater * 100}}%"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快捷功能 -->
+  <view class="quick-actions">
+    <view class="section-header">
+      <text class="section-title">快捷功能</text>
+    </view>
+    
+    <view class="actions-grid">
+      <view 
+        class="action-item" 
+        wx:for="{{quickActions}}" 
+        wx:key="id"
+        style="background: linear-gradient(135deg, {{item.color}}15, {{item.color}}30);"
+        data-url="{{item.url}}"
+        data-tab="{{item.tab}}"
+        bindtap="onActionTap"
+      >
+        <text class="action-icon">{{item.icon}}</text>
+        <text class="action-title">{{item.title}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 健康小贴士 -->
+  <view class="tips-section">
+    <view class="section-header">
+      <text class="section-title">健康小贴士</text>
+      <text class="section-subtitle">每日一提醒</text>
+    </view>
+    
+    <view class="tip-card">
+      <text class="tip-text">{{healthTips[currentTip]}}</text>
+      <view class="tip-dots">
+        <view 
+          class="dot {{index === currentTip ? 'active' : ''}}" 
+          wx:for="{{healthTips}}" 
+          wx:key="index"
+        ></view>
+      </view>
+    </view>
+  </view>
+</view>
+

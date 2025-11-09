@@ -1,0 +1,212 @@
+<!--pages/exercise/exercise.wxml-->
+<view class="exercise-page">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">运动计划</text>
+    <text class="page-subtitle">坚持运动，保持活力</text>
+  </view>
+
+  <!-- 今日运动概览 -->
+  <view class="stats-card">
+    <view class="stat-item">
+      <text class="stat-icon">⏱️</text>
+      <view class="stat-info">
+        <text class="stat-value">{{todayStats.duration}}</text>
+        <text class="stat-label">分钟</text>
+      </view>
+    </view>
+    
+    <view class="stat-divider"></view>
+    
+    <view class="stat-item">
+      <text class="stat-icon">🔥</text>
+      <view class="stat-info">
+        <text class="stat-value">{{todayStats.calories}}</text>
+        <text class="stat-label">卡路里</text>
+      </view>
+    </view>
+    
+    <view class="stat-divider"></view>
+    
+    <view class="stat-item">
+      <text class="stat-icon">📍</text>
+      <view class="stat-info">
+        <text class="stat-value">{{todayStats.distance}}</text>
+        <text class="stat-label">公里</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日目标进度 -->
+  <view class="goal-card">
+    <view class="goal-header">
+      <text class="goal-title">今日目标</text>
+      <text class="goal-status">{{todayStats.duration >= todayStats.target ? '已完成 ✓' : todayStats.target - todayStats.duration + '分钟'}}</text>
+    </view>
+    <view class="goal-progress">
+      <view class="goal-fill" style="width: {{todayStats.duration / todayStats.target * 100}}%"></view>
+    </view>
+  </view>
+
+  <!-- 标签切换 -->
+  <view class="tabs">
+    <view 
+      class="tab-item {{activeTab === index ? 'active' : ''}}" 
+      wx:for="{{tabs}}" 
+      wx:key="index"
+      data-index="{{index}}"
+      bindtap="onTabChange"
+    >
+      {{item}}
+    </view>
+  </view>
+
+  <!-- 今日运动 -->
+  <view class="tab-content" wx:if="{{activeTab === 0}}">
+    <!-- 快捷运动选择 -->
+    <view class="quick-exercises">
+      <view 
+        class="exercise-btn" 
+        wx:for="{{quickExercises}}" 
+        wx:key="id"
+        style="background: {{item.color}}20; border-color: {{item.color}};"
+        data-exercise="{{item}}"
+        bindtap="openAddDialog"
+      >
+        <text class="exercise-icon">{{item.icon}}</text>
+        <text class="exercise-name">{{item.name}}</text>
+        <view class="exercise-info">
+          <text class="info-item">{{item.duration}}分钟</text>
+          <text class="info-item">{{item.calories}}卡</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 今日记录 -->
+    <view class="section-title" wx:if="{{todayRecords.length > 0}}">今日已完成</view>
+    <view class="records-list" wx:if="{{todayRecords.length > 0}}">
+      <view class="record-item" wx:for="{{todayRecords}}" wx:key="id">
+        <text class="record-icon">{{item.icon}}</text>
+        <view class="record-info">
+          <text class="record-name">{{item.name}}</text>
+          <text class="record-time">{{item.time}}</text>
+        </view>
+        <view class="record-stats">
+          <text class="record-stat">{{item.duration}}分钟</text>
+          <text class="record-stat">{{item.calories}}卡</text>
+        </view>
+        <text class="delete-btn" data-id="{{item.id}}" bindtap="deleteRecord">✕</text>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:else>
+      <text class="empty-icon">💪</text>
+      <text class="empty-text">还没有运动记录，选择一项运动开始吧！</text>
+    </view>
+  </view>
+
+  <!-- 运动推荐 -->
+  <view class="tab-content" wx:if="{{activeTab === 1}}">
+    <view class="recommend-grid">
+      <view class="recommend-card" wx:for="{{recommendations}}" wx:key="id">
+        <view class="recommend-header" style="background: {{item.color}};">
+          <text class="recommend-icon">{{item.icon}}</text>
+          <view class="recommend-badge">{{item.level}}</view>
+        </view>
+        <view class="recommend-body">
+          <text class="recommend-name">{{item.name}}</text>
+          <text class="recommend-desc">{{item.description}}</text>
+          <view class="recommend-tags">
+            <text class="recommend-tag">⏱️ {{item.duration}}分钟</text>
+            <text class="recommend-tag">🔥 {{item.calories}}卡</text>
+          </view>
+        </view>
+        <view class="recommend-footer">
+          <button class="recommend-btn" data-plan="{{item}}" bindtap="startPlan">开始训练</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 运动记录 -->
+  <view class="tab-content" wx:if="{{activeTab === 2}}">
+    <view class="week-summary">
+      <text class="summary-title">本周运动统计</text>
+      <view class="summary-grid">
+        <view class="summary-item">
+          <text class="summary-value">{{weekRecords.length}}</text>
+          <text class="summary-label">次数</text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-value">{{todayStats.duration * 7}}</text>
+          <text class="summary-label">总时长</text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-value">{{todayStats.calories * 7}}</text>
+          <text class="summary-label">总消耗</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="history-list" wx:if="{{weekRecords.length > 0}}">
+      <view class="history-item" wx:for="{{weekRecords}}" wx:key="id">
+        <view class="history-date">
+          <text class="date-day">{{item.date}}</text>
+          <text class="date-time">{{item.time}}</text>
+        </view>
+        <view class="history-content">
+          <text class="history-icon">{{item.icon}}</text>
+          <view class="history-info">
+            <text class="history-name">{{item.name}}</text>
+            <text class="history-detail">{{item.duration}}分钟 · {{item.calories}}卡</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:else>
+      <text class="empty-icon">📊</text>
+      <text class="empty-text">暂无历史记录</text>
+    </view>
+  </view>
+
+  <!-- 添加对话框 -->
+  <view class="dialog-mask" wx:if="{{showAddDialog}}" bindtap="closeAddDialog">
+    <view class="dialog-content" catchtap="">
+      <view class="dialog-header">
+        <text class="dialog-title">{{currentExercise.icon}} {{currentExercise.name}}</text>
+        <text class="dialog-close" bindtap="closeAddDialog">✕</text>
+      </view>
+      
+      <view class="dialog-body">
+        <view class="form-item">
+          <text class="form-label">运动时长（分钟）</text>
+          <input 
+            class="form-input" 
+            type="number"
+            placeholder="例如：30"
+            value="{{durationInput}}"
+            bindinput="onDurationInput"
+          />
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">消耗热量（卡路里）</text>
+          <input 
+            class="form-input" 
+            type="number"
+            placeholder="例如：300"
+            value="{{caloriesInput}}"
+            bindinput="onCaloriesInput"
+          />
+        </view>
+      </view>
+      
+      <view class="dialog-footer">
+        <button class="dialog-btn cancel" bindtap="closeAddDialog">取消</button>
+        <button class="dialog-btn confirm" bindtap="addRecord">确定</button>
+      </view>
+    </view>
+  </view>
+</view>
+

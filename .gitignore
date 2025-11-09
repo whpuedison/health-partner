@@ -1,0 +1,12 @@
+node_modules/
+miniprogram/
+dist/
+.DS_Store
+*.log
+.idea/
+.vscode/
+*.swp
+*.swo
+.env.local
+.env.*.local
+
