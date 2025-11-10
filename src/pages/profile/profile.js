@@ -35,8 +35,6 @@ Page({
     
     // 功能菜单
     menuItems: [
-      { id: 'history', icon: '📊', title: '历史记录', arrow: true },
-      { id: 'goal', icon: '🎯', title: '目标设置', arrow: true },
       { id: 'remind', icon: '⏰', title: '提醒设置', arrow: true },
       { id: 'about', icon: 'ℹ️', title: '关于我们', arrow: true },
     ],

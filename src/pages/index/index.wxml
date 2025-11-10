@@ -120,7 +120,6 @@
   <view class="tips-section">
     <view class="section-header">
       <text class="section-title">健康小贴士</text>
-      <text class="section-subtitle">每日一提醒</text>
     </view>
     
     <view class="tip-card">
