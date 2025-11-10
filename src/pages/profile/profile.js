@@ -27,7 +27,7 @@ Page({
     
     // 我的目标
     goals: [
-      { id: 'weight', icon: '⚖️', title: '目标体重', value: '0', unit: 'kg', color: '#FF6B6B' },
+      { id: 'weight', icon: '⚖️', title: '目标体重', value: '50', unit: 'kg', color: '#FF6B6B' },
       { id: 'exercise', icon: '🏃', title: '每日运动', value: '30', unit: '分钟', color: '#FFD93D' },
       { id: 'water', icon: '💦', title: '每日饮水', value: '8', unit: '杯', color: '#45B7D1' },
       { id: 'steps', icon: '👣', title: '每日步数', value: '10000', unit: '步', color: '#4ECDC4' },
@@ -50,6 +50,7 @@ Page({
   onLoad() {
     this.loadUserInfo();
     this.loadProfile();
+    this.loadGoals();
     this.loadStats();
   },
 
@@ -60,6 +61,7 @@ Page({
     }
     this.loadUserInfo();
     this.loadProfile();
+    this.loadGoals();
     this.loadStats();
   },
 
@@ -183,6 +185,45 @@ Page({
       // 静默失败，不影响UI
       console.error('后台刷新健康档案失败', error);
       this._refreshingProfile = false;
+    });
+  },
+
+  // 加载用户目标
+  loadGoals() {
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) {
+      // 如果没有 openId，等待一下再试
+      setTimeout(() => {
+        this.loadGoals();
+      }, 500);
+      return;
+    }
+
+    Http.get(API.USER_GOALS, {
+      openId: openId
+    }).then((result) => {
+      if (result.data) {
+        const goalsData = result.data;
+        // 更新目标列表
+        const goals = this.data.goals.map(goal => {
+          let value = '0';
+          if (goal.id === 'weight') {
+            value = goalsData.targetWeight ? goalsData.targetWeight.toString() : '50';
+          } else if (goal.id === 'exercise') {
+            value = goalsData.targetExercise ? goalsData.targetExercise.toString() : '30';
+          } else if (goal.id === 'water') {
+            value = goalsData.targetWater ? goalsData.targetWater.toString() : '8';
+          } else if (goal.id === 'steps') {
+            value = goalsData.targetSteps ? goalsData.targetSteps.toString() : '10000';
+          }
+          return { ...goal, value };
+        });
+        
+        this.setData({ goals });
+      }
+    }).catch((error) => {
+      console.error('获取用户目标失败', error);
+      // 如果获取失败，使用默认值
     });
   },
 
@@ -337,7 +378,7 @@ Page({
 
   // 保存目标
   saveGoal() {
-    const { editingGoal, goalValue, goals } = this.data;
+    const { editingGoal, goalValue } = this.data;
     
     if (!goalValue) {
       wx.showToast({
@@ -347,20 +388,54 @@ Page({
       return;
     }
     
-    // 更新目标列表
-    const updatedGoals = goals.map(goal => {
-      if (goal.id === editingGoal.id) {
-        return { ...goal, value: goalValue };
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+      });
+      return;
+    }
+    
+    // 构建更新数据
+    const updateData = { openId };
+    const numValue = parseFloat(goalValue);
+    
+    if (editingGoal.id === 'weight') {
+      updateData.targetWeight = numValue;
+    } else if (editingGoal.id === 'exercise') {
+      updateData.targetExercise = parseInt(goalValue);
+    } else if (editingGoal.id === 'water') {
+      updateData.targetWater = parseInt(goalValue);
+    } else if (editingGoal.id === 'steps') {
+      updateData.targetSteps = parseInt(goalValue);
+    }
+    
+    // 调用后端接口保存
+    Http.post(API.USER_GOALS, updateData).then((result) => {
+      if (result.data) {
+        // 更新本地目标列表
+        const goals = this.data.goals.map(goal => {
+          if (goal.id === editingGoal.id) {
+            return { ...goal, value: goalValue };
+          }
+          return goal;
+        });
+        
+        this.setData({ goals });
+        this.closeGoalDialog();
+        
+        wx.showToast({
+          title: '设置成功',
+          icon: 'success',
+        });
       }
-      return goal;
-    });
-    
-    this.setData({ goals: updatedGoals });
-    this.closeGoalDialog();
-    
-    wx.showToast({
-      title: '设置成功',
-      icon: 'success',
+    }).catch((error) => {
+      console.error('保存目标失败', error);
+      wx.showToast({
+        title: '保存失败，请重试',
+        icon: 'none',
+      });
     });
   },
 

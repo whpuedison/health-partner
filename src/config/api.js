@@ -5,6 +5,7 @@ const API = {
   USER_UPDATE: '/api/v1/user/update',
   USER_UPLOAD_AVATAR: '/api/v1/user/upload-avatar',
   USER_PROFILE: '/api/v1/user/profile',
+  USER_GOALS: '/api/v1/user/goals',
 
   // 健康记录相关
   HEALTH_RECORDS: '/health/records',

@@ -2,31 +2,27 @@
 
 /**
  * 获取今日健康数据汇总
+ * 注意：此函数现在只返回默认统计数据，实际数据应从后端获取
  */
 function getHealthSummary() {
-  const profile = getUserProfile();
-  const bmi = calculateBMI(profile.height, profile.weight);
-  
-  // 获取今日饮食记录
+  // 获取今日饮食记录（从后端获取，这里返回空数组）
   const dietRecords = getDietRecords();
   let todayCalories = 0;
   dietRecords.forEach(record => {
     todayCalories += record.calories || 0;
   });
   
-  // 获取今日运动记录
+  // 获取今日运动记录（从后端获取，这里返回空数组）
   const exerciseRecords = getExerciseRecords('today');
   let todayExercise = 0;
   exerciseRecords.forEach(record => {
     todayExercise += record.duration || 0;
   });
   
-  // 获取今日饮水记录
+  // 获取今日饮水记录（从后端获取）
   const todayWater = 0;
   
   return {
-    bmi: bmi.toFixed(1),
-    status: getBMIStatus(bmi),
     todayStats: {
       calories: Math.round(todayCalories),
       targetCalories: 2000,
@@ -38,36 +34,6 @@ function getHealthSummary() {
   };
 }
 
-/**
- * 获取用户资料
- */
-function getUserProfile() {
-  return {
-    height: 170,
-    weight: 65,
-    age: 25,
-    gender: '男',
-  };
-}
-
-/**
- * 计算 BMI
- */
-function calculateBMI(height, weight) {
-  if (!height || !weight) return 0;
-  const heightInMeters = height / 100;
-  return weight / (heightInMeters * heightInMeters);
-}
-
-/**
- * 获取 BMI 状态
- */
-function getBMIStatus(bmi) {
-  if (bmi < 18.5) return '偏瘦';
-  if (bmi < 24) return '正常';
-  if (bmi < 28) return '偏重';
-  return '肥胖';
-}
 
 /**
  * 获取饮食记录

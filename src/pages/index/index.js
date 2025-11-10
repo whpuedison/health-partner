@@ -127,13 +127,13 @@ Page({
         todayStats: summary.todayStats || this.data.todayStats,
       });
     } else {
-      // 如果没有健康档案数据，使用默认数据
+      // 如果没有健康档案数据，显示默认值
       this.setData({
         healthData: {
-          bmi: summary.bmi || 0,
+          bmi: 0,
           weight: 0,
           height: 0,
-          status: summary.status || '未评估',
+          status: '未评估',
         },
         todayStats: summary.todayStats || this.data.todayStats,
       });
