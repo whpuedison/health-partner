@@ -47,7 +47,7 @@ Page({
 
   onLoad() {
     this.loadProfile();
-    this.loadRecords();
+    // 不在 onLoad 时加载记录，等用户切换到"体征记录"标签时再加载
   },
 
   onShow() {
@@ -56,13 +56,17 @@ Page({
     }
     // 注意：不在这里调用 loadProfile()，避免与 onLoad() 重复调用
     // 如果需要刷新数据，可以在特定场景下手动调用
-    this.loadRecords();
   },
 
   // 切换标签
   onTabChange(e) {
     const index = e.currentTarget.dataset.index;
     this.setData({ activeTab: index });
+    
+    // 当切换到"体征记录"标签时，才加载记录
+    if (index === 1) {
+      this.loadRecords();
+    }
   },
 
   // 阻止弹窗背景滚动
@@ -346,7 +350,54 @@ Page({
 
   // 加载体征记录
   loadRecords() {
-    this.setData({ records: [] });
+    // 防止重复调用
+    if (this._loadingRecords) {
+      return;
+    }
+    
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) {
+      setTimeout(() => {
+        this.loadRecords();
+      }, 500);
+      return;
+    }
+
+    this._loadingRecords = true;
+
+    Http.get(API.USER_HEALTH_RECORDS, {
+      openId: openId,
+      limit: 100 // 最多加载100条记录
+    }).then((result) => {
+      this._loadingRecords = false;
+      if (result.data) {
+        // 格式化数据用于显示
+        const records = result.data.map(record => ({
+          id: record.id,
+          type: record.type,
+          value: record.value,
+          unit: record.unit,
+          date: this.formatDate(record.date),
+          time: record.time || ''
+        }));
+        
+        this.setData({ records });
+      }
+    }).catch((error) => {
+      this._loadingRecords = false;
+      console.error('获取健康记录失败', error);
+      this.setData({ records: [] });
+    });
+  },
+
+  // 格式化日期
+  formatDate(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   },
 
   // 打开添加记录对话框
@@ -376,7 +427,7 @@ Page({
 
   // 保存体征记录
   saveRecord() {
-    const { currentType, currentValue, records } = this.data;
+    const { currentType, currentValue } = this.data;
 
     if (!currentType || !currentValue) {
       wx.showToast({
@@ -386,39 +437,103 @@ Page({
       return;
     }
 
-    const now = new Date();
-    const newRecord = {
-      id: Date.now(),
-      type: currentType,
-      value: currentValue,
-      date: now.toLocaleDateString('zh-CN'),
-      time: now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
-    };
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+      });
+      return;
+    }
 
-    const updatedRecords = [newRecord, ...records];
-    this.setData({ records: updatedRecords });
-
-    wx.showToast({
-      title: '记录成功',
-      icon: 'success',
+    wx.showLoading({
+      title: '保存中...',
+      mask: true
     });
 
-    this.hideAddDialog();
+    // 根据类型设置单位
+    const unitMap = {
+      '血压': 'mmHg',
+      '心率': 'bpm',
+      '体重': 'kg',
+      '血糖': 'mmol/L',
+      '体温': '℃'
+    };
+
+    Http.post(API.USER_HEALTH_RECORDS, {
+      openId: openId,
+      recordType: currentType,
+      value: parseFloat(currentValue),
+      unit: unitMap[currentType] || ''
+    }).then((result) => {
+      wx.hideLoading();
+      if (result.data) {
+        wx.showToast({
+          title: '记录成功',
+          icon: 'success',
+        });
+        
+        // 重新加载记录列表
+        this.loadRecords();
+        this.hideAddDialog();
+      }
+    }).catch((error) => {
+      wx.hideLoading();
+      console.error('保存健康记录失败', error);
+      wx.showToast({
+        title: '保存失败，请重试',
+        icon: 'none',
+      });
+    });
   },
 
   // 删除记录
   deleteRecord(e) {
     const id = e.currentTarget.dataset.id;
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    
+    if (!openId) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+      });
+      return;
+    }
+
+    // 找到要删除的记录信息，用于确认提示
+    const record = this.data.records.find(r => r.id === id);
+    const recordInfo = record ? `${record.type}: ${record.value}${record.unit}` : '这条记录';
+    
     wx.showModal({
       title: '确认删除',
-      content: '确定要删除这条记录吗？',
+      content: `确定要删除"${recordInfo}"吗？删除后无法恢复。`,
+      confirmText: '删除',
+      confirmColor: '#FF6B6B',
       success: res => {
         if (res.confirm) {
-          const records = this.data.records.filter(r => r.id !== id);
-          this.setData({ records });
-          wx.showToast({
-            title: '删除成功',
-            icon: 'success',
+          wx.showLoading({
+            title: '删除中...',
+            mask: true
+          });
+
+          Http.delete(`${API.USER_HEALTH_RECORDS}/${id}`, {
+            openId: openId
+          }).then((result) => {
+            wx.hideLoading();
+            wx.showToast({
+              title: '删除成功',
+              icon: 'success',
+            });
+            
+            // 重新加载记录列表
+            this.loadRecords();
+          }).catch((error) => {
+            wx.hideLoading();
+            console.error('删除健康记录失败', error);
+            wx.showToast({
+              title: '删除失败，请重试',
+              icon: 'none',
+            });
           });
         }
       },

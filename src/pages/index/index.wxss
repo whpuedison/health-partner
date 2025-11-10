@@ -172,6 +172,23 @@
   transform: scale(0.95);
 }
 
+.checkin-card {
+  cursor: pointer;
+  position: relative;
+}
+
+.checkin-card:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.checkin-hint {
+  font-size: 20rpx;
+  color: #4ECDC4;
+  margin-top: 8rpx;
+  font-weight: 500;
+}
+
 .stat-icon {
   font-size: 48rpx;
   margin-bottom: 12rpx;

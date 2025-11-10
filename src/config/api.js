@@ -6,12 +6,9 @@ const API = {
   USER_UPLOAD_AVATAR: '/api/v1/user/upload-avatar',
   USER_PROFILE: '/api/v1/user/profile',
   USER_GOALS: '/api/v1/user/goals',
-
-  // 健康记录相关
-  HEALTH_RECORDS: '/health/records',
-  HEALTH_ADD: '/health/add',
-  HEALTH_DELETE: '/health/delete',
-  HEALTH_UPDATE: '/health/update',
+  USER_TODAY_PROGRESS: '/api/v1/user/today-progress',
+  USER_CHECK_IN: '/api/v1/user/check-in',
+  USER_HEALTH_RECORDS: '/api/v1/user/health-records',
 };
 
 module.exports = { API };

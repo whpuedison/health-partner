@@ -44,35 +44,52 @@
   <view class="today-section">
     <view class="section-header">
       <text class="section-title">今日目标</text>
-      <text class="section-subtitle">坚持打卡</text>
     </view>
     
     <view class="stats-grid">
-      <view class="stat-card">
-        <text class="stat-icon">🔥</text>
-        <text class="stat-value">{{todayStats.calories}}</text>
-        <text class="stat-label">/ {{todayStats.targetCalories}} 卡路里</text>
-        <view class="progress-bar">
-          <view class="progress-fill" style="width: {{todayStats.calories / todayStats.targetCalories * 100}}%"></view>
-        </view>
-      </view>
-      
-      <view class="stat-card">
-        <text class="stat-icon">⏱️</text>
+      <view 
+        class="stat-card checkin-card" 
+        data-type="exercise"
+        data-value="{{todayStats.exercise}}"
+        bindtap="onCheckIn"
+      >
+        <text class="stat-icon">🏃</text>
         <text class="stat-value">{{todayStats.exercise}}</text>
         <text class="stat-label">/ {{todayStats.targetExercise}} 分钟</text>
         <view class="progress-bar">
-          <view class="progress-fill" style="width: {{todayStats.exercise / todayStats.targetExercise * 100}}%"></view>
+          <view class="progress-fill" style="width: {{todayStats.targetExercise > 0 ? (todayStats.exercise / todayStats.targetExercise * 100 > 100 ? 100 : todayStats.exercise / todayStats.targetExercise * 100) : 0}}%"></view>
         </view>
+        <text class="checkin-hint">点击打卡</text>
       </view>
       
-      <view class="stat-card">
+      <view 
+        class="stat-card checkin-card" 
+        data-type="water"
+        data-value="{{todayStats.water}}"
+        bindtap="onCheckIn"
+      >
         <text class="stat-icon">💧</text>
         <text class="stat-value">{{todayStats.water}}</text>
         <text class="stat-label">/ {{todayStats.targetWater}} 杯水</text>
         <view class="progress-bar">
-          <view class="progress-fill" style="width: {{todayStats.water / todayStats.targetWater * 100}}%"></view>
+          <view class="progress-fill" style="width: {{todayStats.targetWater > 0 ? (todayStats.water / todayStats.targetWater * 100 > 100 ? 100 : todayStats.water / todayStats.targetWater * 100) : 0}}%"></view>
         </view>
+        <text class="checkin-hint">点击打卡</text>
+      </view>
+      
+      <view 
+        class="stat-card checkin-card" 
+        data-type="steps"
+        data-value="{{todayStats.steps}}"
+        bindtap="onCheckIn"
+      >
+        <text class="stat-icon">👣</text>
+        <text class="stat-value">{{todayStats.steps}}</text>
+        <text class="stat-label">/ {{todayStats.targetSteps}} 步</text>
+        <view class="progress-bar">
+          <view class="progress-fill" style="width: {{todayStats.targetSteps > 0 ? (todayStats.steps / todayStats.targetSteps * 100 > 100 ? 100 : todayStats.steps / todayStats.targetSteps * 100) : 0}}%"></view>
+        </view>
+        <text class="checkin-hint">点击打卡</text>
       </view>
     </view>
   </view>

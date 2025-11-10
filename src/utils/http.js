@@ -15,10 +15,24 @@ class Http {
    */
   static request(options) {
     return new Promise((resolve, reject) => {
+      let url = BASE_URL + options.url;
+      const method = options.method || 'GET';
+      const data = options.data || {};
+      
+      // GET 和 DELETE 请求将 data 作为查询参数
+      if (method === 'GET' || method === 'DELETE') {
+        const queryString = Object.keys(data)
+          .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
+          .join('&');
+        if (queryString) {
+          url += (url.includes('?') ? '&' : '?') + queryString;
+        }
+      }
+      
       wx.request({
-        url: BASE_URL + options.url,
-        method: options.method || 'GET',
-        data: options.data || {},
+        url: url,
+        method: method,
+        data: (method === 'GET' || method === 'DELETE') ? {} : data,
         header: {
           'content-type': 'application/json',
           ...options.header,

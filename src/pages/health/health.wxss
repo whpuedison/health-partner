@@ -263,11 +263,12 @@
 .add-record-btn {
   background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
   color: white;
-  padding: 16rpx 32rpx;
-  border-radius: 48rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 40rpx;
   font-size: 24rpx;
   font-weight: bold;
-  border: none;
+  cursor: pointer;
+  user-select: none;
 }
 
 .records-list {

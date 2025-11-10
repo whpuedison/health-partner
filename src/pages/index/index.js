@@ -1,5 +1,4 @@
 // pages/index/index.js
-const { getHealthSummary } = require('../../services/health.service');
 const { calculateBMI, getHealthStatus } = require('../../services/user.service');
 const { Http } = require('../../utils/http');
 const { API } = require('../../config/api');
@@ -18,12 +17,12 @@ Page({
       status: '未评估',
     },
     todayStats: {
-      calories: 0,
-      targetCalories: 2000,
       exercise: 0,
       targetExercise: 30,
       water: 0,
       targetWater: 8,
+      steps: 0,
+      targetSteps: 10000,
     },
     quickActions: [
       { id: 'diet', icon: '🍎', title: '饮食计划', color: '#FF6B6B', url: '/pages/diet/diet' },
@@ -47,6 +46,7 @@ Page({
     this.loadUserData();
     
     this.loadHealthData();
+    this.loadTodayProgress();
     this.startTipRotation();
   },
 
@@ -60,6 +60,8 @@ Page({
     this._userDataRetryCount = 0;
     this.loadUserData();
     this.loadHealthData();
+    // 刷新今日进度（从其他页面返回时可能需要更新）
+    this.loadTodayProgress();
   },
 
   onUnload() {
@@ -108,8 +110,6 @@ Page({
 
 
   loadHealthData() {
-    const summary = getHealthSummary();
-    
     // 从全局数据或本地存储获取健康档案数据（登录时已获取）
     const profile = app.globalData.profile || wx.getStorageSync('profile');
     
@@ -124,7 +124,6 @@ Page({
           height: profile.height || 0,
           status: status.bmiStatus || '未评估',
         },
-        todayStats: summary.todayStats || this.data.todayStats,
       });
     } else {
       // 如果没有健康档案数据，显示默认值
@@ -135,9 +134,144 @@ Page({
           height: 0,
           status: '未评估',
         },
-        todayStats: summary.todayStats || this.data.todayStats,
       });
     }
+  },
+
+  // 加载今日完成情况
+  loadTodayProgress() {
+    // 防止重复调用
+    if (this._loadingTodayProgress) {
+      return;
+    }
+    
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) {
+      setTimeout(() => {
+        this.loadTodayProgress();
+      }, 500);
+      return;
+    }
+
+    this._loadingTodayProgress = true;
+
+    Http.get(API.USER_TODAY_PROGRESS, {
+      openId: openId
+    }).then((result) => {
+      this._loadingTodayProgress = false;
+      if (result.data) {
+        const progress = result.data;
+        this.setData({
+          todayStats: {
+            exercise: progress.exercise?.completed || 0,
+            targetExercise: progress.exercise?.target || 30,
+            water: progress.water?.completed || 0,
+            targetWater: progress.water?.target || 8,
+            steps: progress.steps?.completed || 0,
+            targetSteps: progress.steps?.target || 10000,
+          }
+        });
+      }
+    }).catch((error) => {
+      this._loadingTodayProgress = false;
+      console.error('获取今日完成情况失败', error);
+    });
+  },
+
+  // 快速打卡
+  onCheckIn(e) {
+    const type = e.currentTarget.dataset.type;
+    const currentValue = e.currentTarget.dataset.value || 0;
+    
+    // 根据类型确定默认增加值和单位
+    let defaultValue = 0;
+    let unit = '';
+    let title = '';
+    
+    if (type === 'exercise') {
+      defaultValue = 30;
+      unit = '分钟';
+      title = '运动打卡';
+    } else if (type === 'water') {
+      defaultValue = 1;
+      unit = '杯';
+      title = '饮水打卡';
+    } else if (type === 'steps') {
+      defaultValue = 1000;
+      unit = '步';
+      title = '步数打卡';
+    }
+    
+    wx.showModal({
+      title: title,
+      editable: true,
+      placeholderText: `请输入${unit}数（当前：${currentValue}${unit}）`,
+      success: (res) => {
+        if (res.confirm) {
+          const value = res.content ? parseFloat(res.content) : defaultValue;
+          if (isNaN(value) || value <= 0) {
+            wx.showToast({
+              title: '请输入有效数值',
+              icon: 'none',
+            });
+            return;
+          }
+          
+          this.doCheckIn(type, value);
+        }
+      }
+    });
+  },
+
+  // 执行打卡
+  doCheckIn(type, value) {
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+      });
+      return;
+    }
+    
+    wx.showLoading({
+      title: '打卡中...',
+      mask: true
+    });
+    
+    Http.post(API.USER_CHECK_IN, {
+      openId: openId,
+      type: type,
+      value: value
+    }).then((result) => {
+      wx.hideLoading();
+      if (result.data) {
+        // 更新今日完成情况
+        const progress = result.data;
+        this.setData({
+          todayStats: {
+            exercise: progress.exercise?.completed || 0,
+            targetExercise: progress.exercise?.target || 30,
+            water: progress.water?.completed || 0,
+            targetWater: progress.water?.target || 8,
+            steps: progress.steps?.completed || 0,
+            targetSteps: progress.steps?.target || 10000,
+          }
+        });
+        
+        wx.showToast({
+          title: '打卡成功',
+          icon: 'success',
+        });
+      }
+    }).catch((error) => {
+      wx.hideLoading();
+      console.error('打卡失败', error);
+      wx.showToast({
+        title: '打卡失败，请重试',
+        icon: 'none',
+      });
+    });
   },
 
   startTipRotation() {

@@ -109,7 +109,7 @@
   <view class="tab-content" wx:if="{{activeTab === 1}}">
     <view class="records-header">
       <text class="records-title">体征记录</text>
-      <button class="add-record-btn" bindtap="showAddDialog">+ 添加</button>
+      <text class="add-record-btn" bindtap="showAddDialog">+ 添加</text>
     </view>
 
     <view class="records-list" wx:if="{{records.length > 0}}">
@@ -117,7 +117,7 @@
         <view class="record-main">
           <view class="record-type-badge">{{item.type}}</view>
           <view class="record-info">
-            <text class="record-value">{{item.value}}</text>
+            <text class="record-value">{{item.value}}{{item.unit}}</text>
             <text class="record-date">{{item.date}} {{item.time}}</text>
           </view>
         </view>
