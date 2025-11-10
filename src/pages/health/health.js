@@ -211,8 +211,7 @@ Page({
 
   // 加载体征记录
   loadRecords() {
-    const records = wx.getStorageSync('healthRecords') || [];
-    this.setData({ records });
+    this.setData({ records: [] });
   },
 
   // 打开添加记录对话框
@@ -263,7 +262,6 @@ Page({
 
     const updatedRecords = [newRecord, ...records];
     this.setData({ records: updatedRecords });
-    wx.setStorageSync('healthRecords', updatedRecords);
 
     wx.showToast({
       title: '记录成功',
@@ -283,7 +281,6 @@ Page({
         if (res.confirm) {
           const records = this.data.records.filter(r => r.id !== id);
           this.setData({ records });
-          wx.setStorageSync('healthRecords', records);
           wx.showToast({
             title: '删除成功',
             icon: 'success',

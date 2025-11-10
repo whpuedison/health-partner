@@ -158,9 +158,6 @@ Page({
       content: '确定要删除这条记录吗？',
       success: res => {
         if (res.confirm) {
-          let records = wx.getStorageSync('exerciseRecords') || [];
-          records = records.filter(r => r.id !== id);
-          wx.setStorageSync('exerciseRecords', records);
           this.loadTodayRecords();
           this.loadWeekRecords();
           wx.showToast({

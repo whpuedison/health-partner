@@ -28,23 +28,11 @@ Page({
     const bmr = calculateBMR(profile.weight, profile.height, profile.age, profile.gender);
     const tdee = calculateTDEE(bmr);
     
-    // 加载已保存的目标
-    const savedGoals = wx.getStorageSync('userGoals') || {};
-    const goals = {
-      targetWeight: savedGoals.weight || '',
-      targetBodyFat: savedGoals.bodyFat || '',
-      targetDate: savedGoals.targetDate || '',
-      dailyCalories: savedGoals.calories || '2000',
-      dailyExercise: savedGoals.exercise || '30',
-      dailyWater: savedGoals.water || '8',
-    };
-    
     this.setData({
       profile,
       idealWeightRange: idealRange,
       bmr,
       tdee,
-      goals,
     });
   },
 
@@ -72,18 +60,6 @@ Page({
       });
       return;
     }
-    
-    // 保存到本地存储
-    const savedGoals = {
-      weight: goals.targetWeight,
-      bodyFat: goals.targetBodyFat,
-      targetDate: goals.targetDate,
-      calories: goals.dailyCalories,
-      exercise: goals.dailyExercise,
-      water: goals.dailyWater,
-    };
-    
-    wx.setStorageSync('userGoals', savedGoals);
     
     wx.showToast({
       title: '保存成功',

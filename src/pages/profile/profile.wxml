@@ -17,10 +17,19 @@
         </view>
       </block>
       <block wx:else>
-        <view class="avatar-placeholder">👤</view>
+        <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="avatar-placeholder" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+          <view wx:else class="avatar-placeholder">👤</view>
+        </button>
         <view class="user-info">
-          <text class="nickname">点击登录</text>
-          <text class="login-hint" bindtap="getUserProfile">获取用户信息 ></text>
+          <input 
+            class="nickname-input" 
+            type="nickname" 
+            placeholder="点击设置昵称"
+            bindinput="onNicknameInput"
+            bindblur="onNicknameInput"
+            value="{{nickname || (userInfo && userInfo.nickName) || ''}}"
+          />
         </view>
       </block>
     </view>

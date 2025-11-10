@@ -147,8 +147,6 @@ Page({
       content: '确定要删除这条记录吗？',
       success: res => {
         if (res.confirm) {
-          let records = this.data.todayRecords.filter(r => r.id !== id);
-          wx.setStorageSync('dietRecords', records);
           this.loadTodayRecords();
           wx.showToast({
             title: '删除成功',

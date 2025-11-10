@@ -1,9 +1,9 @@
 {
-  "description": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段",
-  "projectname": "health-partner",
-  "setting": {
-    "compileHotReLoad": true,
-    "urlCheck": false
-  },
-  "libVersion": "3.11.1"
+    "description": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段",
+    "projectname": "health-partner",
+    "setting": {
+        "compileHotReLoad": true,
+        "urlCheck": false
+    },
+    "libVersion": "3.11.0"
 }

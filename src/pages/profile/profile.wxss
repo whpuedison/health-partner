@@ -39,6 +39,39 @@
   border: 4rpx solid white;
 }
 
+.avatar-placeholder image {
+  width: 100%;
+  height: 100%;
+  border-radius: 60rpx;
+}
+
+.avatar-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  line-height: normal;
+}
+
+.avatar-btn::after {
+  border: none;
+}
+
+.nickname-input {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+  border-radius: 8rpx;
+  padding: 12rpx 16rpx;
+  color: white;
+  font-size: 32rpx;
+  font-weight: bold;
+  width: 300rpx;
+}
+
+.nickname-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
 .user-info {
   flex: 1;
   display: flex;

@@ -4,21 +4,19 @@
  * 获取用户资料
  */
 function getUserProfile() {
-  const profile = wx.getStorageSync('userProfile') || {
+  return {
     height: 170,
     weight: 65,
     age: 25,
     gender: '男',
     bodyFat: 20,
   };
-  return profile;
 }
 
 /**
  * 更新用户资料
  */
 function updateUserProfile(profile) {
-  wx.setStorageSync('userProfile', profile);
   return true;
 }
 

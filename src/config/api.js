@@ -1,8 +1,8 @@
-export const API = {
+const API = {
   // 用户相关
-  USER_LOGIN: '/user/login',
-  USER_INFO: '/user/info',
-  USER_UPDATE: '/user/update',
+  USER_LOGIN: '/api/v1/user/login',
+  USER_INFO: '/api/v1/user/info',
+  USER_UPDATE: '/api/v1/user/update',
 
   // 健康记录相关
   HEALTH_RECORDS: '/health/records',
@@ -10,4 +10,6 @@ export const API = {
   HEALTH_DELETE: '/health/delete',
   HEALTH_UPDATE: '/health/update',
 };
+
+module.exports = { API };
 

@@ -6,16 +6,23 @@
       <block wx:if="{{hasUserInfo}}">
         <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
         <view class="user-text">
-          <text class="greeting">你好，{{userInfo.nickName}}</text>
+          <text class="greeting">{{userInfo.nickName}}</text>
           <text class="status-text">{{healthData.status}}</text>
         </view>
       </block>
       <block wx:else>
-        <view class="avatar-placeholder">👤</view>
-        <view class="user-text">
-          <text class="greeting">欢迎使用</text>
-          <text class="status-text" bindtap="getUserProfile">点击登录 ></text>
-        </view>
+        <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="avatar-placeholder" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+          <view wx:else class="avatar-placeholder">👤</view>
+        </button>
+        <input 
+          class="nickname-input" 
+          type="nickname" 
+          placeholder="点击设置昵称"
+          bindinput="onNicknameInput"
+          bindblur="onNicknameInput"
+          value="{{nickname || (userInfo && userInfo.nickName) || ''}}"
+        />
       </block>
     </view>
     

@@ -38,6 +38,41 @@
   justify-content: center;
   font-size: 56rpx;
   margin-right: 24rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.6);
+}
+
+.avatar-placeholder image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50rpx;
+}
+
+.avatar-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  line-height: normal;
+  margin: 0 !important;
+  width: fit-content !important;
+}
+
+.avatar-btn::after {
+  border: none;
+}
+
+.nickname-input {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+  border-radius: 8rpx;
+  padding: 12rpx 20rpx;
+  color: white;
+  font-size: 28rpx;
+  width: 200rpx;
+  height: auto;
+}
+
+.nickname-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .user-text {

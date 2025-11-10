@@ -1,11 +1,16 @@
 // pages/index/index.js
 const { getHealthSummary } = require('../../services/health.service');
 const { getUserProfile: getProfile } = require('../../services/user.service');
+const { Http } = require('../../utils/http');
+const { API } = require('../../config/api');
+
+const app = getApp();
 
 Page({
   data: {
     userInfo: null,
     hasUserInfo: false,
+    nickname: '',
     healthData: {
       bmi: 0,
       weight: 0,
@@ -42,6 +47,7 @@ Page({
     this.startTipRotation();
   },
 
+
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ active: 0 });
@@ -56,15 +62,17 @@ Page({
   },
 
   loadUserData() {
-    const userInfo = wx.getStorageSync('userInfo');
-    const profile = getProfile();
-    if (userInfo) {
+    // 从全局数据或本地存储加载用户信息
+    const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo');
+    if (userInfo && (userInfo.nickName || userInfo.avatarUrl)) {
       this.setData({
-        userInfo,
-        hasUserInfo: true,
+        userInfo: userInfo,
+        nickname: userInfo.nickName || '',
+        hasUserInfo: !!(userInfo.avatarUrl && userInfo.nickName)
       });
     }
   },
+
 
   loadHealthData() {
     const summary = getHealthSummary();
@@ -89,23 +97,87 @@ Page({
     }, 5000);
   },
 
-  getUserProfile() {
-    wx.getUserProfile({
-      desc: '用于完善会员资料',
-      success: res => {
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true,
-        });
-        wx.setStorageSync('userInfo', res.userInfo);
-      },
-      fail: err => {
-        wx.showToast({
-          title: '获取信息失败',
-          icon: 'none',
-        });
-      },
+  // 选择头像
+  onChooseAvatar(e) {
+    const { avatarUrl } = e.detail;
+    const userInfo = this.data.userInfo || {};
+    userInfo.avatarUrl = avatarUrl;
+    
+    this.setData({
+      userInfo: userInfo,
+    }, () => {
+      this.checkUserInfoComplete();
     });
+
+    // 更新后端用户信息
+    this.updateUserInfo({
+      avatarUrl: avatarUrl,
+    });
+  },
+
+  // 输入昵称
+  onNicknameInput(e) {
+    const nickname = e.detail.value || '';
+    const userInfo = this.data.userInfo || {};
+    userInfo.nickName = nickname;
+    
+    this.setData({
+      nickname: nickname,
+      userInfo: userInfo,
+    }, () => {
+      this.checkUserInfoComplete();
+    });
+
+    // 更新后端用户信息（延迟执行，避免频繁请求）
+    clearTimeout(this.updateTimer);
+    this.updateTimer = setTimeout(() => {
+      this.updateUserInfo({
+        nickname: nickname,
+      });
+    }, 500);
+  },
+
+  // 更新后端用户信息
+  updateUserInfo(userInfo) {
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) {
+      console.warn('openId 不存在，无法更新用户信息');
+      return;
+    }
+
+    Http.post(API.USER_UPDATE, {
+      openId: openId,
+      nickname: userInfo.nickname,
+      avatarUrl: userInfo.avatarUrl,
+    }).then((result) => {
+      // 更新成功后，同步更新本地存储和全局数据
+      if (result.data) {
+        const updatedUserInfo = {
+          nickName: result.data.nickname || '',
+          avatarUrl: result.data.avatarUrl || ''
+        };
+        app.globalData.userInfo = updatedUserInfo;
+        wx.setStorageSync('userInfo', updatedUserInfo);
+      }
+    }).catch((error) => {
+      console.error('更新用户信息失败', error);
+    });
+  },
+
+  // 检查用户信息是否完整
+  checkUserInfoComplete() {
+    // 使用 setTimeout 确保数据更新完成
+    setTimeout(() => {
+      const { userInfo, nickname } = this.data;
+      
+      // 如果头像和昵称都有，则显示完整信息
+      if (userInfo && userInfo.avatarUrl && (userInfo.nickName || nickname)) {
+        this.setData({
+          hasUserInfo: true,
+          nickname: userInfo.nickName || nickname,
+        });
+      }
+    }, 100);
   },
 
   onActionTap(e) {

@@ -36,7 +36,6 @@ src/
 │   └── card/      # 卡片组件
 ├── utils/         # 工具函数
 │   ├── util.js    # 通用工具
-│   ├── storage.js # 存储工具
 │   └── http.js    # 网络请求封装
 ├── services/      # API 服务
 │   ├── user.service.js   # 用户服务
@@ -142,26 +141,6 @@ import { UserService } from '../../services/user.service';
 const userInfo = await UserService.getUserInfo();
 ```
 
-## 本地存储
-
-### 使用 Storage 工具类
-
-```javascript
-import { Storage } from '../../utils/storage';
-
-// 存储数据
-Storage.set('key', value);
-
-// 读取数据
-const value = Storage.get('key');
-
-// 删除数据
-Storage.remove('key');
-
-// 清空所有数据
-Storage.clear();
-```
-
 ## 代码规范
 
 ### 运行 ESLint 检查
@@ -209,7 +188,6 @@ console.log('调试信息', data);
 ### 2. 使用开发者工具的调试面板
 - Console：查看日志
 - Network：查看网络请求
-- Storage：查看本地存储
 - AppData：查看页面数据
 
 ### 3. 真机调试

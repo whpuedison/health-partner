@@ -22,9 +22,7 @@ function getHealthSummary() {
   });
   
   // 获取今日饮水记录
-  const waterRecords = wx.getStorageSync('waterRecords') || [];
-  const today = new Date().toLocaleDateString('zh-CN');
-  const todayWater = waterRecords.filter(r => r.date === today).length;
+  const todayWater = 0;
   
   return {
     bmi: bmi.toFixed(1),
@@ -44,14 +42,13 @@ function getHealthSummary() {
  * 获取用户资料
  */
 function getUserProfile() {
-  const profile = wx.getStorageSync('userProfile') || {
+  return {
     height: 170,
     weight: 65,
     age: 25,
     gender: '男',
     bodyFat: 20,
   };
-  return profile;
 }
 
 /**
@@ -77,18 +74,13 @@ function getBMIStatus(bmi) {
  * 获取饮食记录
  */
 function getDietRecords() {
-  const allRecords = wx.getStorageSync('dietRecords') || [];
-  const today = new Date().toLocaleDateString('zh-CN');
-  return allRecords.filter(record => record.date === today);
+  return [];
 }
 
 /**
  * 添加饮食记录
  */
 function addDietRecord(record) {
-  const records = wx.getStorageSync('dietRecords') || [];
-  records.unshift(record);
-  wx.setStorageSync('dietRecords', records);
   return true;
 }
 
@@ -144,30 +136,13 @@ function getDietRecommendations() {
  * 获取运动记录
  */
 function getExerciseRecords(type = 'today') {
-  const allRecords = wx.getStorageSync('exerciseRecords') || [];
-  const today = new Date().toLocaleDateString('zh-CN');
-  
-  if (type === 'today') {
-    return allRecords.filter(record => record.date === today);
-  } else if (type === 'week') {
-    const weekAgo = new Date();
-    weekAgo.setDate(weekAgo.getDate() - 7);
-    return allRecords.filter(record => {
-      const recordDate = new Date(record.date);
-      return recordDate >= weekAgo;
-    });
-  }
-  
-  return allRecords;
+  return [];
 }
 
 /**
  * 添加运动记录
  */
 function addExerciseRecord(record) {
-  const records = wx.getStorageSync('exerciseRecords') || [];
-  records.unshift(record);
-  wx.setStorageSync('exerciseRecords', records);
   return true;
 }
 
