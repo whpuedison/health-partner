@@ -2,7 +2,7 @@
 .index-page {
   min-height: 100vh;
   background: linear-gradient(180deg, #FFF5F7 0%, #F0F9FF 50%, #F5F3FF 100%);
-  padding: 24rpx 24rpx 120rpx;
+  padding: 24rpx 24rpx 140rpx;
 }
 
 /* 用户信息卡片 */

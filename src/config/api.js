@@ -9,6 +9,7 @@ const API = {
   USER_TODAY_PROGRESS: '/api/v1/user/today-progress',
   USER_CHECK_IN: '/api/v1/user/check-in',
   USER_HEALTH_RECORDS: '/api/v1/user/health-records',
+  USER_GOAL_PAGE_DATA: '/api/v1/user/goal-page-data',
 };
 
 module.exports = { API };

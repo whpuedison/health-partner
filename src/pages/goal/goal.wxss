@@ -2,7 +2,7 @@
 .goal-page {
   min-height: 100vh;
   background: #F7FAFC;
-  padding: 24rpx 24rpx 120rpx;
+  padding: 24rpx 24rpx 48rpx;
 }
 
 .page-header {
