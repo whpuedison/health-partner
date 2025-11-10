@@ -14,6 +14,15 @@ const API = {
   USER_EXERCISE_RECORDS: '/api/v1/user/exercise-records',
   USER_EXERCISE_STATS: '/api/v1/user/exercise-stats',
   USER_EXERCISE_WEEK: '/api/v1/user/exercise-week',
+  // 饮食记录相关
+  USER_DIET_RECORDS: '/api/v1/user/diet-records',
+  USER_DIET_STATS: '/api/v1/user/diet-stats',
+  // 食物相关
+  FOOD_CATEGORIES: '/api/v1/food/categories',
+  FOOD_FOODS: '/api/v1/food/foods',
+  FOOD_SEARCH: '/api/v1/food/search',
+  FOOD_UNITS: '/api/v1/food/units',
+  FOOD_CALCULATE: '/api/v1/food/calculate',
 };
 
 module.exports = { API };

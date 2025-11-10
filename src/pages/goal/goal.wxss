@@ -1,6 +1,5 @@
 /* pages/goal/goal.wxss */
 .goal-page {
-  min-height: 100vh;
   background: #F7FAFC;
   padding: 24rpx 24rpx 48rpx;
 }

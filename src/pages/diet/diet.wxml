@@ -54,20 +54,18 @@
     <!-- 记录列表 -->
     <view class="records-list" wx:if="{{todayRecords.length > 0}}">
       <view class="record-item" wx:for="{{todayRecords}}" wx:key="id">
-        <view class="record-main">
-          <view class="record-info">
+        <text class="record-icon">{{item.foodIcon}}</text>
+        <view class="record-info">
+          <view class="record-name-row">
+            <text class="record-name">{{item.food}}</text>
             <text class="record-meal">{{item.mealType}}</text>
-            <text class="record-food">{{item.food}}</text>
-            <text class="record-time">{{item.time}}</text>
           </view>
-          <view class="record-calories">
-            <text class="calories-value">{{item.calories}}</text>
-            <text class="calories-unit">卡</text>
-          </view>
+          <text class="record-time">{{item.time}}</text>
         </view>
-        <view class="record-actions">
-          <text class="delete-btn" data-id="{{item.id}}" bindtap="deleteRecord">删除</text>
+        <view class="record-stats">
+          <text class="record-stat">{{item.calories}}卡</text>
         </view>
+        <text class="delete-btn" data-id="{{item.id}}" bindtap="deleteRecord">✕</text>
       </view>
     </view>
 
@@ -77,8 +75,8 @@
     </view>
   </view>
 
-  <!-- 推荐食谱 -->
-  <view class="tab-content" wx:if="{{activeTab === 1}}">
+  <!-- 推荐食谱（暂时隐藏） -->
+  <view class="tab-content" wx:if="false">
     <view class="recipe-grid">
       <view class="recipe-card" wx:for="{{recommendations}}" wx:key="id">
         <image class="recipe-image" src="{{item.image}}" mode="aspectFill"></image>
@@ -99,7 +97,7 @@
   </view>
 
   <!-- 营养分析 -->
-  <view class="tab-content" wx:if="{{activeTab === 2}}">
+  <view class="tab-content" wx:if="{{activeTab === 1}}">
     <view class="nutrition-card">
       <text class="nutrition-title">今日营养摄入</text>
       
@@ -153,7 +151,7 @@
     </view>
   </view>
 
-  <!-- 添加对话框 -->
+  <!-- 添加对话框 - 级联选择 -->
   <view class="dialog-mask" wx:if="{{showAddDialog}}" bindtap="closeAddDialog">
     <view class="dialog-content" catchtap="stopPropagation">
       <view class="dialog-header">
@@ -162,31 +160,122 @@
       </view>
       
       <view class="dialog-body">
-        <view class="form-item">
-          <text class="form-label">食物名称</text>
-          <input 
-            class="form-input" 
-            placeholder="例如：鸡胸肉沙拉"
-            value="{{foodInput}}"
-            bindinput="onFoodInput"
-          />
+        <!-- 第一步：选择分类 -->
+        <view class="cascade-step" wx:if="{{dialogStep === 'category'}}">
+          <text class="step-title">选择食物分类</text>
+          <view class="category-list">
+            <view 
+              class="category-item" 
+              wx:for="{{categories}}" 
+              wx:key="id"
+              data-id="{{item.id}}"
+              bindtap="selectCategory"
+            >
+              <text class="category-icon">{{item.icon || '🍽️'}}</text>
+              <text class="category-name">{{item.name}}</text>
+            </view>
+          </view>
         </view>
-        
-        <view class="form-item">
-          <text class="form-label">热量（卡路里）</text>
-          <input 
-            class="form-input" 
-            type="number"
-            placeholder="例如：350"
-            value="{{caloriesInput}}"
-            bindinput="onCaloriesInput"
-          />
+
+        <!-- 第二步：选择食物 -->
+        <view class="cascade-step" wx:if="{{dialogStep === 'food'}}">
+          <view class="step-header">
+            <text class="step-back" bindtap="goBack">← 返回</text>
+            <text class="step-title">{{selectedCategory.name}}</text>
+          </view>
+          
+          <!-- 搜索框 -->
+          <view class="search-box">
+            <input 
+              class="search-input" 
+              placeholder="搜索食物..."
+              value="{{searchKeyword}}"
+              bindinput="onSearchInput"
+            />
+          </view>
+          
+          <!-- 食物列表 -->
+          <view class="food-list">
+            <view 
+              class="food-item" 
+              wx:for="{{foods}}" 
+              wx:key="id"
+              data-id="{{item.id}}"
+              bindtap="selectFood"
+            >
+              <text class="food-icon">{{item.icon || '🍽️'}}</text>
+              <view class="food-info">
+                <text class="food-name">{{item.name}}</text>
+                <text class="food-calories">{{item.caloriesPer100g}}卡/100g</text>
+              </view>
+              <text class="food-arrow">></text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 第三步：选择单位 -->
+        <view class="cascade-step" wx:if="{{dialogStep === 'unit'}}">
+          <view class="step-header">
+            <text class="step-back" bindtap="goBack">← 返回</text>
+            <text class="step-title">{{selectedFood.name}}</text>
+          </view>
+          
+          <!-- 单位列表 -->
+          <view class="unit-list" wx:if="{{units.length > 0}}">
+            <view 
+              class="unit-item {{selectedUnit && selectedUnit.id === item.id ? 'active' : ''}}" 
+              wx:for="{{units}}" 
+              wx:key="id"
+              data-id="{{item.id}}"
+              bindtap="selectUnit"
+            >
+              <text class="unit-name">{{item.unitName}}</text>
+              <text class="unit-weight">({{item.weightGrams}}g)</text>
+            </view>
+          </view>
+          
+          <!-- 自定义重量 -->
+          <view class="custom-weight-box">
+            <text class="form-label">或输入自定义重量（克）</text>
+            <input 
+              class="form-input" 
+              type="digit"
+              placeholder="例如：150"
+              value="{{customWeight}}"
+              bindinput="onCustomWeightInput"
+            />
+          </view>
+          
+          <!-- 计算后的营养信息 -->
+          <view class="nutrition-preview" wx:if="{{calculatedNutrition}}">
+            <text class="preview-title">营养信息</text>
+            <view class="preview-item">
+              <text class="preview-label">卡路里：</text>
+              <text class="preview-value">{{calculatedNutrition.calories}}卡</text>
+            </view>
+            <view class="preview-item">
+              <text class="preview-label">蛋白质：</text>
+              <text class="preview-value">{{calculatedNutrition.protein}}g</text>
+            </view>
+            <view class="preview-item">
+              <text class="preview-label">碳水：</text>
+              <text class="preview-value">{{calculatedNutrition.carbs}}g</text>
+            </view>
+            <view class="preview-item">
+              <text class="preview-label">脂肪：</text>
+              <text class="preview-value">{{calculatedNutrition.fat}}g</text>
+            </view>
+          </view>
         </view>
       </view>
       
       <view class="dialog-footer">
         <button class="dialog-btn cancel" bindtap="closeAddDialog">取消</button>
-        <button class="dialog-btn confirm" bindtap="addRecord">确定</button>
+        <button 
+          class="dialog-btn confirm" 
+          bindtap="confirmAdd"
+          wx:if="{{dialogStep === 'unit' && calculatedNutrition}}"
+        >确定</button>
       </view>
     </view>
   </view>
