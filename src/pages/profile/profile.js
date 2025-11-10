@@ -1,6 +1,5 @@
 // pages/profile/profile.js
-const { getUserProfile } = require('../../services/user.service');
-const { getHealthSummary } = require('../../services/health.service');
+const { calculateBMI } = require('../../services/user.service');
 const { Http } = require('../../utils/http');
 const { API } = require('../../config/api');
 
@@ -31,6 +30,7 @@ Page({
       { id: 'weight', icon: '⚖️', title: '目标体重', value: '0', unit: 'kg', color: '#FF6B6B' },
       { id: 'exercise', icon: '🏃', title: '每日运动', value: '30', unit: '分钟', color: '#FFD93D' },
       { id: 'water', icon: '💦', title: '每日饮水', value: '8', unit: '杯', color: '#45B7D1' },
+      { id: 'steps', icon: '👣', title: '每日步数', value: '10000', unit: '步', color: '#4ECDC4' },
     ],
     
     // 功能菜单
@@ -78,14 +78,111 @@ Page({
 
   // 加载用户资料
   loadProfile() {
-    const profile = getUserProfile();
-    const summary = getHealthSummary();
+    // 优先从全局数据或本地存储获取（登录时已获取）
+    const cachedProfile = app.globalData.profile || wx.getStorageSync('profile');
     
-    this.setData({
-      profile: {
-        ...profile,
-        bmi: summary.bmi || 0,
-      },
+    if (cachedProfile) {
+      const profile = cachedProfile;
+      // 计算 BMI
+      const bmi = calculateBMI(profile.height, profile.weight);
+      
+      this.setData({
+        profile: {
+          height: profile.height || 0,
+          weight: profile.weight || 0,
+          age: profile.age || 0,
+          bmi: bmi > 0 ? parseFloat(bmi.toFixed(1)) : 0,
+        },
+      });
+      
+      // 后台刷新数据（不阻塞UI）
+      this.refreshProfile();
+      return;
+    }
+    
+    // 如果没有缓存数据，从接口获取
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) {
+      // 如果没有 openId，等待一下再试
+      setTimeout(() => {
+        this.loadProfile();
+      }, 500);
+      return;
+    }
+
+    Http.get(API.USER_PROFILE, {
+      openId: openId
+    }).then((result) => {
+      if (result.data) {
+        const profile = result.data;
+        // 更新全局数据和本地存储
+        app.globalData.profile = profile;
+        wx.setStorageSync('profile', profile);
+        
+        // 计算 BMI
+        const bmi = calculateBMI(profile.height, profile.weight);
+        
+        this.setData({
+          profile: {
+            height: profile.height || 0,
+            weight: profile.weight || 0,
+            age: profile.age || 0,
+            bmi: bmi > 0 ? parseFloat(bmi.toFixed(1)) : 0,
+          },
+        });
+      }
+    }).catch((error) => {
+      console.error('获取健康档案失败', error);
+      // 如果获取失败，显示默认值
+      this.setData({
+        profile: {
+          height: 0,
+          weight: 0,
+          age: 0,
+          bmi: 0,
+        },
+      });
+    });
+  },
+
+  // 后台刷新健康档案数据（不阻塞UI）
+  refreshProfile() {
+    // 防止重复调用
+    if (this._refreshingProfile) {
+      return;
+    }
+    this._refreshingProfile = true;
+    
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) {
+      this._refreshingProfile = false;
+      return;
+    }
+    
+    Http.get(API.USER_PROFILE, {
+      openId: openId
+    }).then((result) => {
+      if (result.data) {
+        // 更新全局数据和本地存储
+        app.globalData.profile = result.data;
+        wx.setStorageSync('profile', result.data);
+        
+        // 重新计算并更新显示
+        const bmi = calculateBMI(result.data.height, result.data.weight);
+        this.setData({
+          profile: {
+            height: result.data.height || 0,
+            weight: result.data.weight || 0,
+            age: result.data.age || 0,
+            bmi: bmi > 0 ? parseFloat(bmi.toFixed(1)) : 0,
+          },
+        });
+      }
+      this._refreshingProfile = false;
+    }).catch((error) => {
+      // 静默失败，不影响UI
+      console.error('后台刷新健康档案失败', error);
+      this._refreshingProfile = false;
     });
   },
 
@@ -301,24 +398,6 @@ Page({
     }
   },
 
-  // 清除数据
-  clearData() {
-    wx.showModal({
-      title: '确认清除',
-      content: '确定要清除所有数据吗？此操作不可恢复。',
-      confirmColor: '#E53E3E',
-      success: res => {
-        if (res.confirm) {
-          this.loadProfile();
-          this.loadStats();
-          wx.showToast({
-            title: '已清除数据',
-            icon: 'success',
-          });
-        }
-      },
-    });
-  },
 
   // 阻止事件冒泡
   stopPropagation() {

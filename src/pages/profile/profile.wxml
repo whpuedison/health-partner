@@ -102,11 +102,6 @@
     </view>
   </view>
 
-  <!-- 清除数据按钮 -->
-  <view class="clear-section">
-    <button class="clear-btn" bindtap="clearData">清除所有数据</button>
-  </view>
-
   <!-- 目标设置对话框 -->
   <view class="dialog-mask" wx:if="{{showGoalDialog}}" bindtap="closeGoalDialog">
     <view class="dialog-content" catchtap="stopPropagation">
