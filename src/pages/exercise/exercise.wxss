@@ -469,13 +469,17 @@
   align-items: center;
   justify-content: center;
   z-index: 9999;
+  overflow: hidden;
 }
 
 .dialog-content {
-  width: 600rpx;
+  width: 90%;
+  max-width: 600rpx;
   background: white;
   border-radius: 24rpx;
   overflow: hidden;
+  box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .dialog-header {
@@ -500,6 +504,8 @@
 
 .dialog-body {
   padding: 32rpx;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .form-item {
@@ -515,10 +521,13 @@
 
 .form-input {
   width: 100%;
-  padding: 20rpx;
+  min-height: 80rpx;
+  padding: 24rpx 20rpx;
   background: #F7FAFC;
   border-radius: 12rpx;
   font-size: 28rpx;
+  line-height: 1.5;
+  box-sizing: border-box;
 }
 
 .dialog-footer {

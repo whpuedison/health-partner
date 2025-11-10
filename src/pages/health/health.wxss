@@ -33,12 +33,12 @@
 
 /* 健康评分卡片 */
 .score-card {
-  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+  /* 背景色通过内联样式动态设置，与BMI颜色一致 */
   border-radius: 24rpx;
   padding: 48rpx 32rpx;
   text-align: center;
   margin-bottom: 24rpx;
-  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.25);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
   position: relative;
 }
 
@@ -134,11 +134,11 @@
 
 .bmi-indicator {
   position: absolute;
-  top: -8rpx;
-  width: 40rpx;
-  height: 40rpx;
+  top: 0; /* 调整位置，让指示器与条对齐 */
+  width: 20rpx; /* 直径20rpx，比BMI条(24rpx)略小 */
+  height: 20rpx;
   background: white;
-  border: 4rpx solid #667EEA;
+  border: 2rpx solid #667EEA; /* 边框2rpx，总直径24rpx */
   border-radius: 50%;
   transform: translateX(-50%);
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
@@ -362,14 +362,18 @@
   align-items: center;
   justify-content: center;
   z-index: 9999;
+  overflow: hidden;
 }
 
 .dialog-content {
-  width: 600rpx;
+  width: 90%;
+  max-width: 600rpx;
   max-height: 80vh;
   background: white;
   border-radius: 24rpx;
   overflow: hidden;
+  box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .dialog-header {
@@ -396,6 +400,8 @@
   padding: 32rpx;
   max-height: 60vh;
   overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .form-item {
@@ -411,10 +417,13 @@
 
 .form-input {
   width: 100%;
+  min-height: 80rpx;
   padding: 20rpx;
   background: #F7FAFC;
   border-radius: 12rpx;
   font-size: 28rpx;
+  line-height: 28rpx;
+  box-sizing: border-box;
 }
 
 .radio-group {

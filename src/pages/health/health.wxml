@@ -35,7 +35,7 @@
         <view class="bmi-section normal"></view>
         <view class="bmi-section overweight"></view>
         <view class="bmi-section obese"></view>
-        <view class="bmi-indicator" style="left: {{(bmi - 15) / 25 * 100}}%"></view>
+        <view class="bmi-indicator" style="left: {{bmiIndicatorPosition || 0}}%"></view>
       </view>
       
       <view class="bmi-labels">
@@ -80,10 +80,10 @@
         </view>
         
         <view class="data-item">
-          <text class="data-icon">💧</text>
+          <text class="data-icon">👤</text>
           <view class="data-info">
-            <text class="data-label">体脂率</text>
-            <text class="data-value">{{profile.bodyFat}}%</text>
+            <text class="data-label">性别</text>
+            <text class="data-value">{{profile.gender}}</text>
           </view>
         </view>
       </view>
@@ -97,9 +97,6 @@
         <text class="advice-item" wx:elif="{{bmi >= 18.5 && bmi < 24}}">• 您的BMI正常，请保持当前状态</text>
         <text class="advice-item" wx:elif="{{bmi >= 24 && bmi < 28}}">• 您的BMI偏高，建议控制饮食和增加运动</text>
         <text class="advice-item" wx:else>• 您的BMI较高，建议咨询专业医生</text>
-        
-        <text class="advice-item" wx:if="{{profile.bodyFat > 25 && profile.gender === '男'}}">• 男性体脂率建议控制在15-25%</text>
-        <text class="advice-item" wx:if="{{profile.bodyFat > 30 && profile.gender === '女'}}">• 女性体脂率建议控制在20-30%</text>
         
         <text class="advice-item">• 每天坚持30分钟以上有氧运动</text>
         <text class="advice-item">• 保持充足睡眠，每天7-8小时</text>
@@ -136,8 +133,8 @@
   </view>
 
   <!-- 编辑资料对话框 -->
-  <view class="dialog-mask" wx:if="{{showEditDialog}}" bindtap="closeEditDialog">
-    <view class="dialog-content" catchtap="">
+  <view class="dialog-mask" wx:if="{{showEditDialog}}" bindtap="closeEditDialog" catchtouchmove="preventTouchMove">
+    <view class="dialog-content" catchtap="stopPropagation">
       <view class="dialog-header">
         <text class="dialog-title">编辑健康资料</text>
         <text class="dialog-close" bindtap="closeEditDialog">✕</text>
@@ -191,16 +188,6 @@
           </radio-group>
         </view>
         
-        <view class="form-item">
-          <text class="form-label">体脂率 (%)</text>
-          <input 
-            class="form-input" 
-            type="digit"
-            placeholder="例如：20.5 (可选)"
-            value="{{editBodyFat}}"
-            bindinput="onBodyFatInput"
-          />
-        </view>
       </view>
       
       <view class="dialog-footer">
@@ -211,8 +198,8 @@
   </view>
 
   <!-- 添加体征记录对话框 -->
-  <view class="dialog-mask" wx:if="{{showAddModal}}" bindtap="hideAddDialog">
-    <view class="dialog-content" catchtap="">
+  <view class="dialog-mask" wx:if="{{showAddModal}}" bindtap="hideAddDialog" catchtouchmove="preventTouchMove">
+    <view class="dialog-content" catchtap="stopPropagation">
       <view class="dialog-header">
         <text class="dialog-title">添加体征记录</text>
         <text class="dialog-close" bindtap="hideAddDialog">✕</text>

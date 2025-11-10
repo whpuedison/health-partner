@@ -14,10 +14,6 @@
         <text class="status-value">{{profile.weight}} kg</text>
       </view>
       <view class="status-item">
-        <text class="status-label">体脂率</text>
-        <text class="status-value">{{profile.bodyFat}}%</text>
-      </view>
-      <view class="status-item">
         <text class="status-label">BMI</text>
         <text class="status-value">{{profile.bmi}}</text>
       </view>
@@ -56,18 +52,6 @@
           placeholder="例如：60"
           value="{{goals.targetWeight}}"
           data-field="targetWeight"
-          bindinput="onInputChange"
-        />
-      </view>
-      
-      <view class="form-item">
-        <text class="form-label">目标体脂率 (%)</text>
-        <input 
-          class="form-input" 
-          type="digit"
-          placeholder="例如：18"
-          value="{{goals.targetBodyFat}}"
-          data-field="targetBodyFat"
           bindinput="onInputChange"
         />
       </view>

@@ -47,7 +47,6 @@ function getUserProfile() {
     weight: 65,
     age: 25,
     gender: '男',
-    bodyFat: 20,
   };
 }
 

@@ -29,7 +29,6 @@ Page({
     // 我的目标
     goals: [
       { id: 'weight', icon: '⚖️', title: '目标体重', value: '0', unit: 'kg', color: '#FF6B6B' },
-      { id: 'bodyFat', icon: '💧', title: '目标体脂', value: '0', unit: '%', color: '#4ECDC4' },
       { id: 'exercise', icon: '🏃', title: '每日运动', value: '30', unit: '分钟', color: '#FFD93D' },
       { id: 'water', icon: '💦', title: '每日饮水', value: '8', unit: '杯', color: '#45B7D1' },
     ],
@@ -106,17 +105,44 @@ Page({
   onChooseAvatar(e) {
     const { avatarUrl } = e.detail;
     const userInfo = this.data.userInfo || {};
-    userInfo.avatarUrl = avatarUrl;
     
+    // 先显示临时头像（tmp路径）
+    userInfo.avatarUrl = avatarUrl;
     this.setData({
       userInfo: userInfo,
     }, () => {
       this.checkUserInfoComplete();
     });
 
-    // 更新后端用户信息
-    this.updateUserInfo({
-      avatarUrl: avatarUrl,
+    // 上传头像到服务器
+    wx.showLoading({
+      title: '上传中...',
+      mask: true
+    });
+    
+    const { Http } = require('../../utils/http');
+    Http.uploadFile(avatarUrl).then((result) => {
+      wx.hideLoading();
+      if (result.data && result.data.avatarUrl) {
+        // 使用服务器返回的永久URL
+        const serverAvatarUrl = result.data.avatarUrl;
+        userInfo.avatarUrl = serverAvatarUrl;
+        this.setData({
+          userInfo: userInfo,
+        });
+        
+        // 更新后端用户信息
+        this.updateUserInfo({
+          avatarUrl: serverAvatarUrl,
+        });
+      }
+    }).catch((error) => {
+      wx.hideLoading();
+      console.error('头像上传失败', error);
+      wx.showToast({
+        title: '头像上传失败，请重试',
+        icon: 'none',
+      });
     });
   },
 
@@ -292,6 +318,11 @@ Page({
         }
       },
     });
+  },
+
+  // 阻止事件冒泡
+  stopPropagation() {
+    // 空函数，用于阻止事件冒泡
   },
 
   onShareAppMessage() {

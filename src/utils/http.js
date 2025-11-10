@@ -75,6 +75,55 @@ class Http {
   static delete(url, data) {
     return this.request({ url, method: 'DELETE', data });
   }
+
+  /**
+   * 上传文件
+   */
+  static uploadFile(filePath, name = 'file') {
+    return new Promise((resolve, reject) => {
+      const openId = getApp().globalData.openId || wx.getStorageSync('openId');
+      
+      wx.uploadFile({
+        url: BASE_URL + '/api/v1/user/upload-avatar',
+        filePath: filePath,
+        name: name,
+        formData: {
+          openId: openId
+        },
+        header: {
+          'content-type': 'multipart/form-data'
+        },
+        success: res => {
+          try {
+            const data = JSON.parse(res.data);
+            // 后端返回格式：{ success: true, code: 200, data: {...}, message: '...' }
+            if (data.success && data.code === 200) {
+              resolve(data);
+            } else {
+              wx.showToast({
+                title: data.message || '上传失败',
+                icon: 'none',
+              });
+              reject(data);
+            }
+          } catch (e) {
+            wx.showToast({
+              title: '解析响应失败',
+              icon: 'none',
+            });
+            reject(e);
+          }
+        },
+        fail: err => {
+          wx.showToast({
+            title: '上传失败',
+            icon: 'none',
+          });
+          reject(err);
+        },
+      });
+    });
+  }
 }
 
 module.exports = { Http };

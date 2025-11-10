@@ -1,6 +1,6 @@
 // pages/index/index.js
 const { getHealthSummary } = require('../../services/health.service');
-const { getUserProfile: getProfile } = require('../../services/user.service');
+const { calculateBMI, getHealthStatus } = require('../../services/user.service');
 const { Http } = require('../../utils/http');
 const { API } = require('../../config/api');
 
@@ -15,7 +15,6 @@ Page({
       bmi: 0,
       weight: 0,
       height: 0,
-      bodyFat: 0,
       status: '未评估',
     },
     todayStats: {
@@ -42,7 +41,11 @@ Page({
   },
 
   onLoad() {
+    // 重置重试计数器
+    this._userDataRetryCount = 0;
+    // 加载用户数据（会自动重试直到获取到数据）
     this.loadUserData();
+    
     this.loadHealthData();
     this.startTipRotation();
   },
@@ -52,6 +55,10 @@ Page({
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ active: 0 });
     }
+    // 每次显示时都重新加载用户数据，确保显示最新信息
+    // 重置重试计数器，允许重新尝试
+    this._userDataRetryCount = 0;
+    this.loadUserData();
     this.loadHealthData();
   },
 
@@ -59,6 +66,13 @@ Page({
     if (this.tipTimer) {
       clearInterval(this.tipTimer);
     }
+    // 清除用户数据加载定时器
+    if (this._userDataTimer) {
+      clearTimeout(this._userDataTimer);
+      this._userDataTimer = null;
+    }
+    // 重置重试计数器
+    this._userDataRetryCount = 0;
   },
 
   loadUserData() {
@@ -70,24 +84,60 @@ Page({
         nickname: userInfo.nickName || '',
         hasUserInfo: !!(userInfo.avatarUrl && userInfo.nickName)
       });
+      // 如果已经有数据，清除轮询定时器
+      if (this._userDataTimer) {
+        clearTimeout(this._userDataTimer);
+        this._userDataTimer = null;
+      }
+    } else {
+      // 如果没有数据，延迟再试（最多尝试3次，每次间隔500ms）
+      if (!this._userDataRetryCount) {
+        this._userDataRetryCount = 0;
+      }
+      if (this._userDataRetryCount < 3) {
+        this._userDataRetryCount++;
+        this._userDataTimer = setTimeout(() => {
+          this.loadUserData();
+        }, 500);
+      } else {
+        // 重置计数器，以便下次可以重试
+        this._userDataRetryCount = 0;
+      }
     }
   },
 
 
   loadHealthData() {
     const summary = getHealthSummary();
-    const profile = getProfile();
     
-    this.setData({
-      healthData: {
-        bmi: summary.bmi || 0,
-        weight: profile.weight || 0,
-        height: profile.height || 0,
-        bodyFat: profile.bodyFat || 0,
-        status: summary.status || '未评估',
-      },
-      todayStats: summary.todayStats || this.data.todayStats,
-    });
+    // 从全局数据或本地存储获取健康档案数据（登录时已获取）
+    const profile = app.globalData.profile || wx.getStorageSync('profile');
+    
+    if (profile && (profile.height || profile.weight)) {
+      const bmi = calculateBMI(profile.height, profile.weight);
+      const status = getHealthStatus(bmi);
+      
+      this.setData({
+        healthData: {
+          bmi: bmi > 0 ? parseFloat(bmi.toFixed(1)) : 0,
+          weight: profile.weight || 0,
+          height: profile.height || 0,
+          status: status.bmiStatus || '未评估',
+        },
+        todayStats: summary.todayStats || this.data.todayStats,
+      });
+    } else {
+      // 如果没有健康档案数据，使用默认数据
+      this.setData({
+        healthData: {
+          bmi: summary.bmi || 0,
+          weight: 0,
+          height: 0,
+          status: summary.status || '未评估',
+        },
+        todayStats: summary.todayStats || this.data.todayStats,
+      });
+    }
   },
 
   startTipRotation() {
@@ -101,17 +151,43 @@ Page({
   onChooseAvatar(e) {
     const { avatarUrl } = e.detail;
     const userInfo = this.data.userInfo || {};
-    userInfo.avatarUrl = avatarUrl;
     
+    // 先显示临时头像（tmp路径）
+    userInfo.avatarUrl = avatarUrl;
     this.setData({
       userInfo: userInfo,
     }, () => {
       this.checkUserInfoComplete();
     });
 
-    // 更新后端用户信息
-    this.updateUserInfo({
-      avatarUrl: avatarUrl,
+    // 上传头像到服务器
+    wx.showLoading({
+      title: '上传中...',
+      mask: true
+    });
+    
+    Http.uploadFile(avatarUrl).then((result) => {
+      wx.hideLoading();
+      if (result.data && result.data.avatarUrl) {
+        // 使用服务器返回的永久URL
+        const serverAvatarUrl = result.data.avatarUrl;
+        userInfo.avatarUrl = serverAvatarUrl;
+        this.setData({
+          userInfo: userInfo,
+        });
+        
+        // 更新后端用户信息
+        this.updateUserInfo({
+          avatarUrl: serverAvatarUrl,
+        });
+      }
+    }).catch((error) => {
+      wx.hideLoading();
+      console.error('头像上传失败', error);
+      wx.showToast({
+        title: '头像上传失败，请重试',
+        icon: 'none',
+      });
     });
   },
 

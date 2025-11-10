@@ -37,11 +37,6 @@
         <text class="health-value">{{healthData.weight}}</text>
         <text class="health-label">体重(kg)</text>
       </view>
-      <view class="health-divider"></view>
-      <view class="health-item">
-        <text class="health-value">{{healthData.bodyFat}}%</text>
-        <text class="health-label">体脂率</text>
-      </view>
     </view>
   </view>
 

@@ -6,6 +6,7 @@ App({
   globalData: {
     userInfo: null,
     openId: null,
+    profile: null, // 健康档案信息
   },
 
   onLaunch() {
@@ -37,6 +38,12 @@ App({
                 };
                 this.globalData.userInfo = userInfo;
                 wx.setStorageSync('userInfo', userInfo);
+              }
+              
+              // 保存健康档案信息（如果存在）
+              if (result.data.profile) {
+                this.globalData.profile = result.data.profile;
+                wx.setStorageSync('profile', result.data.profile);
               }
             }
           }).catch((error) => {

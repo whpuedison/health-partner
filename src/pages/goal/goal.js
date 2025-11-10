@@ -10,7 +10,6 @@ Page({
     
     goals: {
       targetWeight: '',
-      targetBodyFat: '',
       targetDate: '',
       dailyCalories: '2000',
       dailyExercise: '30',
@@ -53,9 +52,9 @@ Page({
     const { goals } = this.data;
     
     // 验证输入
-    if (!goals.targetWeight || !goals.targetBodyFat) {
+    if (!goals.targetWeight) {
       wx.showToast({
-        title: '请填写目标体重和体脂率',
+        title: '请填写目标体重',
         icon: 'none',
       });
       return;

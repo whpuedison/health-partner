@@ -155,7 +155,7 @@
 
   <!-- 添加对话框 -->
   <view class="dialog-mask" wx:if="{{showAddDialog}}" bindtap="closeAddDialog">
-    <view class="dialog-content" catchtap="">
+    <view class="dialog-content" catchtap="stopPropagation">
       <view class="dialog-header">
         <text class="dialog-title">添加{{currentMealType}}</text>
         <text class="dialog-close" bindtap="closeAddDialog">✕</text>

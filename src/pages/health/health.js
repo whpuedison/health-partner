@@ -1,5 +1,9 @@
 // pages/health/health.js
-const { getUserProfile, updateUserProfile, calculateBMI, getHealthStatus } = require('../../services/user.service');
+const { calculateBMI, getHealthStatus } = require('../../services/user.service');
+const { Http } = require('../../utils/http');
+const { API } = require('../../config/api');
+
+const app = getApp();
 
 Page({
   data: {
@@ -12,11 +16,11 @@ Page({
       weight: 0,
       age: 0,
       gender: '男',
-      bodyFat: 0,
     },
     
     // 计算结果
     bmi: 0,
+    bmiIndicatorPosition: 0,
     bmiStatus: '',
     healthStatus: '',
     healthScore: 0,
@@ -34,7 +38,6 @@ Page({
     editWeight: '',
     editAge: '',
     editGender: '男',
-    editBodyFat: '',
     
     // 记录对话框
     showAddModal: false,
@@ -51,8 +54,8 @@ Page({
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ active: 1 });
     }
-    // 重新加载数据，确保显示最新信息
-    this.loadProfile();
+    // 注意：不在这里调用 loadProfile()，避免与 onLoad() 重复调用
+    // 如果需要刷新数据，可以在特定场景下手动调用
     this.loadRecords();
   },
 
@@ -62,33 +65,156 @@ Page({
     this.setData({ activeTab: index });
   },
 
+  // 阻止弹窗背景滚动
+  preventTouchMove() {
+    // 空函数，用于阻止滚动穿透
+    return false;
+  },
+
+  // 计算BMI指示器位置
+  // 注意：需要与 getHealthStatus 函数中的分类标准保持一致
+  // 使用中国标准：偏瘦(<18.5), 正常(18.5-24), 偏重(24-28), 肥胖(≥28)
+  calculateIndicatorPosition(bmi) {
+    // section划分：偏瘦(0-25%), 正常(25-50%), 偏重(50-75%), 肥胖(75-100%)
+    // BMI分类：偏瘦(<18.5), 正常(18.5-24), 偏重(24-28), 肥胖(≥28)
+    if (bmi < 18.5) {
+      // 偏瘦：BMI 12-18.5 映射到 0-25%
+      return Math.max(0, Math.min(25, ((bmi - 12) / (18.5 - 12)) * 25));
+    } else if (bmi < 24) {
+      // 正常：BMI 18.5-24 映射到 25-50%
+      return 25 + ((bmi - 18.5) / (24 - 18.5)) * 25;
+    } else if (bmi < 28) {
+      // 偏重：BMI 24-28 映射到 50-75%
+      return 50 + ((bmi - 24) / (28 - 24)) * 25;
+    } else {
+      // 肥胖：BMI 28-40 映射到 75-100%
+      return 75 + Math.min(25, ((bmi - 28) / (40 - 28)) * 25);
+    }
+  },
+
   // 加载用户资料
   loadProfile() {
-    const profile = getUserProfile();
+    // 优先从全局数据或本地存储获取（登录时已获取）
+    const cachedProfile = app.globalData.profile || wx.getStorageSync('profile');
     
-    // 如果是初次使用（没有数据），显示0值
-    const bmi = calculateBMI(profile.height, profile.weight);
-    const status = getHealthStatus(bmi, profile.bodyFat);
-    
-    this.setData({
-      profile: {
-        height: profile.height || 0,
-        weight: profile.weight || 0,
-        age: profile.age || 0,
-        gender: profile.gender || '男',
-        bodyFat: profile.bodyFat || 0,
-      },
-      bmi: bmi > 0 ? bmi.toFixed(1) : '0.0',
-      bmiStatus: status.bmiStatus,
-      healthStatus: status.healthStatus,
-      healthScore: status.score,
-      statusColor: status.color,
-    });
-    
-    // 如果是第一次使用，提示用户编辑资料
-    if (!profile.height || !profile.weight) {
-      console.log('提示：请先编辑您的健康资料');
+    if (cachedProfile) {
+      const profile = cachedProfile;
+      // 计算 BMI
+      const bmi = calculateBMI(profile.height, profile.weight);
+      const status = getHealthStatus(bmi);
+      
+      // 计算BMI指示器位置
+      const indicatorPosition = this.calculateIndicatorPosition(bmi);
+      
+      this.setData({
+        profile: {
+          height: profile.height || 0,
+          weight: profile.weight || 0,
+          age: profile.age || 0,
+          gender: profile.gender || '男',
+        },
+        bmi: bmi > 0 ? bmi.toFixed(1) : '0.0',
+        bmiIndicatorPosition: indicatorPosition.toFixed(2),
+        bmiStatus: status.bmiStatus,
+        healthStatus: status.healthStatus,
+        healthScore: status.score,
+        statusColor: status.color,
+      });
+      
+      // 后台刷新数据（不阻塞UI）
+      this.refreshProfile();
+      return;
     }
+    
+    // 如果没有缓存数据，从接口获取
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) {
+      // 如果没有 openId，等待一下再试
+      setTimeout(() => {
+        this.loadProfile();
+      }, 500);
+      return;
+    }
+
+    Http.get(API.USER_PROFILE, {
+      openId: openId
+    }).then((result) => {
+      if (result.data) {
+        const profile = result.data;
+        // 更新全局数据和本地存储
+        app.globalData.profile = profile;
+        wx.setStorageSync('profile', profile);
+        
+        // 计算 BMI
+        const bmi = calculateBMI(profile.height, profile.weight);
+        const status = getHealthStatus(bmi);
+        
+        // 计算BMI指示器位置
+        const indicatorPosition = this.calculateIndicatorPosition(bmi);
+        
+        this.setData({
+          profile: {
+            height: profile.height || 0,
+            weight: profile.weight || 0,
+            age: profile.age || 0,
+            gender: profile.gender || '男',
+          },
+          bmi: bmi > 0 ? bmi.toFixed(1) : '0.0',
+          bmiIndicatorPosition: indicatorPosition.toFixed(2),
+          bmiStatus: status.bmiStatus,
+          healthStatus: status.healthStatus,
+          healthScore: status.score,
+          statusColor: status.color,
+        });
+      }
+    }).catch((error) => {
+      console.error('获取健康档案失败', error);
+      // 如果获取失败，显示默认值
+      this.setData({
+        profile: {
+          height: 0,
+          weight: 0,
+          age: 0,
+          gender: '男',
+        },
+        bmi: '0.0',
+        bmiIndicatorPosition: 0,
+        bmiStatus: '未评估',
+        healthStatus: '未评估',
+        healthScore: 0,
+        statusColor: '#3cc51f',
+      });
+    });
+  },
+
+  // 后台刷新健康档案数据（不阻塞UI）
+  refreshProfile() {
+    // 防止重复调用
+    if (this._refreshingProfile) {
+      return;
+    }
+    this._refreshingProfile = true;
+    
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) {
+      this._refreshingProfile = false;
+      return;
+    }
+    
+    Http.get(API.USER_PROFILE, {
+      openId: openId
+    }).then((result) => {
+      if (result.data) {
+        // 更新全局数据和本地存储
+        app.globalData.profile = result.data;
+        wx.setStorageSync('profile', result.data);
+      }
+      this._refreshingProfile = false;
+    }).catch((error) => {
+      // 静默失败，不影响UI
+      console.error('后台刷新健康档案失败', error);
+      this._refreshingProfile = false;
+    });
   },
 
   // 打开编辑对话框
@@ -101,7 +227,6 @@ Page({
       editWeight: profile.weight > 0 ? profile.weight.toString() : '',
       editAge: profile.age > 0 ? profile.age.toString() : '',
       editGender: profile.gender || '男',
-      editBodyFat: profile.bodyFat > 0 ? profile.bodyFat.toString() : '',
     });
   },
 
@@ -127,13 +252,18 @@ Page({
     this.setData({ editGender: e.detail.value });
   },
 
-  onBodyFatInput(e) {
-    this.setData({ editBodyFat: e.detail.value });
-  },
-
   // 保存资料
   saveProfile() {
-    const { editHeight, editWeight, editAge, editGender, editBodyFat } = this.data;
+    const { editHeight, editWeight, editAge, editGender } = this.data;
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    
+    if (!openId) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+      });
+      return;
+    }
     
     // 验证输入
     if (!editHeight || !editWeight || !editAge) {
@@ -148,7 +278,6 @@ Page({
     const height = parseFloat(editHeight);
     const weight = parseFloat(editWeight);
     const age = parseInt(editAge);
-    const bodyFat = parseFloat(editBodyFat) || 0;
     
     if (height < 100 || height > 250) {
       wx.showToast({
@@ -174,39 +303,45 @@ Page({
       return;
     }
     
-    if (bodyFat > 0 && (bodyFat < 5 || bodyFat > 60)) {
+    // 调用后端接口保存数据
+    Http.post(API.USER_PROFILE, {
+      openId: openId,
+      height: height,
+      weight: weight,
+      age: age,
+      gender: editGender
+    }).then((result) => {
+      // 关闭对话框
+      this.closeEditDialog();
+      
+      // 显示成功提示
       wx.showToast({
-        title: '体脂率范围：5-60%',
+        title: '保存成功',
+        icon: 'success',
+        duration: 2000,
+      });
+      
+      // 更新全局数据和本地存储
+      if (result.data) {
+        const profile = {
+          height: result.data.height || null,
+          weight: result.data.weight || null,
+          age: result.data.age || null,
+          gender: result.data.gender || '男',
+        };
+        app.globalData.profile = profile;
+        wx.setStorageSync('profile', profile);
+      }
+      
+      // 重新加载数据
+      this.loadProfile();
+    }).catch((error) => {
+      console.error('保存健康档案失败', error);
+      wx.showToast({
+        title: '保存失败，请重试',
         icon: 'none',
       });
-      return;
-    }
-    
-    // 保存数据
-    const profile = {
-      height,
-      weight,
-      age,
-      gender: editGender,
-      bodyFat,
-    };
-    
-    updateUserProfile(profile);
-    
-    // 重新加载数据
-    this.loadProfile();
-    
-    // 关闭对话框
-    this.closeEditDialog();
-    
-    // 显示成功提示
-    wx.showToast({
-      title: '保存成功',
-      icon: 'success',
-      duration: 2000,
     });
-    
-    console.log('用户资料已保存:', profile);
   },
 
   // 加载体征记录
@@ -288,6 +423,11 @@ Page({
         }
       },
     });
+  },
+
+  // 阻止事件冒泡
+  stopPropagation() {
+    // 空函数，用于阻止事件冒泡
   },
 
   onShareAppMessage() {

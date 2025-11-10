@@ -179,6 +179,11 @@ Page({
     });
   },
 
+  // 阻止事件冒泡
+  stopPropagation() {
+    // 空函数，用于阻止事件冒泡
+  },
+
   onShareAppMessage() {
     return {
       title: '我的饮食计划 - 健康伙伴',
