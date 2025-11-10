@@ -21,8 +21,8 @@ Page({
       targetExercise: 30,
       water: 0,
       targetWater: 8,
-      steps: 0,
-      targetSteps: 10000,
+      calories: 0,
+      targetCalories: 0, // 将从用户目标中获取，或使用默认值
     },
     quickActions: [
       { id: 'diet', icon: '🍎', title: '饮食计划', color: '#FF6B6B', url: '/pages/diet/diet' },
@@ -155,23 +155,28 @@ Page({
 
     this._loadingTodayProgress = true;
 
-    Http.get(API.USER_TODAY_PROGRESS, {
-      openId: openId
-    }).then((result) => {
+    // 并行请求今日进度和运动统计（卡路里）
+    Promise.all([
+      Http.get(API.USER_TODAY_PROGRESS, { openId }),
+      Http.get(API.USER_EXERCISE_STATS, { openId }),
+      Http.get(API.USER_GOALS, { openId })
+    ]).then(([progressResult, statsResult, goalsResult]) => {
       this._loadingTodayProgress = false;
-      if (result.data) {
-        const progress = result.data;
-        this.setData({
-          todayStats: {
-            exercise: progress.exercise?.completed || 0,
-            targetExercise: progress.exercise?.target || 30,
-            water: progress.water?.completed || 0,
-            targetWater: progress.water?.target || 8,
-            steps: progress.steps?.completed || 0,
-            targetSteps: progress.steps?.target || 10000,
-          }
-        });
-      }
+      
+      const progress = progressResult.data || {};
+      const stats = statsResult.data || {};
+      const goals = goalsResult.data || {};
+      
+      this.setData({
+        todayStats: {
+          exercise: progress.exercise?.completed || 0,
+          targetExercise: progress.exercise?.target || 30,
+          water: progress.water?.completed || 0,
+          targetWater: progress.water?.target || 8,
+          calories: stats.totalCalories || 0,
+          targetCalories: goals.targetCalories || 0, // 如果没有目标，则不显示进度条
+        }
+      });
     }).catch((error) => {
       this._loadingTodayProgress = false;
       console.error('获取今日完成情况失败', error);
@@ -183,23 +188,23 @@ Page({
     const type = e.currentTarget.dataset.type;
     const currentValue = e.currentTarget.dataset.value || 0;
     
+    // 运动时长和卡路里打卡：跳转到运动计划页面
+    if (type === 'exercise' || type === 'calories') {
+      wx.navigateTo({
+        url: '/pages/exercise/exercise'
+      });
+      return;
+    }
+    
     // 根据类型确定默认增加值和单位
     let defaultValue = 0;
     let unit = '';
     let title = '';
     
-    if (type === 'exercise') {
-      defaultValue = 30;
-      unit = '分钟';
-      title = '运动打卡';
-    } else if (type === 'water') {
+    if (type === 'water') {
       defaultValue = 1;
       unit = '杯';
       title = '饮水打卡';
-    } else if (type === 'steps') {
-      defaultValue = 1000;
-      unit = '步';
-      title = '步数打卡';
     }
     
     wx.showModal({
@@ -248,16 +253,8 @@ Page({
       if (result.data) {
         // 更新今日完成情况
         const progress = result.data;
-        this.setData({
-          todayStats: {
-            exercise: progress.exercise?.completed || 0,
-            targetExercise: progress.exercise?.target || 30,
-            water: progress.water?.completed || 0,
-            targetWater: progress.water?.target || 8,
-            steps: progress.steps?.completed || 0,
-            targetSteps: progress.steps?.target || 10000,
-          }
-        });
+        // 重新加载完整数据（包括卡路里）
+        this.loadTodayProgress();
         
         wx.showToast({
           title: '打卡成功',

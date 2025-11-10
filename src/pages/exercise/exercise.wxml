@@ -75,10 +75,6 @@
       >
         <text class="exercise-icon">{{item.icon}}</text>
         <text class="exercise-name">{{item.name}}</text>
-        <view class="exercise-info">
-          <text class="info-item">{{item.duration}}分钟</text>
-          <text class="info-item">{{item.calories}}卡</text>
-        </view>
       </view>
     </view>
 
@@ -88,11 +84,14 @@
       <view class="record-item" wx:for="{{todayRecords}}" wx:key="id">
         <text class="record-icon">{{item.icon}}</text>
         <view class="record-info">
-          <text class="record-name">{{item.name}}</text>
+          <view class="record-name-row">
+            <text class="record-name">{{item.name}}</text>
+            <text class="record-duration">{{item.duration}}分钟</text>
+            <text class="record-distance" wx:if="{{item.distance}}">{{item.distance}}km</text>
+          </view>
           <text class="record-time">{{item.time}}</text>
         </view>
         <view class="record-stats">
-          <text class="record-stat">{{item.duration}}分钟</text>
           <text class="record-stat">{{item.calories}}卡</text>
         </view>
         <text class="delete-btn" data-id="{{item.id}}" bindtap="deleteRecord">✕</text>
@@ -105,31 +104,8 @@
     </view>
   </view>
 
-  <!-- 运动推荐 -->
-  <view class="tab-content" wx:if="{{activeTab === 1}}">
-    <view class="recommend-grid">
-      <view class="recommend-card" wx:for="{{recommendations}}" wx:key="id">
-        <view class="recommend-header" style="background: {{item.color}};">
-          <text class="recommend-icon">{{item.icon}}</text>
-          <view class="recommend-badge">{{item.level}}</view>
-        </view>
-        <view class="recommend-body">
-          <text class="recommend-name">{{item.name}}</text>
-          <text class="recommend-desc">{{item.description}}</text>
-          <view class="recommend-tags">
-            <text class="recommend-tag">⏱️ {{item.duration}}分钟</text>
-            <text class="recommend-tag">🔥 {{item.calories}}卡</text>
-          </view>
-        </view>
-        <view class="recommend-footer">
-          <button class="recommend-btn" data-plan="{{item}}" bindtap="startPlan">开始训练</button>
-        </view>
-      </view>
-    </view>
-  </view>
-
   <!-- 运动记录 -->
-  <view class="tab-content" wx:if="{{activeTab === 2}}">
+  <view class="tab-content" wx:if="{{activeTab === 1}}">
     <view class="week-summary">
       <text class="summary-title">本周运动统计</text>
       <view class="summary-grid">
@@ -138,12 +114,12 @@
           <text class="summary-label">次数</text>
         </view>
         <view class="summary-item">
-          <text class="summary-value">{{todayStats.duration * 7}}</text>
-          <text class="summary-label">总时长</text>
+          <text class="summary-value">{{weekTotalDuration}}</text>
+          <text class="summary-label">总时长(分钟)</text>
         </view>
         <view class="summary-item">
-          <text class="summary-value">{{todayStats.calories * 7}}</text>
-          <text class="summary-label">总消耗</text>
+          <text class="summary-value">{{weekTotalCalories}}</text>
+          <text class="summary-label">总消耗(卡)</text>
         </view>
       </view>
     </view>
@@ -158,7 +134,7 @@
           <text class="history-icon">{{item.icon}}</text>
           <view class="history-info">
             <text class="history-name">{{item.name}}</text>
-            <text class="history-detail">{{item.duration}}分钟 · {{item.calories}}卡</text>
+            <text class="history-detail">{{item.duration}}分钟 · {{item.calories}}卡<text wx:if="{{item.distance}}"> · {{item.distance}}km</text></text>
           </view>
         </view>
       </view>
@@ -190,15 +166,19 @@
           />
         </view>
         
-        <view class="form-item">
-          <text class="form-label">消耗热量（卡路里）</text>
+        <view class="form-item" wx:if="{{currentExercise && currentExercise.needsDistance}}">
+          <text class="form-label">运动距离（公里）</text>
           <input 
             class="form-input" 
-            type="number"
-            placeholder="例如：300"
-            value="{{caloriesInput}}"
-            bindinput="onCaloriesInput"
+            type="digit"
+            placeholder="例如：5.0"
+            value="{{distanceInput}}"
+            bindinput="onDistanceInput"
           />
+        </view>
+        
+        <view class="form-hint">
+          <text>💡 卡路里将根据运动类型和时长自动计算</text>
         </view>
       </view>
       

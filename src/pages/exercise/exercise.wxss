@@ -2,7 +2,7 @@
 .exercise-page {
   min-height: 100vh;
   background: #F7FAFC;
-  padding: 24rpx 24rpx 120rpx;
+  padding: 24rpx;
 }
 
 /* 页面标题 */
@@ -220,10 +220,29 @@
   gap: 4rpx;
 }
 
+.record-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
 .record-name {
   font-size: 28rpx;
   font-weight: bold;
   color: #2D3748;
+}
+
+.record-duration {
+  font-size: 24rpx;
+  color: #4ECDC4;
+  font-weight: 500;
+}
+
+.record-distance {
+  font-size: 24rpx;
+  color: #4ECDC4;
+  font-weight: 500;
 }
 
 .record-time {
@@ -528,6 +547,16 @@
   font-size: 28rpx;
   line-height: 1.5;
   box-sizing: border-box;
+}
+
+.form-hint {
+  display: block;
+  font-size: 22rpx;
+  color: #A0AEC0;
+  margin-top: 8rpx;
+  padding: 12rpx 16rpx;
+  background: #F0F4F8;
+  border-radius: 8rpx;
 }
 
 .dialog-footer {

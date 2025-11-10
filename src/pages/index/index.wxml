@@ -53,7 +53,7 @@
         data-value="{{todayStats.exercise}}"
         bindtap="onCheckIn"
       >
-        <text class="stat-icon">🏃</text>
+        <text class="stat-icon">💪</text>
         <text class="stat-value">{{todayStats.exercise}}</text>
         <text class="stat-label">/ {{todayStats.targetExercise}} 分钟</text>
         <view class="progress-bar">
@@ -79,15 +79,15 @@
       
       <view 
         class="stat-card checkin-card" 
-        data-type="steps"
-        data-value="{{todayStats.steps}}"
+        data-type="calories"
+        data-value="{{todayStats.calories}}"
         bindtap="onCheckIn"
       >
-        <text class="stat-icon">👣</text>
-        <text class="stat-value">{{todayStats.steps}}</text>
-        <text class="stat-label">/ {{todayStats.targetSteps}} 步</text>
-        <view class="progress-bar">
-          <view class="progress-fill" style="width: {{todayStats.targetSteps > 0 ? (todayStats.steps / todayStats.targetSteps * 100 > 100 ? 100 : todayStats.steps / todayStats.targetSteps * 100) : 0}}%"></view>
+        <text class="stat-icon">🔥</text>
+        <text class="stat-value">{{todayStats.calories}}</text>
+        <text class="stat-label">{{todayStats.targetCalories > 0 ? '/ ' + todayStats.targetCalories + ' 卡' : '卡路里'}}</text>
+        <view class="progress-bar" wx:if="{{todayStats.targetCalories > 0}}">
+          <view class="progress-fill" style="width: {{todayStats.calories / todayStats.targetCalories * 100 > 100 ? 100 : todayStats.calories / todayStats.targetCalories * 100}}%"></view>
         </view>
         <text class="checkin-hint">点击打卡</text>
       </view>
