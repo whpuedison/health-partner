@@ -1,6 +1,5 @@
 /* pages/profile/profile.wxss */
 .profile-page {
-  min-height: 100vh;
   background: #F7FAFC;
   padding: 24rpx 24rpx 140rpx; /* 增加底部间距，确保内容完整展示 */
 }

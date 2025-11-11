@@ -227,13 +227,38 @@ Page({
 
   // 加载统计数据
   loadStats() {
-    this.setData({
-      stats: {
-        totalDays: 0,
-        dietRecords: 0,
-        exerciseRecords: 0,
-        healthRecords: 0,
-      },
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) {
+      setTimeout(() => {
+        this.loadStats();
+      }, 500);
+      return;
+    }
+
+    Http.get(API.USER_STATS, {
+      openId: openId
+    }).then((result) => {
+      if (result.data) {
+        this.setData({
+          stats: {
+            totalDays: result.data.totalDays || 0,
+            dietRecords: result.data.dietRecords || 0,
+            exerciseRecords: result.data.exerciseRecords || 0,
+            healthRecords: result.data.healthRecords || 0,
+          },
+        });
+      }
+    }).catch((error) => {
+      console.error('获取统计数据失败', error);
+      // 如果获取失败，使用默认值
+      this.setData({
+        stats: {
+          totalDays: 0,
+          dietRecords: 0,
+          exerciseRecords: 0,
+          healthRecords: 0,
+        },
+      });
     });
   },
 

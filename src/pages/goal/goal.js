@@ -106,18 +106,6 @@ Page({
       if (field === 'targetWeight' || field === 'dailyExercise') {
         this.updateCalorieRecommendation();
       }
-      // 当热量输入变化时，如果还没有值，使用推荐值填充
-      if ((field === 'restDayCalories' || field === 'exerciseDayCalories') && !e.detail.value && this.data.calorieRecommendation) {
-        if (field === 'restDayCalories' && !this.data.goals.restDayCalories) {
-          this.setData({
-            'goals.restDayCalories': this.data.calorieRecommendation.restDayIntake.toString()
-          });
-        } else if (field === 'exerciseDayCalories' && !this.data.goals.exerciseDayCalories) {
-          this.setData({
-            'goals.exerciseDayCalories': this.data.calorieRecommendation.exerciseDayIntake.toString()
-          });
-        }
-      }
     });
   },
   
