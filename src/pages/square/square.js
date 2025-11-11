@@ -199,7 +199,8 @@ Page({
       wx.showModal({
         title: '提示',
         content: '请先设置昵称和头像后才能进行点赞',
-        showCancel: false,
+        showCancel: true,
+        cancelText: '取消',
         confirmText: '去设置',
         success: (res) => {
           if (res.confirm) {
@@ -327,7 +328,8 @@ Page({
       wx.showModal({
         title: '提示',
         content: '请先设置昵称和头像后才能进行评论',
-        showCancel: false,
+        showCancel: true,
+        cancelText: '取消',
         confirmText: '去设置',
         success: (res) => {
           if (res.confirm) {
@@ -404,7 +406,8 @@ Page({
       wx.showModal({
         title: '提示',
         content: '请先设置昵称和头像后才能进行评论',
-        showCancel: false,
+        showCancel: true,
+        cancelText: '取消',
         confirmText: '去设置',
         success: (res) => {
           if (res.confirm) {
