@@ -27,14 +27,16 @@
       <view class="post-images" wx:if="{{item.images && item.images.length > 0}}">
         <!-- 单张图片 -->
         <view class="images-grid images-single" wx:if="{{item.images.length === 1}}">
-          <image 
-            class="image-single" 
-            src="{{item.images[0]}}" 
-            mode="widthFix"
-            data-url="{{item.images[0]}}"
-            data-urls="{{item.images}}"
-            bindtap="previewImage"
-          ></image>
+          <view class="image-single-wrapper">
+            <image 
+              class="image-single" 
+              src="{{item.images[0]}}" 
+              mode="heightFix"
+              data-url="{{item.images[0]}}"
+              data-urls="{{item.images}}"
+              bindtap="previewImage"
+            ></image>
+          </view>
         </view>
         <!-- 2张图片 -->
         <view class="images-grid images-2" wx:elif="{{item.images.length === 2}}">
