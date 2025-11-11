@@ -3,7 +3,7 @@
     "projectname": "health-partner",
     "setting": {
         "compileHotReLoad": true,
-        "urlCheck": false
+        "urlCheck": true
     },
     "libVersion": "3.11.0"
 }
