@@ -163,6 +163,12 @@ Page({
     });
   },
 
+  // 检查用户信息是否完整（昵称和头像）
+  checkUserInfoComplete() {
+    const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo');
+    return userInfo && userInfo.avatarUrl && userInfo.nickName;
+  },
+
   // 点赞/取消点赞
   async toggleLike(e) {
     const postId = e.currentTarget.dataset.id;
@@ -172,6 +178,24 @@ Page({
       wx.showToast({
         title: '请先登录',
         icon: 'none'
+      });
+      return;
+    }
+    
+    // 检查用户信息是否完整
+    if (!this.checkUserInfoComplete()) {
+      wx.showModal({
+        title: '提示',
+        content: '请先设置昵称和头像后才能进行点赞',
+        showCancel: false,
+        confirmText: '去设置',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({
+              url: '/pages/profile/profile'
+            });
+          }
+        }
       });
       return;
     }
@@ -277,6 +301,33 @@ Page({
     const replyToUserId = e.currentTarget.dataset.replyToUserId;
     const replyToNickname = e.currentTarget.dataset.replyToNickname;
     
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 检查用户信息是否完整
+    if (!this.checkUserInfoComplete()) {
+      wx.showModal({
+        title: '提示',
+        content: '请先设置昵称和头像后才能进行评论',
+        showCancel: false,
+        confirmText: '去设置',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({
+              url: '/pages/profile/profile'
+            });
+          }
+        }
+      });
+      return;
+    }
+    
     const postIndex = this.data.posts.findIndex(p => p.id === postId);
     if (postIndex === -1) return;
     
@@ -332,6 +383,24 @@ Page({
       wx.showToast({
         title: '请先登录',
         icon: 'none'
+      });
+      return;
+    }
+    
+    // 检查用户信息是否完整
+    if (!this.checkUserInfoComplete()) {
+      wx.showModal({
+        title: '提示',
+        content: '请先设置昵称和头像后才能进行评论',
+        showCancel: false,
+        confirmText: '去设置',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({
+              url: '/pages/profile/profile'
+            });
+          }
+        }
       });
       return;
     }
