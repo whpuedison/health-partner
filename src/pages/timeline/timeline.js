@@ -386,6 +386,57 @@ Page({
     }
   },
 
+  // 长按一级评论
+  onCommentLongPress(e) {
+    const commentId = e.currentTarget.dataset.commentId;
+    const postId = e.currentTarget.dataset.postId;
+    const userId = e.currentTarget.dataset.userId;
+    
+    // 检查是否是自己的评论
+    const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo');
+    const currentUserId = userInfo?.id ? Number(userInfo.id) : null;
+    const commentUserId = userId ? Number(userId) : null;
+    
+    if (currentUserId && commentUserId && currentUserId === commentUserId) {
+      this.showDeleteCommentDialog(commentId, postId);
+    }
+  },
+
+  // 长按二级评论（回复）
+  onReplyLongPress(e) {
+    const commentId = e.currentTarget.dataset.commentId;
+    const postId = e.currentTarget.dataset.postId;
+    const userId = e.currentTarget.dataset.userId;
+    
+    // 检查是否是自己的回复
+    const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo');
+    const currentUserId = userInfo?.id ? Number(userInfo.id) : null;
+    const replyUserId = userId ? Number(userId) : null;
+    
+    if (currentUserId && replyUserId && currentUserId === replyUserId) {
+      this.showDeleteCommentDialog(commentId, postId);
+    }
+  },
+
+  // 显示删除评论对话框
+  showDeleteCommentDialog(commentId, postId) {
+    wx.showActionSheet({
+      itemList: ['删除'],
+      success: (res) => {
+        if (res.tapIndex === 0) {
+          this.deleteComment({
+            currentTarget: {
+              dataset: {
+                commentId: commentId,
+                postId: postId
+              }
+            }
+          });
+        }
+      }
+    });
+  },
+
   // 删除评论
   async deleteComment(e) {
     const commentId = e.currentTarget.dataset.commentId;

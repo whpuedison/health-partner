@@ -150,15 +150,15 @@
         <view class="comments-list" wx:if="{{item.comments && item.comments.length > 0}}">
           <view class="comment-item" wx:for="{{item.comments}}" wx:key="id" wx:for-item="comment">
             <!-- 一级评论 -->
-            <view class="comment-main">
+            <view class="comment-main" bindlongpress="onCommentLongPress" data-post-id="{{item.id}}" data-comment-id="{{comment.id}}" data-user-id="{{comment.userId}}">
               <image class="comment-avatar" src="{{comment.avatarUrl || '/static/default-avatar.png'}}" mode="aspectFill"></image>
               <view class="comment-content">
                 <view class="comment-header">
                   <text class="comment-name">{{comment.nickname}}</text>
-                  <text class="comment-time">{{comment.created_at}}</text>
                 </view>
                 <text class="comment-text">{{comment.content}}</text>
                 <view class="comment-actions">
+                  <text class="comment-time">{{comment.created_at}}</text>
                   <text class="comment-reply" data-id="{{item.id}}" data-parent-id="{{comment.id}}" data-reply-to-user-id="{{comment.userId}}" data-reply-to-nickname="{{comment.nickname}}" bindtap="showCommentInput">回复</text>
                 </view>
               </view>
@@ -166,16 +166,16 @@
             
             <!-- 二级评论（回复） -->
             <view class="comment-replies" wx:if="{{comment.replies && comment.replies.length > 0}}">
-              <view class="reply-item" wx:for="{{comment.replies}}" wx:key="id" wx:for-item="reply">
+              <view class="reply-item" wx:for="{{comment.replies}}" wx:key="id" wx:for-item="reply" bindlongpress="onReplyLongPress" data-post-id="{{item.id}}" data-comment-id="{{reply.id}}" data-user-id="{{reply.userId}}">
                 <image class="reply-avatar" src="{{reply.avatarUrl || '/static/default-avatar.png'}}" mode="aspectFill"></image>
                 <view class="reply-content">
                   <view class="reply-header">
                     <text class="reply-name">{{reply.nickname}}</text>
                     <text class="reply-hint" wx:if="{{reply.replyToNickname}}">回复 {{reply.replyToNickname}}</text>
-                    <text class="reply-time">{{reply.created_at}}</text>
                   </view>
                   <text class="reply-text">{{reply.content}}</text>
                   <view class="reply-actions">
+                    <text class="reply-time">{{reply.created_at}}</text>
                     <text class="reply-reply" data-id="{{item.id}}" data-parent-id="{{comment.id}}" data-reply-to-user-id="{{reply.userId}}" data-reply-to-nickname="{{reply.nickname}}" bindtap="showCommentInput">回复</text>
                   </view>
                 </view>

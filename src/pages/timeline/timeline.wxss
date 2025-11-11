@@ -334,6 +334,7 @@
 .comment-time {
   font-size: 22rpx;
   color: #A0AEC0;
+  margin-right: 20rpx;
 }
 
 .comment-text {
@@ -386,6 +387,12 @@
   flex-wrap: wrap;
 }
 
+.reply-time {
+  font-size: 22rpx;
+  color: #A0AEC0;
+  margin-right: 20rpx;
+}
+
 .reply-name {
   font-size: 24rpx;
   font-weight: 600;
@@ -397,11 +404,6 @@
   font-size: 24rpx;
   color: #718096;
   margin-right: 8rpx;
-}
-
-.reply-time {
-  font-size: 22rpx;
-  color: #A0AEC0;
 }
 
 .reply-text {
