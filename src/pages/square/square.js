@@ -53,9 +53,12 @@ Page({
 
     this.setData({ loading: true });
 
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    
     Http.get(API.POST_LIST, {
       page: this.data.page,
-      pageSize: this.data.pageSize
+      pageSize: this.data.pageSize,
+      openId: openId || ''
     }).then((result) => {
       this.setData({ loading: false });
       
@@ -63,6 +66,7 @@ Page({
         // 获取当前用户ID用于判断是否显示删除按钮
         const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo');
         const currentUserId = userInfo?.id ? Number(userInfo.id) : null;
+        const openId = app.globalData.openId || wx.getStorageSync('openId');
         
         const newPosts = result.data.map(post => {
           // 将 post.user_id 转换为数字进行比较
@@ -73,7 +77,13 @@ Page({
           return {
             ...post,
             created_at: this.formatTime(post.created_at),
-            isOwner: isOwner || false
+            isOwner: isOwner || false,
+            likeCount: post.likeCount || 0,
+            isLiked: post.isLiked || false,
+            commentCount: 0, // 初始值，后续加载评论时更新
+            comments: [], // 评论列表
+            showComments: false, // 是否显示评论
+            showCommentInput: false // 是否显示评论输入框
           };
         });
         
@@ -162,6 +172,281 @@ Page({
     wx.previewImage({
       current: current,
       urls: urls
+    });
+  },
+
+
+  // 点赞/取消点赞
+  async toggleLike(e) {
+    const postId = e.currentTarget.dataset.id;
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    
+    if (!openId) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    const postIndex = this.data.posts.findIndex(p => p.id === postId);
+    if (postIndex === -1) return;
+    
+    const post = this.data.posts[postIndex];
+    const newIsLiked = !post.isLiked;
+    
+    // 乐观更新
+    const posts = [...this.data.posts];
+    posts[postIndex] = {
+      ...post,
+      isLiked: newIsLiked,
+      likeCount: newIsLiked ? post.likeCount + 1 : Math.max(0, post.likeCount - 1)
+    };
+    this.setData({ posts });
+    
+    try {
+      const result = await Http.post(`${API.POST_LIKE}/${postId}/like`, null, {
+        openId: openId
+      });
+      
+      // 更新点赞数
+      if (result.data) {
+        posts[postIndex] = {
+          ...posts[postIndex],
+          likeCount: result.data.likeCount || posts[postIndex].likeCount
+        };
+        this.setData({ posts });
+      }
+    } catch (error) {
+      console.error('点赞失败', error);
+      // 回滚
+      posts[postIndex] = post;
+      this.setData({ posts });
+      wx.showToast({
+        title: '操作失败',
+        icon: 'none'
+      });
+    }
+  },
+
+  // 切换评论显示
+  toggleComments(e) {
+    const postId = e.currentTarget.dataset.id;
+    const postIndex = this.data.posts.findIndex(p => p.id === postId);
+    if (postIndex === -1) return;
+    
+    const post = this.data.posts[postIndex];
+    const showComments = !post.showComments;
+    
+    const posts = [...this.data.posts];
+    posts[postIndex] = {
+      ...post,
+      showComments: showComments
+    };
+    
+    // 如果显示评论且还没有加载过，则加载评论
+    if (showComments && (!post.comments || post.comments.length === 0)) {
+      this.loadComments(postId, postIndex);
+    }
+    
+    this.setData({ posts });
+  },
+
+  // 加载评论
+  async loadComments(postId, postIndex) {
+    try {
+      const result = await Http.get(`${API.POST_COMMENTS}/${postId}/comments`);
+      if (result.data) {
+        const posts = [...this.data.posts];
+        // 格式化评论时间
+        const comments = (result.data || []).map(comment => ({
+          ...comment,
+          created_at: this.formatTime(comment.createdAt || comment.created_at),
+          replies: (comment.replies || []).map(reply => ({
+            ...reply,
+            created_at: this.formatTime(reply.createdAt || reply.created_at)
+          }))
+        }));
+        
+        posts[postIndex] = {
+          ...posts[postIndex],
+          comments: comments,
+          commentCount: comments.reduce((sum, c) => sum + 1 + (c.replies ? c.replies.length : 0), 0)
+        };
+        this.setData({ posts });
+      }
+    } catch (error) {
+      console.error('加载评论失败', error);
+    }
+  },
+
+  // 显示评论输入框
+  showCommentInput(e) {
+    const postId = e.currentTarget.dataset.id;
+    const parentId = e.currentTarget.dataset.parentId;
+    const replyToUserId = e.currentTarget.dataset.replyToUserId;
+    const replyToNickname = e.currentTarget.dataset.replyToNickname;
+    
+    const postIndex = this.data.posts.findIndex(p => p.id === postId);
+    if (postIndex === -1) return;
+    
+    const posts = [...this.data.posts];
+    posts[postIndex] = {
+      ...this.data.posts[postIndex],
+      showCommentInput: true,
+      commentInput: {
+        parentId: parentId || null,
+        replyToUserId: replyToUserId || null,
+        replyToNickname: replyToNickname || null,
+        content: ''
+      }
+    };
+    this.setData({ posts });
+  },
+
+  // 隐藏评论输入框
+  hideCommentInput(e) {
+    const postId = e.currentTarget.dataset.id;
+    const postIndex = this.data.posts.findIndex(p => p.id === postId);
+    if (postIndex === -1) return;
+    
+    const posts = [...this.data.posts];
+    posts[postIndex] = {
+      ...this.data.posts[postIndex],
+      showCommentInput: false,
+      commentInput: null
+    };
+    this.setData({ posts });
+  },
+
+  // 评论输入
+  onCommentInput(e) {
+    const postId = e.currentTarget.dataset.id;
+    const value = e.detail.value;
+    const postIndex = this.data.posts.findIndex(p => p.id === postId);
+    if (postIndex === -1) return;
+    
+    const posts = [...this.data.posts];
+    if (posts[postIndex].commentInput) {
+      posts[postIndex].commentInput.content = value;
+    }
+    this.setData({ posts });
+  },
+
+  // 提交评论
+  async submitComment(e) {
+    const postId = e.currentTarget.dataset.id;
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    
+    if (!openId) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    const postIndex = this.data.posts.findIndex(p => p.id === postId);
+    if (postIndex === -1) return;
+    
+    const post = this.data.posts[postIndex];
+    const commentInput = post.commentInput;
+    
+    if (!commentInput || !commentInput.content || !commentInput.content.trim()) {
+      wx.showToast({
+        title: '请输入评论内容',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    wx.showLoading({ title: '发布中...', mask: true });
+    
+    try {
+      const result = await Http.post(`${API.POST_COMMENT}/${postId}/comment`, {
+        content: commentInput.content.trim(),
+        parentId: commentInput.parentId,
+        replyToUserId: commentInput.replyToUserId
+      }, {
+        openId: openId
+      });
+      
+      wx.hideLoading();
+      
+      // 重新加载评论
+      await this.loadComments(postId, postIndex);
+      
+      // 隐藏输入框
+      const posts = [...this.data.posts];
+      posts[postIndex] = {
+        ...posts[postIndex],
+        showCommentInput: false,
+        commentInput: null
+      };
+      this.setData({ posts });
+      
+      wx.showToast({
+        title: '评论成功',
+        icon: 'success'
+      });
+    } catch (error) {
+      wx.hideLoading();
+      console.error('评论失败', error);
+      wx.showToast({
+        title: '评论失败',
+        icon: 'none'
+      });
+    }
+  },
+
+  // 删除评论
+  async deleteComment(e) {
+    const commentId = e.currentTarget.dataset.commentId;
+    const postId = e.currentTarget.dataset.postId;
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    
+    if (!openId) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    wx.showModal({
+      title: '确认删除',
+      content: '确定要删除这条评论吗？',
+      success: async (res) => {
+        if (res.confirm) {
+          wx.showLoading({ title: '删除中...', mask: true });
+          
+          try {
+            await Http.delete(`${API.POST_COMMENT_DELETE}/${commentId}`, {
+              openId: openId
+            });
+            
+            wx.hideLoading();
+            
+            // 重新加载评论
+            const postIndex = this.data.posts.findIndex(p => p.id === postId);
+            if (postIndex !== -1) {
+              await this.loadComments(postId, postIndex);
+            }
+            
+            wx.showToast({
+              title: '删除成功',
+              icon: 'success'
+            });
+          } catch (error) {
+            wx.hideLoading();
+            console.error('删除评论失败', error);
+            wx.showToast({
+              title: '删除失败',
+              icon: 'none'
+            });
+          }
+        }
+      }
     });
   },
 

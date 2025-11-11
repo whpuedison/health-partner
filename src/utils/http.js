@@ -72,8 +72,17 @@ class Http {
   /**
    * POST 请求
    */
-  static post(url, data) {
-    return this.request({ url, method: 'POST', data });
+  static post(url, data, queryParams) {
+    let finalUrl = url;
+    if (queryParams) {
+      const queryString = Object.keys(queryParams)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`)
+        .join('&');
+      if (queryString) {
+        finalUrl += (finalUrl.includes('?') ? '&' : '?') + queryString;
+      }
+    }
+    return this.request({ url: finalUrl, method: 'POST', data: data || {} });
   }
 
   /**

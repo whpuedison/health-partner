@@ -29,6 +29,10 @@ const API = {
   POST_LIST: '/api/v1/post/list',
   POST_TIMELINE: '/api/v1/post/timeline',
   POST_DELETE: '/api/v1/post',
+  POST_LIKE: '/api/v1/post',
+  POST_COMMENTS: '/api/v1/post',
+  POST_COMMENT: '/api/v1/post',
+  POST_COMMENT_DELETE: '/api/v1/post/comment',
 };
 
 module.exports = { API };
