@@ -10,6 +10,7 @@
   padding-bottom: env(safe-area-inset-bottom);
   box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.05);
   z-index: 9999;
+  border-top: 1rpx solid #E2E8F0;
 }
 
 .tab-item {
@@ -38,6 +39,6 @@
 }
 
 .tab-item.active .tab-text {
-  color: #667EEA;
-  font-weight: bold;
+  color: #98D8C8;
+  font-weight: 600;
 }

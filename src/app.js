@@ -31,8 +31,9 @@ App({
               wx.setStorageSync('openId', result.data.openId);
               
               // 直接使用登录接口返回的用户信息
-              if (result.data.nickname || result.data.avatarUrl) {
+              if (result.data.nickname || result.data.avatarUrl || result.data.userId) {
                 const userInfo = {
+                  id: result.data.userId || null,
                   nickName: result.data.nickname || '',
                   avatarUrl: result.data.avatarUrl || ''
                 };

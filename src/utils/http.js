@@ -93,12 +93,18 @@ class Http {
   /**
    * 上传文件
    */
-  static uploadFile(filePath, name = 'file') {
+  static uploadFile(filePath, name = 'file', options = {}) {
     return new Promise((resolve, reject) => {
       const openId = getApp().globalData.openId || wx.getStorageSync('openId');
+      const uploadType = options.type || 'avatar'; // avatar 或 post
+      
+      // 根据类型选择不同的上传接口
+      const uploadUrl = uploadType === 'post' 
+        ? BASE_URL + '/api/v1/post/upload-image'
+        : BASE_URL + '/api/v1/user/upload-avatar';
       
       wx.uploadFile({
-        url: BASE_URL + '/api/v1/user/upload-avatar',
+        url: uploadUrl,
         filePath: filePath,
         name: name,
         formData: {

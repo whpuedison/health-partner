@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "广场",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 50
+}
+

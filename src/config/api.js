@@ -24,6 +24,11 @@ const API = {
   FOOD_SEARCH: '/api/v1/food/search',
   FOOD_UNITS: '/api/v1/food/units',
   FOOD_CALCULATE: '/api/v1/food/calculate',
+  // 帖子相关
+  POST_CREATE: '/api/v1/post/create',
+  POST_LIST: '/api/v1/post/list',
+  POST_TIMELINE: '/api/v1/post/timeline',
+  POST_DELETE: '/api/v1/post',
 };
 
 module.exports = { API };

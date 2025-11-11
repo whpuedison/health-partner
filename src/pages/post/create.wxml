@@ -1,0 +1,61 @@
+<!--pages/post/create.wxml-->
+<view class="create-page">
+  <view class="form-section">
+    <!-- 文字输入 -->
+    <view class="form-item">
+      <textarea 
+        class="content-input" 
+        placeholder="分享你的健康生活..."
+        value="{{content}}"
+        bindinput="onContentInput"
+        maxlength="500"
+        show-confirm-bar="{{false}}"
+      ></textarea>
+      <view class="char-count">{{content.length}}/500</view>
+    </view>
+
+    <!-- 图片选择 -->
+    <view class="form-item">
+      <view class="images-section">
+        <view class="images-grid">
+          <view 
+            class="image-item" 
+            wx:for="{{images}}" 
+            wx:key="*this"
+            wx:for-item="img"
+            wx:for-index="index"
+          >
+            <image 
+              class="image-preview" 
+              src="{{img}}" 
+              mode="aspectFill"
+              data-url="{{img}}"
+              bindtap="previewImage"
+            ></image>
+            <view class="image-delete" data-index="{{index}}" bindtap="deleteImage">✕</view>
+          </view>
+          <view 
+            class="image-add" 
+            wx:if="{{images.length < 9}}"
+            bindtap="chooseImages"
+          >
+            <text class="add-icon">📷</text>
+            <text class="add-text">添加图片</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 发布按钮 -->
+  <view class="footer-bar">
+    <button 
+      class="publish-btn" 
+      bindtap="publishPost"
+      disabled="{{uploading || !canPublish}}"
+    >
+      {{uploading ? '发布中...' : '发布'}}
+    </button>
+  </view>
+</view>
+

@@ -35,7 +35,7 @@ Page({
     
     // 功能菜单
     menuItems: [
-      { id: 'remind', icon: '⏰', title: '提醒设置', arrow: true },
+      { id: 'timeline', icon: '📸', title: '时光轴', arrow: true },
       { id: 'about', icon: 'ℹ️', title: '关于我们', arrow: true },
     ],
     
@@ -465,6 +465,7 @@ Page({
   // 菜单项点击
   onMenuTap(e) {
     const id = e.currentTarget.dataset.id;
+    console.log('点击菜单项:', id);
     
     switch (id) {
       case 'history':
@@ -479,10 +480,20 @@ Page({
           icon: 'none',
         });
         break;
-      case 'remind':
-        wx.showToast({
-          title: '功能开发中',
-          icon: 'none',
+      case 'timeline':
+        console.log('跳转到时光轴页面');
+        wx.navigateTo({
+          url: '/pages/timeline/timeline',
+          success: () => {
+            console.log('跳转成功');
+          },
+          fail: (err) => {
+            console.error('跳转失败:', err);
+            wx.showToast({
+              title: '页面不存在',
+              icon: 'none'
+            });
+          }
         });
         break;
       case 'about':
@@ -492,6 +503,9 @@ Page({
           showCancel: false,
           confirmText: '知道了',
         });
+        break;
+      default:
+        console.warn('未处理的菜单项:', id);
         break;
     }
   },

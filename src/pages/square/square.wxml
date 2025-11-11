@@ -1,0 +1,123 @@
+<!--pages/square/square.wxml-->
+<view class="square-page">
+  <!-- 发布按钮 -->
+  <view class="create-btn" bindtap="goToCreate">
+    <text class="create-icon">✏️</text>
+    <text class="create-text">发布</text>
+  </view>
+
+  <!-- 帖子列表 -->
+  <view class="posts-list">
+    <view class="post-item" wx:for="{{posts}}" wx:key="id">
+      <!-- 用户信息 -->
+      <view class="post-header">
+        <image class="user-avatar" src="{{item.avatar_url || '/static/default-avatar.png'}}" mode="aspectFill"></image>
+        <view class="user-info">
+          <text class="user-name">{{item.nickname || '匿名用户'}}</text>
+          <text class="post-time">{{item.created_at}}</text>
+        </view>
+      </view>
+
+      <!-- 帖子内容 -->
+      <view class="post-content">
+        <text class="content-text">{{item.content}}</text>
+      </view>
+
+      <!-- 帖子图片 -->
+      <view class="post-images" wx:if="{{item.images && item.images.length > 0}}">
+        <!-- 单张图片 -->
+        <view class="images-grid images-single" wx:if="{{item.images.length === 1}}">
+          <image 
+            class="image-single" 
+            src="{{item.images[0]}}" 
+            mode="widthFix"
+            data-url="{{item.images[0]}}"
+            data-urls="{{item.images}}"
+            bindtap="previewImage"
+          ></image>
+        </view>
+        <!-- 2张图片 -->
+        <view class="images-grid images-2" wx:elif="{{item.images.length === 2}}">
+          <view 
+            class="image-item" 
+            wx:for="{{item.images}}" 
+            wx:key="*this"
+            wx:for-item="img"
+            data-url="{{img}}"
+            data-urls="{{item.images}}"
+            bindtap="previewImage"
+          >
+            <image 
+              src="{{img}}" 
+              mode="aspectFill"
+            ></image>
+          </view>
+        </view>
+        <!-- 3-4张图片：2x2网格 -->
+        <view class="images-grid images-4" wx:elif="{{item.images.length <= 4}}">
+          <view 
+            class="image-item" 
+            wx:for="{{item.images}}" 
+            wx:key="*this"
+            wx:for-item="img"
+            data-url="{{img}}"
+            data-urls="{{item.images}}"
+            bindtap="previewImage"
+          >
+            <image 
+              src="{{img}}" 
+              mode="aspectFill"
+            ></image>
+          </view>
+        </view>
+        <!-- 5-6张图片：3列 -->
+        <view class="images-grid images-6" wx:elif="{{item.images.length <= 6}}">
+          <view 
+            class="image-item" 
+            wx:for="{{item.images}}" 
+            wx:key="*this"
+            wx:for-item="img"
+            data-url="{{img}}"
+            data-urls="{{item.images}}"
+            bindtap="previewImage"
+          >
+            <image 
+              src="{{img}}" 
+              mode="aspectFill"
+            ></image>
+          </view>
+        </view>
+        <!-- 7-9张图片：3x3网格 -->
+        <view class="images-grid images-9" wx:else>
+          <view 
+            class="image-item" 
+            wx:for="{{item.images}}" 
+            wx:key="*this"
+            wx:for-item="img"
+            data-url="{{img}}"
+            data-urls="{{item.images}}"
+            bindtap="previewImage"
+          >
+            <image 
+              src="{{img}}" 
+              mode="aspectFill"
+            ></image>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-more" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+    <view class="no-more" wx:if="{{!hasMore && posts.length > 0}}">
+      <text>没有更多了</text>
+    </view>
+    <view class="empty-state" wx:if="{{!loading && posts.length === 0}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">还没有帖子，快来发布第一条吧~</text>
+    </view>
+  </view>
+</view>
+

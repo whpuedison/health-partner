@@ -9,9 +9,9 @@ Component({
         icon: '🏠',
       },
       {
-        pagePath: '/pages/health/health',
-        text: '健康',
-        icon: '📊',
+        pagePath: '/pages/square/square',
+        text: '广场',
+        icon: '🌿',
       },
       {
         pagePath: '/pages/profile/profile',

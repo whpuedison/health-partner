@@ -1,0 +1,201 @@
+/* pages/square/square.wxss */
+.square-page {
+  background: #F7FAFC;
+  padding-bottom: 140rpx;
+}
+
+/* 发布按钮 */
+.create-btn {
+  position: fixed;
+  right: 30rpx;
+  bottom: 200rpx;
+  width: 120rpx;
+  height: 120rpx;
+  background: linear-gradient(135deg, #FFB6C1 0%, #D4A5FF 100%);
+  border-radius: 60rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 20rpx rgba(212, 165, 255, 0.4);
+  z-index: 100;
+  transition: transform 0.2s;
+}
+
+.create-btn:active {
+  transform: scale(0.95);
+}
+
+.create-icon {
+  font-size: 48rpx;
+  margin-bottom: 4rpx;
+}
+
+.create-text {
+  font-size: 20rpx;
+  color: white;
+  font-weight: 500;
+}
+
+/* 帖子列表 */
+.posts-list {
+  padding: 24rpx;
+}
+
+.post-item {
+  background: white;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 帖子头部 */
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  position: relative;
+}
+
+.user-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  margin-right: 20rpx;
+  border: 2rpx solid #E2E8F0;
+}
+
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2D3748;
+  margin-bottom: 8rpx;
+}
+
+.post-time {
+  font-size: 22rpx;
+  color: #A0AEC0;
+}
+
+.post-actions {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.delete-btn {
+  font-size: 24rpx;
+  color: #FF6B6B;
+  padding: 8rpx 16rpx;
+}
+
+/* 帖子内容 */
+.post-content {
+  margin-bottom: 20rpx;
+}
+
+.content-text {
+  font-size: 28rpx;
+  color: #4A5568;
+  line-height: 1.8;
+  word-break: break-all;
+}
+
+/* 帖子图片 */
+.post-images {
+  margin-top: 20rpx;
+}
+
+.images-grid {
+  display: grid;
+  gap: 8rpx;
+}
+
+/* 单张图片：保持原始比例，最大宽度限制 */
+.images-single {
+  display: block;
+}
+
+.image-single {
+  width: 100%;
+  max-width: 500rpx;
+  border-radius: 16rpx;
+  background: #F7FAFC;
+}
+
+/* 2张图片：2列布局 */
+.images-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 3-4张图片：2x2网格 */
+.images-4 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 5-6张图片：3列布局 */
+.images-6 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* 7-9张图片：3x3网格 */
+.images-9 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* 图片项：固定1:1比例，使用aspectFill填充 */
+.image-item {
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%; /* 使用padding-bottom技巧创建正方形 */
+  position: relative;
+  border-radius: 12rpx;
+  overflow: hidden;
+  background: #F7FAFC;
+}
+
+.image-item image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12rpx;
+}
+
+/* 加载状态 */
+.loading-more,
+.no-more {
+  text-align: center;
+  padding: 40rpx;
+  font-size: 24rpx;
+  color: #A0AEC0;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 40rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #A0AEC0;
+  text-align: center;
+}
+
