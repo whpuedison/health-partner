@@ -7,7 +7,7 @@
         <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
         <view class="user-text">
           <text class="greeting">{{userInfo.nickName}}</text>
-          <text class="status-text">{{healthData.status}}</text>
+          <text class="status-text">欢迎使用</text>
         </view>
       </block>
       <block wx:else>
