@@ -81,6 +81,7 @@ Page({
             likeCount: post.likeCount || 0,
             isLiked: post.isLiked || false,
             commentCount: post.commentCount || 0, // 使用后端返回的评论数量
+            powerEnable: post.powerEnable !== undefined ? post.powerEnable : true, // 功能开关
             comments: [], // 评论列表
             showComments: false, // 是否显示评论
             showCommentInput: false // 是否显示评论输入框

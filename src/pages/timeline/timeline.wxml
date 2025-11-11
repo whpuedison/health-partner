@@ -118,7 +118,7 @@
           <text class="action-icon {{item.isLiked ? 'liked' : ''}}">{{item.isLiked ? '❤️' : '🤍'}}</text>
           <text class="action-text">{{item.likeCount || 0}}</text>
         </view>
-        <view class="action-item" bindtap="toggleComments" data-id="{{item.id}}">
+        <view class="action-item" wx:if="{{item.powerEnable !== false}}" bindtap="toggleComments" data-id="{{item.id}}">
           <text class="action-icon">💬</text>
           <text class="action-text">{{item.commentCount || 0}}</text>
         </view>
