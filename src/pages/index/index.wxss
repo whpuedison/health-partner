@@ -1,7 +1,7 @@
 /* pages/index/index.wxss */
 .index-page {
   background: linear-gradient(180deg, #FFF5F7 0%, #F0F9FF 50%, #F5F3FF 100%);
-  padding: 24rpx 24rpx 140rpx;
+  padding: 24rpx 24rpx 160rpx;
 }
 
 /* 用户信息卡片 */
