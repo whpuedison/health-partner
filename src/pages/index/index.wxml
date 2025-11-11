@@ -47,10 +47,10 @@
     </view>
     
     <view class="stats-grid">
+      <!-- 运动 -->
       <view 
         class="stat-card checkin-card" 
         data-type="exercise"
-        data-value="{{todayStats.exercise}}"
         bindtap="onCheckIn"
       >
         <text class="stat-icon">💪</text>
@@ -59,37 +59,37 @@
         <view class="progress-bar">
           <view class="progress-fill" style="width: {{todayStats.targetExercise > 0 ? (todayStats.exercise / todayStats.targetExercise * 100 > 100 ? 100 : todayStats.exercise / todayStats.targetExercise * 100) : 0}}%"></view>
         </view>
-        <text class="checkin-hint">点击打卡</text>
+        <text class="checkin-hint">运动时间</text>
       </view>
       
+      <!-- 今日已摄入热量 -->
       <view 
         class="stat-card checkin-card" 
-        data-type="water"
-        data-value="{{todayStats.water}}"
+        data-type="intake"
         bindtap="onCheckIn"
       >
-        <text class="stat-icon">💧</text>
-        <text class="stat-value">{{todayStats.water}}</text>
-        <text class="stat-label">/ {{todayStats.targetWater}} 杯水</text>
+        <text class="stat-icon">🍽️</text>
+        <text class="stat-value">{{todayStats.intakeCalories}}</text>
+        <text class="stat-label">/ {{todayStats.targetIntakeCalories}} 卡</text>
         <view class="progress-bar">
-          <view class="progress-fill" style="width: {{todayStats.targetWater > 0 ? (todayStats.water / todayStats.targetWater * 100 > 100 ? 100 : todayStats.water / todayStats.targetWater * 100) : 0}}%"></view>
+          <view class="progress-fill" style="width: {{todayStats.targetIntakeCalories > 0 ? (todayStats.intakeCalories / todayStats.targetIntakeCalories * 100 > 100 ? 100 : todayStats.intakeCalories / todayStats.targetIntakeCalories * 100) : 0}}%"></view>
         </view>
-        <text class="checkin-hint">点击打卡</text>
+        <text class="checkin-hint">摄入热量</text>
       </view>
       
+      <!-- 今日运动消耗热量 -->
       <view 
         class="stat-card checkin-card" 
-        data-type="calories"
-        data-value="{{todayStats.calories}}"
+        data-type="burned"
         bindtap="onCheckIn"
       >
         <text class="stat-icon">🔥</text>
-        <text class="stat-value">{{todayStats.calories}}</text>
-        <text class="stat-label">{{todayStats.targetCalories > 0 ? '/ ' + todayStats.targetCalories + ' 卡' : '卡路里'}}</text>
-        <view class="progress-bar" wx:if="{{todayStats.targetCalories > 0}}">
-          <view class="progress-fill" style="width: {{todayStats.calories / todayStats.targetCalories * 100 > 100 ? 100 : todayStats.calories / todayStats.targetCalories * 100}}%"></view>
+        <text class="stat-value">{{todayStats.exerciseCalories}}</text>
+        <text class="stat-label">/ {{todayStats.targetExerciseCalories}} 卡</text>
+        <view class="progress-bar">
+          <view class="progress-fill" style="width: {{todayStats.targetExerciseCalories > 0 ? (todayStats.exerciseCalories / todayStats.targetExerciseCalories * 100 > 100 ? 100 : todayStats.exerciseCalories / todayStats.targetExerciseCalories * 100) : 0}}%"></view>
         </view>
-        <text class="checkin-hint">点击打卡</text>
+        <text class="checkin-hint">消耗热量</text>
       </view>
     </view>
   </view>
@@ -105,7 +105,7 @@
         class="action-item" 
         wx:for="{{quickActions}}" 
         wx:key="id"
-        style="background: linear-gradient(135deg, {{item.color}}15, {{item.color}}30);"
+        style="background: linear-gradient(135deg, {{item.color}}25, {{item.color}}45); box-shadow: 0 8rpx 20rpx {{item.color}}40; border-color: {{item.color}}60;"
         data-url="{{item.url}}"
         data-tab="{{item.tab}}"
         bindtap="onActionTap"

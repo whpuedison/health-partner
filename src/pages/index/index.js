@@ -19,16 +19,16 @@ Page({
     todayStats: {
       exercise: 0,
       targetExercise: 30,
-      water: 0,
-      targetWater: 8,
-      calories: 0,
-      targetCalories: 0, // 将从用户目标中获取，或使用默认值
+      intakeCalories: 0, // 今日已摄入热量
+      targetIntakeCalories: 0, // 目标摄入热量（目标运动卡路里 + 基础代谢）
+      exerciseCalories: 0, // 运动消耗的卡路里
+      targetExerciseCalories: 0, // 目标运动消耗的卡路里
     },
     quickActions: [
-      { id: 'diet', icon: '🍎', title: '饮食计划', color: '#FF6B6B', url: '/pages/diet/diet' },
-      { id: 'exercise', icon: '🏃', title: '运动计划', color: '#4ECDC4', url: '/pages/exercise/exercise' },
-      { id: 'health', icon: '📊', title: '健康数据', color: '#45B7D1', tab: true },
-      { id: 'goal', icon: '🎯', title: '目标设置', color: '#FFA07A', url: '/pages/goal/goal' },
+      { id: 'diet', icon: '🍎', title: '饮食计划', color: '#FFB6C1', url: '/pages/diet/diet' }, // 浅粉色
+      { id: 'exercise', icon: '🏃', title: '运动计划', color: '#87CEEB', url: '/pages/exercise/exercise' }, // 天蓝色
+      { id: 'health', icon: '📊', title: '健康数据', color: '#98D8C8', tab: true }, // 薄荷绿
+      { id: 'goal', icon: '🎯', title: '目标设置', color: '#D4A5FF', url: '/pages/goal/goal' }, // 淡紫色
     ],
     healthTips: [
       '💧 每天喝足8杯水，促进新陈代谢',
@@ -116,12 +116,12 @@ Page({
     if (profile && (profile.height || profile.weight)) {
       const bmi = calculateBMI(profile.height, profile.weight);
       const status = getHealthStatus(bmi);
-      
-      this.setData({
-        healthData: {
+    
+    this.setData({
+      healthData: {
           bmi: bmi > 0 ? parseFloat(bmi.toFixed(1)) : 0,
-          weight: profile.weight || 0,
-          height: profile.height || 0,
+        weight: profile.weight || 0,
+        height: profile.height || 0,
           status: status.bmiStatus || '未评估',
         },
       });
@@ -155,26 +155,60 @@ Page({
 
     this._loadingTodayProgress = true;
 
-    // 并行请求今日进度和运动统计（卡路里）
+    // 并行请求今日进度、运动统计（消耗热量）、饮食统计（摄入热量）、用户档案（用于计算基础代谢）
     Promise.all([
       Http.get(API.USER_TODAY_PROGRESS, { openId }),
       Http.get(API.USER_EXERCISE_STATS, { openId }),
-      Http.get(API.USER_GOALS, { openId })
-    ]).then(([progressResult, statsResult, goalsResult]) => {
+      Http.get(API.USER_DIET_STATS, { openId }),
+      Http.get(API.USER_GOALS, { openId }),
+      Http.get(API.USER_PROFILE, { openId })
+    ]).then(([progressResult, exerciseStatsResult, dietStatsResult, goalsResult, profileResult]) => {
       this._loadingTodayProgress = false;
       
       const progress = progressResult.data || {};
-      const stats = statsResult.data || {};
+      const exerciseStats = exerciseStatsResult.data || {};
+      const dietStats = dietStatsResult.data || {};
       const goals = goalsResult.data || {};
+      const profile = profileResult.data || {};
+      
+      const intakeCalories = Math.round(dietStats.totalCalories || 0);
+      const exerciseCalories = Math.round(exerciseStats.totalCalories || 0); // 运动消耗的卡路里
+      const targetExercise = progress.exercise?.target || goals.targetExercise || 30;
+      const todayExercise = progress.exercise?.completed || 0; // 今日已运动时间
+      
+      // 计算基础代谢率 (BMR) - 使用 Mifflin-St Jeor 公式
+      let bmr = 0;
+      if (profile.height && profile.weight && profile.age && profile.gender) {
+        if (profile.gender === '男') {
+          bmr = 10 * profile.weight + 6.25 * profile.height - 5 * profile.age + 5;
+        } else {
+          bmr = 10 * profile.weight + 6.25 * profile.height - 5 * profile.age - 161;
+        }
+        bmr = Math.round(bmr);
+      }
+      
+      // 计算目标运动时长对应的卡路里（使用跑步类型，约11卡/分钟）
+      const caloriesPerMinute = 11; // 跑步的卡路里消耗
+      const targetExerciseCalories = Math.round(targetExercise * caloriesPerMinute);
+      
+      // 目标摄入热量：如果今日已运动时间 > 0，则用运动日摄入目标，否则用非运动日摄入目标
+      let targetIntakeCalories = 0;
+      if (todayExercise > 0) {
+        // 今日已运动，使用运动日摄入目标
+        targetIntakeCalories = goals.targetCaloriesExerciseDay || (targetExerciseCalories + bmr);
+      } else {
+        // 今日未运动，使用非运动日摄入目标
+        targetIntakeCalories = goals.targetCaloriesRestDay || bmr;
+      }
       
       this.setData({
         todayStats: {
           exercise: progress.exercise?.completed || 0,
-          targetExercise: progress.exercise?.target || 30,
-          water: progress.water?.completed || 0,
-          targetWater: progress.water?.target || 8,
-          calories: stats.totalCalories || 0,
-          targetCalories: goals.targetCalories || 0, // 如果没有目标，则不显示进度条
+          targetExercise: targetExercise,
+          intakeCalories: intakeCalories, // 今日已摄入热量
+          targetIntakeCalories: targetIntakeCalories, // 目标摄入热量（目标运动卡路里 + 基础代谢）
+          exerciseCalories: exerciseCalories, // 运动消耗的卡路里
+          targetExerciseCalories: targetExerciseCalories, // 目标运动消耗的卡路里
         }
       });
     }).catch((error) => {
@@ -183,48 +217,38 @@ Page({
     });
   },
 
-  // 快速打卡
+  // 快速打卡/跳转
   onCheckIn(e) {
     const type = e.currentTarget.dataset.type;
-    const currentValue = e.currentTarget.dataset.value || 0;
     
-    // 运动时长和卡路里打卡：跳转到运动计划页面
-    if (type === 'exercise' || type === 'calories') {
+    // 运动：跳转到运动计划页面
+    if (type === 'exercise') {
       wx.navigateTo({
         url: '/pages/exercise/exercise'
       });
       return;
     }
     
-    // 根据类型确定默认增加值和单位
-    let defaultValue = 0;
-    let unit = '';
-    let title = '';
-    
-    if (type === 'water') {
-      defaultValue = 1;
-      unit = '杯';
-      title = '饮水打卡';
+    // 今日已摄入热量：跳转到饮食计划页面
+    if (type === 'intake') {
+      wx.navigateTo({
+        url: '/pages/diet/diet'
+      });
+      return;
     }
     
-    wx.showModal({
-      title: title,
-      editable: true,
-      placeholderText: `请输入${unit}数（当前：${currentValue}${unit}）`,
-      success: (res) => {
-        if (res.confirm) {
-          const value = res.content ? parseFloat(res.content) : defaultValue;
-          if (isNaN(value) || value <= 0) {
-            wx.showToast({
-              title: '请输入有效数值',
-              icon: 'none',
-            });
-            return;
-          }
-          
-          this.doCheckIn(type, value);
-        }
-      }
+    // 今日已消耗热量：跳转到运动计划页面
+    if (type === 'burned') {
+      wx.navigateTo({
+        url: '/pages/exercise/exercise'
+      });
+      return;
+    }
+    
+    // 其他类型
+    wx.showToast({
+      title: '功能开发中',
+      icon: 'none'
     });
   },
 
@@ -315,10 +339,10 @@ Page({
     }).catch((error) => {
       wx.hideLoading();
       console.error('头像上传失败', error);
-      wx.showToast({
+        wx.showToast({
         title: '头像上传失败，请重试',
-        icon: 'none',
-      });
+          icon: 'none',
+        });
     });
   },
 

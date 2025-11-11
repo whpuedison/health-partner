@@ -222,6 +222,29 @@
   transition: width 0.3s ease;
 }
 
+.calorie-diff {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  margin: 8rpx 0;
+  font-size: 20rpx;
+}
+
+.calorie-diff-label {
+  color: #718096;
+}
+
+.calorie-diff-value {
+  font-weight: bold;
+  font-size: 22rpx;
+}
+
+.calorie-diff-hint {
+  color: #718096;
+  font-size: 20rpx;
+}
+
 /* 快捷功能 */
 .quick-actions {
   margin-bottom: 24rpx;
@@ -240,8 +263,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+  border: 2rpx solid;
   transition: all 0.2s;
+  position: relative;
 }
 
 .action-item:active {

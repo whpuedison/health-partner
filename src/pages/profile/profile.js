@@ -27,10 +27,10 @@ Page({
     
     // 我的目标
     goals: [
-      { id: 'weight', icon: '⚖️', title: '目标体重', value: '50', unit: 'kg', color: '#FF6B6B' },
-      { id: 'exercise', icon: '🏃', title: '每日运动', value: '30', unit: '分钟', color: '#FFD93D' },
-      { id: 'water', icon: '💦', title: '每日饮水', value: '8', unit: '杯', color: '#45B7D1' },
-      { id: 'steps', icon: '👣', title: '每日步数', value: '10000', unit: '步', color: '#4ECDC4' },
+      { id: 'weight', icon: '⚖️', title: '目标体重', value: '', unit: 'kg', color: '#FFB6C1' }, // 浅粉色
+      { id: 'exercise', icon: '🏃', title: '每日运动', value: '', unit: '分钟', color: '#87CEEB' }, // 天蓝色
+      { id: 'restDayIntake', icon: '🍽️', title: '非运动日摄入', value: '', unit: '卡', color: '#98D8C8' }, // 薄荷绿
+      { id: 'exerciseDayIntake', icon: '🔥', title: '运动日摄入', value: '', unit: '卡', color: '#D4A5FF' }, // 淡紫色
     ],
     
     // 功能菜单
@@ -209,10 +209,10 @@ Page({
             value = goalsData.targetWeight ? goalsData.targetWeight.toString() : '50';
           } else if (goal.id === 'exercise') {
             value = goalsData.targetExercise ? goalsData.targetExercise.toString() : '30';
-          } else if (goal.id === 'water') {
-            value = goalsData.targetWater ? goalsData.targetWater.toString() : '8';
-          } else if (goal.id === 'steps') {
-            value = goalsData.targetSteps ? goalsData.targetSteps.toString() : '10000';
+          } else if (goal.id === 'restDayIntake') {
+            value = goalsData.targetCaloriesRestDay ? goalsData.targetCaloriesRestDay.toString() : '2000';
+          } else if (goal.id === 'exerciseDayIntake') {
+            value = goalsData.targetCaloriesExerciseDay ? goalsData.targetCaloriesExerciseDay.toString() : '2000';
           }
           return { ...goal, value };
         });
@@ -403,10 +403,10 @@ Page({
       updateData.targetWeight = numValue;
     } else if (editingGoal.id === 'exercise') {
       updateData.targetExercise = parseInt(goalValue);
-    } else if (editingGoal.id === 'water') {
-      updateData.targetWater = parseInt(goalValue);
-    } else if (editingGoal.id === 'steps') {
-      updateData.targetSteps = parseInt(goalValue);
+    } else if (editingGoal.id === 'restDayIntake') {
+      updateData.targetCaloriesRestDay = parseInt(goalValue);
+    } else if (editingGoal.id === 'exerciseDayIntake') {
+      updateData.targetCaloriesExerciseDay = parseInt(goalValue);
     }
     
     // 调用后端接口保存

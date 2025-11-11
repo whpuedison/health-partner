@@ -31,9 +31,28 @@
       <text class="info-label">基础代谢率 (BMR)</text>
       <text class="info-value">{{bmr}} 卡/天</text>
     </view>
+  </view>
+
+  <!-- 热量推荐 -->
+  <view class="info-card" wx:if="{{calorieRecommendation}}">
+    <text class="info-title">🔥 热量推荐</text>
     <view class="info-item">
-      <text class="info-label">每日热量需求 (TDEE)</text>
-      <text class="info-value">{{tdee}} 卡/天</text>
+      <text class="info-label">非运动日推荐摄入</text>
+      <text class="info-value highlight">{{calorieRecommendation.restDayIntake}} 卡</text>
+    </view>
+    <view class="info-item" wx:if="{{goals.dailyExercise > 0}}">
+      <text class="info-label">运动消耗（{{goals.dailyExercise}}分钟）</text>
+      <text class="info-value">{{calorieRecommendation.exerciseCalories}} 卡</text>
+    </view>
+    <view class="info-item" wx:if="{{goals.dailyExercise > 0}}">
+      <text class="info-label">运动日推荐摄入</text>
+      <text class="info-value highlight">{{calorieRecommendation.exerciseDayIntake}} 卡</text>
+    </view>
+    <view class="info-hint" wx:if="{{calorieRecommendation.goalType === 'lose'}}">
+      <text>💡 减肥建议：每日热量缺口 {{calorieRecommendation.calorieDeficit}} 卡，健康减重速度约每周0.75kg</text>
+    </view>
+    <view class="info-hint" wx:if="{{calorieRecommendation.goalType === 'gain'}}">
+      <text>💡 增重建议：每日热量盈余 {{calorieRecommendation.calorieSurplus}} 卡</text>
     </view>
   </view>
 
@@ -75,16 +94,67 @@
       <text class="form-section-title">每日目标</text>
       
       <view class="form-item">
-        <text class="form-label">每日热量摄入 (卡)</text>
+        <view class="calorie-difference" wx:if="{{calorieRecommendation && goals.restDayCalories && parseInt(goals.restDayCalories) > 0}}">
+          <text class="difference-label" wx:if="{{calorieRecommendation.goalType === 'lose'}}">
+            热量缺口: 
+          </text>
+          <text class="difference-label" wx:if="{{calorieRecommendation.goalType === 'gain'}}">
+            热量盈余: 
+          </text>
+          <text class="difference-value" wx:if="{{calorieRecommendation.goalType === 'lose'}}">
+            {{calorieRecommendation.restDayIntake - parseInt(goals.restDayCalories)}} 卡
+          </text>
+          <text class="difference-value" wx:if="{{calorieRecommendation.goalType === 'gain'}}">
+            {{parseInt(goals.restDayCalories) - calorieRecommendation.restDayIntake}} 卡
+          </text>
+        </view>
+        <text class="form-label">非运动日热量摄入 (卡)</text>
+        <input 
+          class="form-input" 
+          type="number"
+          placeholder="例如：1500"
+          value="{{goals.restDayCalories}}"
+          data-field="restDayCalories"
+          bindinput="onInputChange"
+        />
+        <text class="form-hint" wx:if="{{calorieRecommendation}}">
+          建议: {{calorieRecommendation.restDayIntake}} 卡
+        </text>
+        <text class="form-hint" wx:else>
+          建议: {{tdee}} 卡（维持体重）
+        </text>
+      </view>
+      
+      <view class="form-item">
+        <view class="calorie-difference" wx:if="{{calorieRecommendation && goals.exerciseDayCalories && parseInt(goals.exerciseDayCalories) > 0}}">
+          <text class="difference-label" wx:if="{{calorieRecommendation.goalType === 'lose'}}">
+            热量缺口: 
+          </text>
+          <text class="difference-label" wx:if="{{calorieRecommendation.goalType === 'gain'}}">
+            热量盈余: 
+          </text>
+          <text class="difference-value" wx:if="{{calorieRecommendation.goalType === 'lose'}}">
+            {{calorieRecommendation.exerciseDayIntake - parseInt(goals.exerciseDayCalories)}} 卡
+          </text>
+          <text class="difference-value" wx:if="{{calorieRecommendation.goalType === 'gain'}}">
+            {{parseInt(goals.exerciseDayCalories) - calorieRecommendation.exerciseDayIntake}} 卡
+          </text>
+        </view>
+        <text class="form-label">运动日热量摄入 (卡)</text>
         <input 
           class="form-input" 
           type="number"
           placeholder="例如：2000"
-          value="{{goals.dailyCalories}}"
-          data-field="dailyCalories"
+          value="{{goals.exerciseDayCalories}}"
+          data-field="exerciseDayCalories"
           bindinput="onInputChange"
         />
-        <text class="form-hint">建议: {{tdee}} 卡（维持体重）</text>
+        <text class="form-hint" wx:if="{{calorieRecommendation}}">
+          建议: {{calorieRecommendation.exerciseDayIntake}} 卡（运动消耗 {{calorieRecommendation.exerciseCalories}} 卡）
+        </text>
+        <text class="form-hint" wx:else>
+          建议: {{tdee}} 卡（维持体重）
+        </text>
       </view>
       
       <view class="form-item">
@@ -98,19 +168,6 @@
           bindinput="onInputChange"
         />
         <text class="form-hint">建议: 至少30分钟</text>
-      </view>
-      
-      <view class="form-item">
-        <text class="form-label">每日饮水量 (杯)</text>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="例如：8"
-          value="{{goals.dailyWater}}"
-          data-field="dailyWater"
-          bindinput="onInputChange"
-        />
-        <text class="form-hint">建议: 8杯（约2000ml）</text>
       </view>
     </view>
   </view>
