@@ -80,7 +80,7 @@ Page({
             isOwner: isOwner || false,
             likeCount: post.likeCount || 0,
             isLiked: post.isLiked || false,
-            commentCount: 0, // 初始值，后续加载评论时更新
+            commentCount: post.commentCount || 0, // 使用后端返回的评论数量
             comments: [], // 评论列表
             showComments: false, // 是否显示评论
             showCommentInput: false // 是否显示评论输入框
@@ -268,10 +268,13 @@ Page({
           }))
         }));
         
+        // 计算评论总数（一级评论 + 二级回复）
+        const totalCount = comments.reduce((sum, c) => sum + 1 + (c.replies ? c.replies.length : 0), 0);
+        
         posts[postIndex] = {
           ...posts[postIndex],
           comments: comments,
-          commentCount: comments.reduce((sum, c) => sum + 1 + (c.replies ? c.replies.length : 0), 0)
+          commentCount: totalCount // 更新评论数量
         };
         this.setData({ posts });
       }
