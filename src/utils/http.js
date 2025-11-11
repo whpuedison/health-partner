@@ -3,7 +3,8 @@
  */
 // 注意：小程序无法访问 localhost，需要使用本机 IP 地址
 // 获取本机 IP：在终端运行 ifconfig (macOS/Linux) 或 ipconfig (Windows)
-const BASE_URL = 'http://10.247.18.103:3000'; // 替换为实际的服务器地址
+const BASE_URL = 'https://whpuedison.online'; // 替换为实际的服务器地址
+// const BASE_URL = 'http://10.247.18.103:3000'; // 替换为实际的服务器地址
 const TIMEOUT = 10000;
 
 /**
@@ -108,9 +109,14 @@ class Http {
       const uploadType = options.type || 'avatar'; // avatar 或 post
       
       // 根据类型选择不同的上传接口
-      const uploadUrl = uploadType === 'post' 
+      let uploadUrl = uploadType === 'post' 
         ? BASE_URL + '/api/v1/post/upload-image'
         : BASE_URL + '/api/v1/user/upload-avatar';
+      
+      // 确保 URL 使用 HTTPS（防止 HTTP 重定向导致问题）
+      if (uploadUrl.startsWith('http://')) {
+        uploadUrl = uploadUrl.replace('http://', 'https://');
+      }
       
       wx.uploadFile({
         url: uploadUrl,

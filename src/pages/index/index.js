@@ -414,7 +414,8 @@ Page({
   onActionTap(e) {
     const { url, tab } = e.currentTarget.dataset;
     if (tab) {
-      wx.switchTab({ url: '/pages/health/health' });
+      // 健康数据页面不再是 tab 页面，使用 navigateTo 跳转
+      wx.navigateTo({ url: '/pages/health/health' });
     } else if (url) {
       wx.navigateTo({ url });
     }
