@@ -67,8 +67,9 @@ Page({
         const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo');
         const currentUserId = userInfo?.id ? Number(userInfo.id) : null;
         const openId = app.globalData.openId || wx.getStorageSync('openId');
+        const powerEnable = result.data[0].powerEnable;
         
-        const newPosts = result.data.map(post => {
+        const tempPosts = result.data.map(post => {
           // 将 post.user_id 转换为数字进行比较
           const postUserId = post.user_id ? Number(post.user_id) : null;
           // 判断是否是当前用户的帖子（只有当前用户的帖子才显示删除按钮）
@@ -87,6 +88,8 @@ Page({
             showCommentInput: false // 是否显示评论输入框
           };
         });
+
+        const newPosts = powerEnable ? tempPosts : tempPosts.filter(post => post.user_id === userInfo.id);
         
         this.setData({
           posts: refresh ? newPosts : [...this.data.posts, ...newPosts],
@@ -123,8 +126,10 @@ Page({
 
   // 跳转到发布页面
   goToCreate() {
+    // 从第一个帖子数据中获取powerEnable，如果没有则默认为1
+    const powerEnable = this.data.posts.length > 0 ? this.data.posts[0].powerEnable : false;
     wx.navigateTo({
-      url: '/pages/post/create',
+      url: `/pages/post/create?powerEnable=${powerEnable ? 1 : 0}`,
       success: () => {
         this.setData({ shouldRefresh: true });
       }
@@ -601,4 +606,3 @@ Page({
     }
   }
 });
-

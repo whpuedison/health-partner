@@ -10,12 +10,36 @@ Page({
     images: [],
     uploading: false,
     canPublish: false, // 是否可以发布
+    powerEnable: 1, // 默认为1，支持文字输入
+    selectedStatus: '', // 选择的锻炼状态
+    exerciseStatuses: [
+      '今天很棒！',
+      '继续努力',
+      '状态一般',
+      '需要休息'
+    ] // 固定的锻炼状态选项
   },
 
-  onLoad() {
+  onLoad(options) {
     // 设置导航栏标题
     wx.setNavigationBarTitle({
       title: '发布帖子'
+    });
+
+    // 获取传递的参数
+    const powerEnable = parseInt(options.powerEnable) || 0;
+    this.setData({
+      powerEnable: powerEnable
+    });
+  },
+
+  // 选择锻炼状态
+  onStatusSelect(e) {
+    const selectedStatus = this.data.exerciseStatuses[e.detail.value];
+    this.setData({
+      selectedStatus: selectedStatus,
+      content: selectedStatus,
+      canPublish: true // 选择状态就可以发布
     });
   },
 
@@ -163,4 +187,3 @@ Page({
     });
   }
 });
-

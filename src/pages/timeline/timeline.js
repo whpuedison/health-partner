@@ -111,8 +111,10 @@ Page({
 
   // 跳转到发布页面
   goToCreate() {
+     // 从第一个帖子数据中获取powerEnable，如果没有则默认为1
+    const powerEnable = this.data.posts.length > 0 ? this.data.posts[0].powerEnable : false;
     wx.navigateTo({
-      url: '/pages/post/create',
+      url: `/pages/post/create?powerEnable=${powerEnable ? 1 : 0}`,
       success: () => {
         this.setData({ shouldRefresh: true });
       }

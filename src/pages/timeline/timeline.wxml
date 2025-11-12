@@ -114,7 +114,7 @@
 
       <!-- 互动区域：点赞和评论 -->
       <view class="post-actions-bar">
-        <view class="action-item" bindtap="toggleLike" data-id="{{item.id}}">
+        <view class="action-item" wx:if="{{item.powerEnable !== false}}" bindtap="toggleLike" data-id="{{item.id}}">
           <text class="action-icon {{item.isLiked ? 'liked' : ''}}">{{item.isLiked ? '❤️' : '🤍'}}</text>
           <text class="action-text">{{item.likeCount || 0}}</text>
         </view>
