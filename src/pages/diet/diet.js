@@ -8,12 +8,12 @@ Page({
   data: {
     activeTab: 0,
     tabs: ['今日记录', '营养分析'], // 隐藏推荐食谱
-    
+
     // 今日饮食记录
     todayRecords: [],
     totalCalories: 0,
     targetCalories: 2000,
-    
+
     // 营养统计
     nutrition: {
       protein: 0,
@@ -21,40 +21,41 @@ Page({
       fat: 0,
       fiber: 0,
     },
-    
-    // 快捷添加选项
-    quickMeals: [
-      { name: '早餐', icon: '🌅', time: '07:00-09:00', color: '#FFD93D' },
-      { name: '午餐', icon: '☀️', time: '11:30-13:30', color: '#FF6B6B' },
-      { name: '晚餐', icon: '🌙', time: '17:30-19:30', color: '#6C5CE7' },
-      { name: '加餐', icon: '🍎', time: '随时', color: '#4ECDC4' },
-    ],
-    
-    // 级联选择状态
+
+    // 添加选项状态
     showAddDialog: false,
     dialogStep: 'category', // 'category' | 'food' | 'unit'
+
+    // 级联选择状态
     currentMealType: '',
-    
+
     // 分类数据
     categories: [],
     selectedCategory: null,
-    
+
     // 食物数据
     foods: [],
     selectedFood: null,
     searchKeyword: '',
-    
+
     // 单位数据
     units: [],
     selectedUnit: null,
     customWeight: '', // 自定义重量（克）
-    
+
     // 计算后的营养信息
     calculatedNutrition: null,
-    
+
+    // 拍照识图状态
+    showRecognitionDialog: false,
+    recognizedFoods: [], // 识别到的食物列表（前6个）
+    selectedRecognition: null, //
+    recognitionWeight: '', // 识别食物的重量
+
     _loadingCategories: false,
     _loadingFoods: false,
     _loadingUnits: false,
+    _recognizing: false,
   },
 
   onLoad() {
@@ -474,7 +475,7 @@ Page({
   deleteRecord(e) {
     const id = e.currentTarget.dataset.id;
     const record = this.data.todayRecords.find(r => r.id === id);
-    
+
     wx.showModal({
       title: '确认删除',
       content: record ? `确定要删除这条${record.foodName || record.food}记录吗？` : '确定要删除这条记录吗？',
@@ -512,6 +513,189 @@ Page({
     });
   },
 
+  // 打开拍照识图
+  openPhotoRecognition() {
+    wx.showActionSheet({
+      itemList: ['拍照', '从相册选择'],
+      success: res => {
+        const sourceType = res.tapIndex === 0 ? ['camera'] : ['album'];
+        this.chooseImage(sourceType);
+      },
+      fail: err => {
+        console.log('用户取消选择:', err);
+      }
+    });
+  },
+
+  // 选择图片
+  chooseImage(sourceType) {
+    wx.chooseImage({
+      count: 1,
+      sourceType: sourceType,
+      success: res => {
+        const tempFilePath = res.tempFilePaths[0];
+        const fileSize = res.tempFiles[0].size;
+
+        // 检查文件大小（百度API限制4MB）
+        if (fileSize > 4 * 1024 * 1024) {
+          wx.showToast({
+            title: '图片过大，请选择小于4MB的图片',
+            icon: 'none',
+          });
+          return;
+        }
+
+        this.processAndRecognize(tempFilePath);
+      },
+      fail: err => {
+        console.log('选择图片失败:', err);
+      }
+    });
+  },
+
+  // 处理图片并识别（直接转换为base64发送）
+  processAndRecognize(tempFilePath) {
+    wx.showLoading({ title: '处理中...' });
+
+    // 将图片转换为base64
+    wx.getFileSystemManager().readFile({
+      filePath: tempFilePath,
+      encoding: 'base64',
+      success: res => {
+        wx.hideLoading();
+        const base64Data = res.data;
+        this.recognizeFoodByBase64(base64Data);
+      },
+      fail: err => {
+        wx.hideLoading();
+        wx.showToast({
+          title: '图片处理失败',
+          icon: 'none',
+        });
+        console.error('读取图片失败:', err);
+      }
+    });
+  },
+
+  // 通过base64识别食物
+  recognizeFoodByBase64(imageBase64) {
+    wx.showLoading({ title: '识别中...' });
+
+    Http.post(API.FOOD_RECOGNIZE, {
+      imageBase64: imageBase64
+    })
+      .then(res => {
+        wx.hideLoading();
+        if (res.data && res.data.length > 0) {
+          this.setData({
+            showRecognitionDialog: true,
+            recognizedFoods: res.data,
+            selectedRecognition: null,
+            recognitionWeight: '',
+          });
+        } else {
+          wx.showToast({
+            title: '未识别到食物',
+            icon: 'none',
+          });
+        }
+      })
+      .catch(err => {
+        wx.hideLoading();
+        wx.showToast({
+          title: '识别失败',
+          icon: 'none',
+        });
+        console.error('食物识别失败:', err);
+      });
+  },
+
+  // 关闭识别对话框
+  closeRecognitionDialog() {
+    this.setData({
+      showRecognitionDialog: false,
+      recognizedFoods: [],
+      selectedRecognition: null,
+      recognitionWeight: '',
+    });
+  },
+
+  // 选择识别结果
+  selectRecognizedFood(e) {
+    const food = e.currentTarget.dataset.food;
+    this.setData({
+      selectedRecognition: food,
+      recognitionWeight: '',
+    });
+  },
+
+  // 重量输入
+  onRecognitionWeightInput(e) {
+    const weight = e.detail.value;
+    this.setData({
+      recognitionWeight: weight,
+    });
+  },
+
+  // 确认添加识别的食物
+  confirmRecognitionAdd() {
+    const { selectedRecognition, recognitionWeight } = this.data;
+
+    if (!selectedRecognition) {
+      wx.showToast({
+        title: '请选择食物',
+        icon: 'none',
+      });
+      return;
+    }
+
+    const weight = parseFloat(recognitionWeight);
+    if (!weight || weight <= 0) {
+      wx.showToast({
+        title: '请输入有效重量',
+        icon: 'none',
+      });
+      return;
+    }
+
+    const openId = this.getOpenId();
+    if (!openId) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+      });
+      return;
+    }
+
+    wx.showLoading({ title: '添加中...' });
+
+     // 直接通过食物名称和克数添加记录（服务端自动计算卡路里）
+    Http.post(API.FOOD_QUICK_ADD, {
+      openId,
+      foodName: selectedRecognition.name,
+      weightGrams: weight,
+      caloriePer100g: parseFloat(selectedRecognition.calorie) || null, // 传递百度AI识别的基础卡路里信息
+    })
+      .then(() => {
+        wx.hideLoading();
+        wx.showToast({
+          title: '添加成功',
+          icon: 'success',
+        });
+        this.loadTodayRecords();
+        this.loadTodayStats();
+        this.closeRecognitionDialog();
+      })
+      .catch(err => {
+        wx.hideLoading();
+        console.error('添加识别食物失败:', err);
+        if (err.response && err.response.data && err.response.data.message) {
+          wx.showToast({
+            title: err.response.data.message,
+            icon: 'none',
+      })}
+    })
+  },
 
   // 阻止事件冒泡
   stopPropagation() {
@@ -525,4 +709,3 @@ Page({
     };
   },
 });
-
