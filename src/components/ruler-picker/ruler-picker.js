@@ -79,7 +79,12 @@ Component({
       const pixelRatio = 750 / wx.getSystemInfoSync().windowWidth;
       const currentY = e.touches[0].clientY * pixelRatio;
       const deltaY = currentY - touchStartY;
-      let newTranslateY = lastTranslateY + deltaY;
+
+      // 添加阻尼系数，减缓滑动速度
+      const dampingFactor = 0.2; // 0.2倍速度，更平滑
+      const dampedDeltaY = deltaY * dampingFactor;
+
+      let newTranslateY = lastTranslateY + dampedDeltaY;
 
       // 限制translateY范围
       const minTranslate = -(Math.floor((this.properties.max - min) / step)) * markHeight;
