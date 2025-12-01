@@ -179,8 +179,10 @@
 
 .btn-primary {
   background: linear-gradient(135deg, #B8E6C8 0%, #A0D8B0 100%);
-  color: #000000;
   box-shadow: 0 4rpx 12rpx rgba(184, 230, 200, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-primary:active {
@@ -198,3 +200,34 @@
   background: #F7FAFC;
 }
 
+/* 刻度尺容器 */
+.ruler-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 500rpx;
+  margin: 40rpx 0;
+  width: 100%;
+}
+
+/* 身高显示 */
+.height-display {
+  margin-top: 40rpx;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 12rpx;
+}
+
+.height-value {
+  font-size: 64rpx;
+  font-weight: 600;
+  color: #000000;
+  line-height: 1;
+}
+
+.height-unit {
+  font-size: 32rpx;
+  color: #666666;
+  line-height: 1;
+}

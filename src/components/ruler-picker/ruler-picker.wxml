@@ -1,0 +1,12 @@
+<view class="ruler-picker" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchEnd">
+  <view class="ruler-content" style="transform: translateY({{translateY}}rpx)">
+    <view wx:for="{{marks}}" class="ruler-mark" style="top: {{item.top}}rpx">
+      <view class="mark-line {{item.isLong ? 'mark-long' : 'mark-short'}}"></view>
+      <text wx:if="{{item.isLong}}" class="mark-text">{{item.value}}</text>
+    </view>
+  </view>
+  <view class="ruler-pointer">
+    <view class="pointer-line"></view>
+    <text class="pointer-value">{{value}}cm</text>
+  </view>
+</view>

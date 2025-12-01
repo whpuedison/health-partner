@@ -1,0 +1,74 @@
+.ruler-picker {
+  position: relative;
+  width: 390rpx;
+  height: 500rpx;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.ruler-content {
+  position: relative;
+  height: 1500rpx;
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+}
+
+.ruler-mark {
+  position: absolute;
+  width: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.mark-line {
+  position: absolute;
+  right: 0;
+  background: #A0D8B0;
+}
+
+.mark-short {
+  width: 40rpx;
+  height: 2rpx;
+}
+
+.mark-long {
+  width: 70rpx;
+  height: 4rpx;
+}
+
+.mark-text {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 28rpx;
+  color: #666;
+  white-space: nowrap;
+}
+
+.ruler-pointer {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+}
+
+.pointer-line {
+  width: 50rpx;
+  height: 8rpx;
+  border-radius: 12rpx;
+  background: #54c07a;
+  position: relative;
+  top: 2rpx;
+}
+
+.pointer-value {
+  margin-left: 12rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #000000;
+}

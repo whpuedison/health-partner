@@ -40,17 +40,37 @@
       </view>
     </view>
 
-    <!-- 后续步骤占位 -->
-    <view class="step-content" wx:if="{{currentStep > 1}}">
+    <!-- 步骤2：身高选择 -->
+    <view class="step-content" wx:if="{{currentStep === 2}}">
+      <view class="question-section">
+        <text class="question-title">你的身高是?</text>
+        <text class="question-desc">准确的身高数据有助于我们计算你的基础代谢率</text>
+      </view>
+
+      <view class="ruler-container">
+        <ruler-picker
+          min="120"
+          max="220"
+          value="{{selectedHeight}}"
+          bindchange="onHeightChange"
+        />
+      </view>
+
+      <view class="action-buttons">
+        <button class="btn btn-primary" bindtap="nextStep">下一步</button>
+      </view>
+    </view>
+
+    <!-- 步骤3及后续步骤占位 -->
+    <view class="step-content" wx:if="{{currentStep > 2}}">
       <view class="question-section">
         <text class="question-title">步骤 {{currentStep}}</text>
         <text class="question-desc">后续步骤开发中...</text>
       </view>
-      
+
       <view class="action-buttons">
         <button class="btn btn-secondary" bindtap="prevStep">上一步</button>
       </view>
     </view>
   </view>
 </view>
-

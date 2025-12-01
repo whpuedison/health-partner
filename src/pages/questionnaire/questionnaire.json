@@ -2,6 +2,8 @@
   "navigationBarTitleText": "信息收集",
   "navigationBarBackgroundColor": "#F7FAFC",
   "navigationBarTextStyle": "black",
-  "backgroundColor": "#F7FAFC"
+  "backgroundColor": "#F7FAFC",
+  "usingComponents": {
+    "ruler-picker": "../../components/ruler-picker/ruler-picker"
+  }
 }
-

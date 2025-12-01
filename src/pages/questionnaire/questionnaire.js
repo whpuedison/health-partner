@@ -9,9 +9,12 @@ Page({
     totalSteps: 5,
     // 选择的性别
     selectedGender: null,
+    // 选择的身高
+    selectedHeight: 170,
     // 问卷数据
     questionnaireData: {
-      gender: null
+      gender: null,
+      height: null
     }
   },
 
@@ -29,11 +32,20 @@ Page({
       selectedGender: gender,
       'questionnaireData.gender': gender
     });
-    
+
     // 延迟一下，让用户看到选择效果，然后进入下一步
     setTimeout(() => {
       this.nextStep();
     }, 300);
+  },
+
+  // 身高变化处理
+  onHeightChange(e) {
+    const height = e.detail.value;
+    this.setData({
+      selectedHeight: height,
+      'questionnaireData.height': height
+    });
   },
 
   // 下一步
@@ -77,4 +89,3 @@ Page({
     return (this.data.currentStep / this.data.totalSteps) * 100;
   }
 });
-
