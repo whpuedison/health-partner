@@ -1,0 +1,56 @@
+<!--pages/questionnaire/questionnaire.wxml-->
+<view class="questionnaire-page">
+  <!-- 主容器：包含进度和步骤内容 -->
+  <view class="main-container">
+    <!-- 提示文字 -->
+    <view class="progress-hint">
+      <text class="hint-text">完成评测，为你生成专属方案</text>
+    </view>
+    
+    <!-- 进度条 -->
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{(currentStep / totalSteps) * 100}}%"></view>
+    </view>
+
+    <!-- 步骤1：性别选择 -->
+    <view class="step-content" wx:if="{{currentStep === 1}}">
+      <view class="question-section">
+        <text class="question-title">你的性别是?</text>
+        <text class="question-desc">生理性别和激素会影响我们身体代谢食物的方式</text>
+      </view>
+
+      <view class="options-container">
+        <view 
+          class="option-item {{selectedGender === 'male' ? 'selected' : ''}}"
+          data-gender="male"
+          bindtap="selectGender"
+        >
+         <image class="option-avatar" src="https://whpuedison.online/images/male_avatar.png"></image>
+          <text class="option-text">男性</text>
+        </view>
+        
+        <view 
+          class="option-item {{selectedGender === 'female' ? 'selected' : ''}}"
+          data-gender="female"
+          bindtap="selectGender"
+        >
+          <image class="option-avatar" src="https://whpuedison.online/images/female_avatar.png"></image>
+          <text class="option-text">女性</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 后续步骤占位 -->
+    <view class="step-content" wx:if="{{currentStep > 1}}">
+      <view class="question-section">
+        <text class="question-title">步骤 {{currentStep}}</text>
+        <text class="question-desc">后续步骤开发中...</text>
+      </view>
+      
+      <view class="action-buttons">
+        <button class="btn btn-secondary" bindtap="prevStep">上一步</button>
+      </view>
+    </view>
+  </view>
+</view>
+

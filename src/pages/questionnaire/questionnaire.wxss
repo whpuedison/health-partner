@@ -1,0 +1,200 @@
+/* pages/questionnaire/questionnaire.wxss */
+.questionnaire-page {
+  background: #F0F9F5;
+  height: 100vh;
+  padding: 24rpx 24rpx calc(24rpx + env(safe-area-inset-bottom)) 24rpx;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* 主容器 */
+.main-container {
+  background: white;
+  border-radius: 32rpx;
+  padding: 40rpx 32rpx;
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.04);
+  height: calc(100vh - 48rpx - env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* 提示文字 */
+.progress-hint {
+  text-align: center;
+  margin-bottom: 24rpx;
+  flex-shrink: 0;
+}
+
+.hint-text {
+  font-size: 28rpx;
+  color: #666666;
+  letter-spacing: 1rpx;
+}
+
+/* 进度条 */
+.progress-bar {
+  width: 100%;
+  height: 8rpx;
+  background: #E8F5E8;
+  border-radius: 4rpx;
+  overflow: hidden;
+  margin-bottom: 48rpx;
+  flex-shrink: 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #B8E6C8 0%, #A0D8B0 100%);
+  border-radius: 4rpx;
+  transition: width 0.4s ease;
+}
+
+/* 步骤内容 */
+.step-content {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 问题区域 */
+.question-section {
+  text-align: center;
+  margin-bottom: 40rpx;
+  flex-shrink: 0;
+}
+
+.question-title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 20rpx;
+  line-height: 1.5;
+}
+
+.question-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.8;
+  padding: 0 20rpx;
+}
+
+/* 选项容器 */
+.options-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+  flex-wrap: wrap;
+  padding: 0 20rpx;
+  flex: 1;
+  align-items: center;
+}
+
+/* 选项项 */
+.option-item {
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.option-avatar {
+  width: 140rpx;
+  height: 140rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  position: relative;
+  background: #F5F5F5;
+}
+
+.male-avatar {
+  background: #F5F5F5;
+}
+
+.female-avatar {
+  background: #F5F5F5;
+}
+
+.avatar-icon {
+  font-size: 70rpx;
+  font-weight: 300;
+  color: #333333;
+  line-height: 1;
+}
+
+.option-item.selected .option-avatar {
+  transform: scale(1.1);
+  box-shadow: 0 8rpx 24rpx rgba(184, 230, 200, 0.3);
+  background: linear-gradient(135deg, #B8E6C8 0%, #A0D8B0 100%);
+}
+
+.option-item.selected .avatar-icon {
+  color: #000000;
+}
+
+.option-text {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333333;
+  transition: color 0.3s ease;
+  letter-spacing: 1rpx;
+}
+
+.option-item.selected .option-text {
+  color: #000000;
+  font-weight: 600;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 48rpx;
+}
+
+.btn {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  border-radius: 16rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #B8E6C8 0%, #A0D8B0 100%);
+  color: #000000;
+  box-shadow: 0 4rpx 12rpx rgba(184, 230, 200, 0.2);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(184, 230, 200, 0.2);
+}
+
+.btn-secondary {
+  background: white;
+  color: #666666;
+  border: 2rpx solid #E0E0E0;
+}
+
+.btn-secondary:active {
+  background: #F7FAFC;
+}
+
