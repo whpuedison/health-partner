@@ -1,0 +1,11 @@
+<view class="weight-picker" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchEnd">
+  <view class="weight-content" style="transform: translateX({{translateX}}rpx)">
+    <view wx:for="{{marks}}" class="weight-mark" style="left: {{item.left}}rpx">
+      <view class="weight-line {{item.isLong ? 'weight-long' : 'weight-short'}}"></view>
+      <text wx:if="{{item.isLong}}" class="weight-text">{{item.value}}</text>
+    </view>
+  </view>
+  <view class="weight-pointer">
+    <view class="pointer-triangle"></view>
+  </view>
+</view>

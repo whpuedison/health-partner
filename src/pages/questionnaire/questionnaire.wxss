@@ -210,7 +210,7 @@
   width: 100%;
 }
 
-/* 身高显示 */
+/* 身高/体重显示 */
 .height-display {
   margin-top: 40rpx;
   display: flex;

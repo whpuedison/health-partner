@@ -4,17 +4,20 @@ const app = getApp();
 Page({
   data: {
     // 当前步骤（从1开始）
-    currentStep: 1,
+    currentStep:3,
     // 总步骤数（后续可以扩展）
     totalSteps: 5,
     // 选择的性别
     selectedGender: null,
     // 选择的身高
     selectedHeight: 170,
+    // 选择的体重
+    selectedWeight: 70,
     // 问卷数据
     questionnaireData: {
       gender: null,
-      height: null
+      height: null,
+      weight: null
     }
   },
 
@@ -45,6 +48,15 @@ Page({
     this.setData({
       selectedHeight: height,
       'questionnaireData.height': height
+    });
+  },
+
+  // 体重变化处理
+  onWeightChange(e) {
+    const weight = e.detail.value;
+    this.setData({
+      selectedWeight: weight,
+      'questionnaireData.weight': weight
     });
   },
 

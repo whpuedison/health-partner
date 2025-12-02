@@ -4,6 +4,7 @@
   "navigationBarTextStyle": "black",
   "backgroundColor": "#F7FAFC",
   "usingComponents": {
-    "ruler-picker": "../../components/ruler-picker/ruler-picker"
+    "ruler-picker": "../../components/ruler-picker/ruler-picker",
+    "weight-picker": "../../components/weight-picker/weight-picker"
   }
 }

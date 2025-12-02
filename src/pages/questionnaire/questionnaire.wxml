@@ -57,12 +57,39 @@
       </view>
 
       <view class="action-buttons">
+        <button class="btn btn-secondary" bindtap="prevStep">上一步</button>
         <button class="btn btn-primary" bindtap="nextStep">下一步</button>
       </view>
     </view>
 
-    <!-- 步骤3及后续步骤占位 -->
-    <view class="step-content" wx:if="{{currentStep > 2}}">
+    <!-- 步骤3：体重选择 -->
+    <view class="step-content" wx:if="{{currentStep === 3}}">
+      <view class="question-section">
+        <text class="question-title">你的体重是?</text>
+        <text class="question-desc">精准体重数据将用于计算你的BMI</text>
+      </view>
+
+      <view class="ruler-container">
+        <weight-picker
+          min="30"
+          max="200"
+          value="{{selectedWeight}}"
+          bindchange="onWeightChange"
+        />
+        <view class="height-display">
+          <text class="height-value">{{selectedWeight}}</text>
+          <text class="height-unit">kg</text>
+        </view>
+      </view>
+
+      <view class="action-buttons">
+        <button class="btn btn-secondary" bindtap="prevStep">上一步</button>
+        <button class="btn btn-primary" bindtap="nextStep">下一步</button>
+      </view>
+    </view>
+
+    <!-- 步骤4及后续步骤占位 -->
+    <view class="step-content" wx:if="{{currentStep > 3}}">
       <view class="question-section">
         <text class="question-title">步骤 {{currentStep}}</text>
         <text class="question-desc">后续步骤开发中...</text>

@@ -1,0 +1,71 @@
+.weight-picker {
+  position: relative;
+  width: 638rpx;
+  height: 200rpx;
+}
+
+.weight-scroll {
+  width: 100%;
+  height: 100%;
+  white-space: nowrap;
+  position: relative;
+}
+
+.weight-content {
+  position: relative;
+  height: 100%;
+  display: inline-block;
+}
+
+.weight-mark {
+  position: absolute;
+  bottom: 0;
+  width: 4rpx;
+  height: 100%;
+}
+
+.weight-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ccc;
+}
+
+.weight-short {
+  height: 40rpx;
+}
+
+.weight-long {
+  height: 70rpx;
+}
+
+.weight-text {
+  position: absolute;
+  bottom: 110rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24rpx;
+  color: #333;
+  white-space: nowrap;
+}
+
+.weight-pointer {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -25rpx;
+  pointer-events: none;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+}
+
+.pointer-triangle {
+  width: 4rpx;
+  height: 50rpx;
+  border-radius: 12rpx;
+  background: #54c07a;
+  position: relative;
+  left: 2rpx;
+}
