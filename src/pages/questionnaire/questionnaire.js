@@ -1,4 +1,6 @@
 // pages/questionnaire/questionnaire.js
+const { Http } = require('../../utils/http');
+const { API } = require('../../config/api');
 const app = getApp();
 
 Page({
@@ -411,20 +413,77 @@ Page({
   },
 
   // 提交问卷
-  submitQuestionnaire() {
-   // 更新全局用户信息
-   app.globalData.profile = {
-     ...app.globalData.profile,
-     ...this.data.questionnaireData
-   };
+  async submitQuestionnaire() {
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    const { selectedGender, selectedHeight, selectedWeight, age, targetWeight, targetDate } = this.data;
 
-   //调用接口保存数据
-   // 把app.globalData.profile传给后端保存（此处省略具体实现）
+    // 显示加载提示
+    wx.showLoading({
+      title: '提交中...',
+      mask: true
+    });
 
-   // 跳转到首页
-   wx.reLaunch({
-     url: '/pages/index/index',
-   });
+    try {
+      // 1. 更新用户健康档案
+      const profileData = {
+        openId: openId,
+        height: selectedHeight,
+        weight: selectedWeight,
+        age: age,
+        gender: selectedGender === 'male' ? '男' : '女'
+      };
+
+      const profileResult = await Http.post(API.USER_PROFILE, profileData);
+      
+      if (!profileResult.success) {
+        throw new Error(profileResult.message || '更新健康档案失败');
+      }
+
+      // 2. 更新用户目标
+      const goalsData = {
+        openId: openId,
+        targetWeight: targetWeight,
+        targetDate: targetDate // YYYY-MM-DD 格式
+      };
+
+      const goalsResult = await Http.post(API.USER_GOALS, goalsData);
+      
+      if (!goalsResult.success) {
+        throw new Error(goalsResult.message || '更新目标失败');
+      }
+
+      // 更新全局数据
+      if (profileResult.data) {
+        app.globalData.profile = profileResult.data;
+        wx.setStorageSync('profile', profileResult.data);
+      }
+
+      wx.hideLoading();
+      
+      // 显示成功提示
+      wx.showToast({
+        title: '提交成功！',
+        icon: 'success',
+        duration: 2000
+      });
+
+      // 延迟跳转，让用户看到成功提示
+      setTimeout(() => {
+        // 跳转到首页
+        wx.reLaunch({
+          url: '/pages/index/index',
+        });
+      }, 2000);
+
+    } catch (error) {
+      wx.hideLoading();
+      console.error('提交问卷失败:', error);
+      wx.showToast({
+        title: error.message || '提交失败，请重试',
+        icon: 'none',
+        duration: 3000
+      });
+    }
   },
 
   // 计算BMI
