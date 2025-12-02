@@ -3,6 +3,8 @@ const app = getApp();
 
 Page({
   data: {
+    // 是否显示loading
+    isLoading: true,
     // 当前步骤（从1开始）
     currentStep: 1,
     // 总步骤数（后续可以扩展）
@@ -99,6 +101,9 @@ Page({
 
     // 初始化目标日期（一个月后）
     this.initializeTargetDate();
+
+    // 检查loading状态
+    this.checkLoading();
   },
 
   // 选择性别
@@ -373,8 +378,7 @@ Page({
 
   // 下一步
   nextStep() {
-    if (this.data.currentStep < this.data.totalSteps) {
-      const nextStepNum = this.data.currentStep + 1;
+    const nextStepNum = this.data.currentStep + 1;
 
       // 如果进入第五步（目标体重选择），设置默认目标体重等于当前体重
       if (nextStepNum === 5 && this.data.selectedWeight) {
@@ -395,10 +399,6 @@ Page({
           currentStep: nextStepNum
         });
       }
-    } else {
-      // 完成问卷
-      this.submitQuestionnaire();
-    }
   },
 
   // 上一步
@@ -412,17 +412,19 @@ Page({
 
   // 提交问卷
   submitQuestionnaire() {
-    console.log('问卷数据:', this.data.questionnaireData);
-    // TODO: 提交到后端
-    wx.showToast({
-      title: '提交成功',
-      icon: 'success'
-    });
-    
-    // 返回上一页或跳转到首页
-    setTimeout(() => {
-      wx.navigateBack();
-    }, 1500);
+   // 更新全局用户信息
+   app.globalData.profile = {
+     ...app.globalData.profile,
+     ...this.data.questionnaireData
+   };
+
+   //调用接口保存数据
+   // 把app.globalData.profile传给后端保存（此处省略具体实现）
+
+   // 跳转到首页
+   wx.reLaunch({
+     url: '/pages/index/index',
+   });
   },
 
   // 计算BMI
@@ -658,6 +660,62 @@ Page({
       weightChangeTypeForDate: changeTypeForDate,
       goalDateEncouragement: goalDateEncouragement
     });
+  },
+
+  // 检查loading状态
+  checkLoading() {
+    if (!app.globalData.loading) {
+      // 如果loading已完成，检查是否有profile
+      if (app.globalData.profile) {
+        // 有用户信息，直接跳转到首页
+        wx.reLaunch({
+          url: '/pages/index/index',
+        });
+      } else {
+        // 隐藏loading，显示问卷
+        this.setData({
+          isLoading: false
+        });
+      }
+      return;
+    }
+
+    // 如果还在loading，监听变化
+    this.loadingTimer = setInterval(() => {
+      if (!app.globalData.loading) {
+        clearInterval(this.loadingTimer);
+        if (app.globalData.profile) {
+          // 有用户信息，跳转到首页
+          wx.reLaunch({
+            url: '/pages/index/index',
+          });
+        } else {
+          // 隐藏loading，显示问卷
+          this.setData({
+            isLoading: false
+          });
+        }
+      }
+    }, 200); // 每200ms检查一次
+
+    // 设置超时保护，避免无限loading
+    setTimeout(() => {
+      if (this.loadingTimer) {
+        clearInterval(this.loadingTimer);
+        // 如果超时，默认显示问卷
+        this.setData({
+          isLoading: false
+        });
+      }
+    }, 8000); // 8秒超时
+  },
+
+  onUnload() {
+    // 清除定时器
+    if (this.loadingTimer) {
+      clearInterval(this.loadingTimer);
+      this.loadingTimer = null;
+    }
   },
 
   // 计算进度百分比

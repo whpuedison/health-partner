@@ -7,6 +7,7 @@ App({
     userInfo: null,
     openId: null,
     profile: null, // 健康档案信息
+    loading: true, // 是否正在加载用户信息（启动时的loading状态）
   },
 
   onLaunch() {
@@ -46,14 +47,19 @@ App({
                 this.globalData.profile = result.data.profile;
                 wx.setStorageSync('profile', result.data.profile);
               }
+
+              // 结束loading状态
+              this.globalData.loading = false;
             }
           }).catch((error) => {
             console.error('获取 openId 失败', error);
+            this.globalData.loading = false;
           });
         }
       },
       fail: (error) => {
         console.error('登录失败', error);
+        this.globalData.loading = false;
       },
     });
   },
@@ -75,4 +81,3 @@ App({
     console.log('App Hide');
   },
 });
-

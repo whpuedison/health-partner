@@ -1,5 +1,14 @@
 <!--pages/questionnaire/questionnaire.wxml-->
-<view class="questionnaire-page">
+<!-- Loading界面 -->
+<view class="loading-container" wx:if="{{isLoading}}">
+  <view class="loading-spinner-section">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">正在加载</text>
+  </view>
+</view>
+
+<!-- 问卷界面 -->
+<view class="questionnaire-page" wx:else>
   <!-- 主容器：包含进度和步骤内容 -->
   <view class="main-container">
     <!-- 提示文字 -->
@@ -213,18 +222,6 @@
       <view class="action-buttons">
         <button class="btn btn-secondary" bindtap="prevStep">上一步</button>
         <button class="btn btn-primary" bindtap="submitQuestionnaire">完成问卷</button>
-      </view>
-    </view>
-
-    <!-- 步骤7及后续步骤占位 -->
-    <view class="step-content" wx:if="{{currentStep > 6}}">
-      <view class="question-section">
-        <text class="question-title">步骤 {{currentStep}}</text>
-        <text class="question-desc">后续步骤开发中...</text>
-      </view>
-
-      <view class="action-buttons">
-        <button class="btn btn-secondary" bindtap="prevStep">上一步</button>
       </view>
     </view>
   </view>
