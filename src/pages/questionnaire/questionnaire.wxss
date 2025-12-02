@@ -175,10 +175,13 @@
   font-weight: 600;
   border: none;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #B8E6C8 0%, #A0D8B0 100%);
+  background: #29ac57;
   box-shadow: 0 4rpx 12rpx rgba(184, 230, 200, 0.2);
   display: flex;
   align-items: center;

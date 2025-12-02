@@ -61,7 +61,7 @@
   width: 50rpx;
   height: 8rpx;
   border-radius: 12rpx;
-  background: #54c07a;
+  background: #29ac57;
   position: relative;
   top: 2rpx;
 }
