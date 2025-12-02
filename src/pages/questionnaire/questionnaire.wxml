@@ -179,12 +179,45 @@
       <!-- 完成问卷按钮 -->
       <view class="action-buttons">
         <button class="btn btn-secondary" bindtap="prevStep">上一步</button>
+        <button class="btn btn-primary" bindtap="nextStep">下一步</button>
+        <!-- <button class="btn btn-primary" bindtap="submitQuestionnaire">完成问卷</button> -->
+      </view>
+    </view>
+
+    <!-- 步骤6：目标达成日期选择 -->
+    <view class="step-content" wx:if="{{currentStep === 6}}">
+      <view class="question-section">
+        <text class="question-title">你希望什么时候达到目标体重?</text>
+        <text class="question-desc">选择合理的目标完成日期，帮你制定具体的行动计划</text>
+      </view>
+
+      <view class="target-date-container">
+        <view class="date-display" bindtap="showTargetDatePicker">
+          <text class="date-label">选择目标完成日期</text>
+          <text class="selected-date">{{targetDate || '请稍候...'}}</text>
+          <text class="date-arrow">📅</text>
+        </view>
+      </view>
+
+      <!-- 目标日期规划 box -->
+      <view class="goal-planning" wx:if="{{targetDate}}">
+        <view class="planning-header">
+          <text class="planning-value">{{targetDate}} ({{daysLeft}} 天后)</text>
+        </view>
+        <view class="planning-content">
+          <text class="planning-text">需要每周 {{weeklyChangeForDate}}kg {{weightChangeTypeForDate === 'lose' ? '减重' : weightChangeTypeForDate === 'gain' ? '增重' : '维持'}}，{{goalDateEncouragement}}</text>
+        </view>
+      </view>
+
+      <!-- 完成问卷按钮 -->
+      <view class="action-buttons">
+        <button class="btn btn-secondary" bindtap="prevStep">上一步</button>
         <button class="btn btn-primary" bindtap="submitQuestionnaire">完成问卷</button>
       </view>
     </view>
 
-    <!-- 步骤6及后续步骤占位 -->
-    <view class="step-content" wx:if="{{currentStep > 5}}">
+    <!-- 步骤7及后续步骤占位 -->
+    <view class="step-content" wx:if="{{currentStep > 6}}">
       <view class="question-section">
         <text class="question-title">步骤 {{currentStep}}</text>
         <text class="question-desc">后续步骤开发中...</text>
@@ -196,7 +229,7 @@
     </view>
   </view>
 
-  <!-- 日期选择器弹窗 -->
+  <!-- 日期选择器弹窗（出生日期） -->
   <van-popup
     show="{{ showDatePicker }}"
     position="bottom"
@@ -211,6 +244,24 @@
       bind:input="onInput"
       bind:confirm="onDateConfirm"
       bind:cancel="onDateCancel"
+      formatter="{{ formatter }}"
+    />
+  </van-popup>
+
+  <!-- 目标日期选择器弹窗 -->
+  <van-popup
+    show="{{ showTargetDatePicker }}"
+    position="bottom"
+    bind:close="onTargetDatePopupClose"
+  >
+    <van-datetime-picker
+      value="{{ targetDateTimestamp || targetMinDate }}"
+      type="date"
+      title="选择目标完成日期"
+      min-date="{{ targetMinDate }}"
+      max-date="{{ targetMaxDate }}"
+      bind:confirm="onTargetDateConfirm"
+      bind:cancel="onTargetDateCancel"
       formatter="{{ formatter }}"
     />
   </van-popup>

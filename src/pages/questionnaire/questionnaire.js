@@ -6,7 +6,7 @@ Page({
     // 当前步骤（从1开始）
     currentStep: 1,
     // 总步骤数（后续可以扩展）
-    totalSteps: 5,
+    totalSteps: 6,
     // 选择的性别
     selectedGender: null,
     // 选择的身高
@@ -19,6 +19,21 @@ Page({
     weightChangePercent: 0,
     weightChangeType: 'maintain', // maintain | gain | lose
     targetEncouragement: '',
+    // 目标达成时间线
+    targetWeeks: 12, // 默认12周达成目标
+    weeklyChange: 0,
+    speedMode: 'moderate', // gentle | moderate | aggressive
+    timelineEncouragement: '',
+    // 目标日期选择
+    targetDate: '',
+    targetDateTimestamp: new Date(new Date().setMonth(new Date().getMonth() + 1)).getTime(), // 默认一个月后
+    showTargetDatePicker: false,
+    targetMinDate: new Date().getTime(), // 目标日期至少明天开始
+    targetMaxDate: new Date(new Date().setFullYear(new Date().getFullYear() + 2)).getTime(), // 最多两年后
+    daysLeft: 0,
+    weeklyChangeForDate: 0,
+    weightChangeTypeForDate: 'maintain',
+    goalDateEncouragement: '',
     // 出生日期选择
     currentDate: new Date('2000-01-01').getTime(), // 默认2000年1月1日的时间戳
     showDatePicker: false,
@@ -50,7 +65,8 @@ Page({
       birth_date: null,
       age: null,
       bmi: null,
-      target_weight: null
+      target_weight: null,
+      target_date: null
     }
   },
 
@@ -77,6 +93,12 @@ Page({
 
     // 初始化目标体重对比
     this.calculateTargetComparison();
+
+    // 初始化时间线规划
+    this.calculateTimelinePlanning();
+
+    // 初始化目标日期（一个月后）
+    this.initializeTargetDate();
   },
 
   // 选择性别
@@ -126,6 +148,18 @@ Page({
 
     // 计算目标体重对比结果
     this.calculateTargetComparison();
+  },
+
+  // 目标周数变化处理
+  onTargetWeeksChange(e) {
+    const targetWeeks = e.detail.value;
+    this.setData({
+      targetWeeks: targetWeeks,
+      'questionnaireData.target_weeks': targetWeeks
+    });
+
+    // 计算时间线规划和速度评估
+    this.calculateTimelinePlanning();
   },
 
   // 显示日期选择器
@@ -192,6 +226,112 @@ Page({
     this.setData({ showDatePicker: false });
   },
 
+  // 显示目标日期选择器
+  showTargetDatePicker() {
+    this.setData({ showTargetDatePicker: true });
+  },
+
+  // 目标日期选择器确认
+  onTargetDateConfirm(e) {
+    const date = new Date(e.detail);
+    const formattedDate = this.formatDate(date);
+    const daysLeft = this.calculateDaysLeft(date);
+    const weeksToTarget = daysLeft / 7;
+    const weightChangeForDate = this.calculateWeeklyChangeForDate(weeksToTarget);
+    const changeTypeForDate = this.getWeightChangeTypeForDate(weightChangeForDate);
+    const goalDateEncouragement = this.getGoalDateEncouragement(weightChangeForDate, changeTypeForDate);
+
+    this.setData({
+      showTargetDatePicker: false,
+      targetDate: formattedDate,
+      targetDateTimestamp: e.detail,
+      daysLeft: Math.floor(daysLeft),
+      weeklyChangeForDate: weightChangeForDate,
+      weightChangeTypeForDate: changeTypeForDate,
+      goalDateEncouragement: goalDateEncouragement,
+      'questionnaireData.target_date': formattedDate
+    });
+  },
+
+  // 目标日期选择器取消
+  onTargetDateCancel() {
+    this.setData({ showTargetDatePicker: false });
+  },
+
+  // 计算到目标日期的天数
+  calculateDaysLeft(targetDate) {
+    const today = new Date();
+    const target = new Date(targetDate);
+    today.setHours(0, 0, 0, 0);
+    target.setHours(0, 0, 0, 0);
+
+    const diffTime = target.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return Math.max(1, diffDays); // 至少1天
+  },
+
+  // 计算基于目标日期的每周变化量
+  calculateWeeklyChangeForDate(weeks) {
+    if (!weeks || weeks <= 0) return 0;
+
+    const { selectedWeight, targetWeight } = this.data;
+    const totalChange = targetWeight - selectedWeight;
+    return Math.round((totalChange / weeks) * 100) / 100; // 保留两位小数
+  },
+
+  // 获取基于日期的体重变化类型
+  getWeightChangeTypeForDate(weeklyChange) {
+    if (weeklyChange > 0) return 'gain';
+    if (weeklyChange < 0) return 'lose';
+    return 'maintain';
+  },
+
+  // 获取目标日期的鼓励文字
+  getGoalDateEncouragement(weeklyChange, changeType) {
+    const absWeeklyChange = Math.abs(weeklyChange);
+
+    if (changeType === 'gain') {
+      if (absWeeklyChange <= 0.2) {
+        return '🌱 科学增重计划已制定！坚持规律锻炼和营养补充，你会健康达成目标！';
+      } else if (absWeeklyChange <= 0.5) {
+        return '💪 增重进度合理！结合蛋白质补充和力量训练，你的目标指日可待！';
+      } else {
+        return '⚡ 高效增重方案！在教练指导下科学增肌，让你快速实现理想体态！';
+      }
+    } else if (changeType === 'lose') {
+      if (absWeeklyChange <= 0.3) {
+        return '🌿 健康减重第一步！温和调整饮食习惯，你会发现身体发生的惊喜变化！';
+      } else if (absWeeklyChange <= 0.7) {
+        return '🏃‍♀️ 专业减重方案！结合运动和饮食控制，让你拥有持久的减重效果！';
+      } else {
+        return '🔥 高效减重计划！在医生指导下科学控制，帮你快速实现目标身材！';
+      }
+    } else {
+      return '🏆 维持现状也很棒！保持健康的生活方式，你已经在正确的轨道上！';
+    }
+  },
+
+  // 目标日期弹窗关闭处理
+  onTargetDatePopupClose() {
+    const date = new Date(this.data.targetDateTimestamp);
+    const formattedDate = this.formatDate(date);
+    const daysLeft = this.calculateDaysLeft(date);
+    const weeksToTarget = daysLeft / 7;
+    const weightChangeForDate = this.calculateWeeklyChangeForDate(weeksToTarget);
+    const changeTypeForDate = this.getWeightChangeTypeForDate(weightChangeForDate);
+    const goalDateEncouragement = this.getGoalDateEncouragement(weightChangeForDate, changeTypeForDate);
+
+    this.setData({
+      showTargetDatePicker: false,
+      targetDate: formattedDate,
+      daysLeft: Math.floor(daysLeft),
+      weeklyChangeForDate: weightChangeForDate,
+      weightChangeTypeForDate: changeTypeForDate,
+      goalDateEncouragement: goalDateEncouragement,
+      'questionnaireData.target_date': formattedDate
+    });
+  },
+
   // 格式化日期为YYYY-MM-DD格式
   formatDate(date) {
     const year = date.getFullYear();
@@ -243,6 +383,13 @@ Page({
           'questionnaireData.target_weight': this.data.selectedWeight,
           currentStep: nextStepNum
         });
+      } else if (nextStepNum === 6) {
+        // 进入第六步：重新计算目标日期规划，确保方框内容显示正确
+        this.setData({
+          currentStep: nextStepNum
+        });
+        // 立即更新目标日期规划显示
+        this.updateTargetDatePlanning(this.data.targetDateTimestamp);
       } else {
         this.setData({
           currentStep: nextStepNum
@@ -416,6 +563,100 @@ Page({
       weightChangePercent: roundedPercent,
       weightChangeType: changeType,
       targetEncouragement: encouragement
+    });
+  },
+
+  // 计算目标达成时间线规划
+  calculateTimelinePlanning() {
+    const { selectedWeight, targetWeight, targetWeeks } = this.data;
+
+    if (!selectedWeight || !targetWeight || !targetWeeks || targetWeeks <= 0) {
+      this.setData({
+        weeklyChange: 0,
+        speedMode: 'moderate',
+        timelineEncouragement: '选择合适的达成周期，让目标更加可行！'
+      });
+      return;
+    }
+
+    // 计算总变化量
+    const totalChange = targetWeight - selectedWeight;
+
+    // 计算每周变化量
+    const weeklyChangeValue = totalChange / targetWeeks;
+    const roundedWeekly = Math.round(weeklyChangeValue * 100) / 100; // 保留两位小数
+
+    // 判断速度模式
+    let speedMode = 'moderate';
+    let timelineEncouragement = '';
+
+    const absWeeklyChange = Math.abs(roundedWeekly);
+
+    if (totalChange > 0) {
+      // 增重模式
+      if (absWeeklyChange <= 0.2) {
+        speedMode = 'gentle';
+        timelineEncouragement = '🌱 温和增重模式：适合长期坚持，注重品质而非速度，身心健康第一！';
+      } else if (absWeeklyChange <= 0.5) {
+        speedMode = 'moderate';
+        timelineEncouragement = '💪 适中增重模式：科学增重的最佳选择，既有效果又安全可靠！';
+      } else {
+        speedMode = 'aggressive';
+        timelineEncouragement = '⚡ 急速增重模式：决心不凡！在专业指导下快速达成目标，展现你的意志力！';
+      }
+    } else if (totalChange < 0) {
+      // 减重模式
+      if (absWeeklyChange <= 0.3) {
+        speedMode = 'gentle';
+        timelineEncouragement = '🌿 温和减重模式：健康减重第一法则，每周0.3kg内最不容易反弹！';
+      } else if (absWeeklyChange <= 0.7) {
+        speedMode = 'moderate';
+        timelineEncouragement = '🏃‍♀️ 适中减重模式：专业级减重速度，既有效果又能保持健康活力！';
+      } else {
+        speedMode = 'aggressive';
+        timelineEncouragement = '🔥 急速减重模式：燃烧意志的时刻！科学控制下高速减重，需要强大的自律力！';
+      }
+    } else {
+      // 维持体重
+      speedMode = 'gentle';
+      timelineEncouragement = '🏆 体重维持模式：你已经找到了最佳状态！保持稳定意味着养生智慧！';
+    }
+
+    this.setData({
+      weeklyChange: roundedWeekly,
+      speedMode: speedMode,
+      timelineEncouragement: timelineEncouragement
+    });
+  },
+
+  // 初始化目标日期
+  initializeTargetDate() {
+    const defaultTargetDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
+    const formattedDate = this.formatDate(defaultTargetDate);
+
+    this.setData({
+      targetDate: formattedDate,
+      'questionnaireData.target_date': formattedDate
+    });
+
+    // 立即计算目标日期规划
+    this.updateTargetDatePlanning(defaultTargetDate.getTime());
+  },
+
+  // 更新目标日期规划
+  updateTargetDatePlanning(timestamp) {
+    const date = new Date(timestamp);
+    const daysLeft = this.calculateDaysLeft(date);
+    const weeksToTarget = daysLeft / 7;
+    const weightChangeForDate = this.calculateWeeklyChangeForDate(weeksToTarget);
+    const changeTypeForDate = this.getWeightChangeTypeForDate(weightChangeForDate);
+    const goalDateEncouragement = this.getGoalDateEncouragement(weightChangeForDate, changeTypeForDate);
+
+    this.setData({
+      daysLeft: Math.floor(daysLeft),
+      weeklyChangeForDate: weightChangeForDate,
+      weightChangeTypeForDate: changeTypeForDate,
+      goalDateEncouragement: goalDateEncouragement
     });
   },
 
