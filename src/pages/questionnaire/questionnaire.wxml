@@ -69,13 +69,48 @@
         <text class="question-desc">精准体重数据将用于计算你的BMI</text>
       </view>
 
-      <view class="ruler-container">
+      <view class="weight-container">
         <weight-picker
           min="30"
           max="200"
           value="{{selectedWeight}}"
           bindchange="onWeightChange"
         />
+      </view>
+
+      <!-- BMI 卡片 -->
+      <view class="bmi-card">
+        <view class="card-header">
+          <text class="card-title">体重指数 (BMI)</text>
+          <text class="card-value">{{bmi}}</text>
+        </view>
+
+        <view class="bmi-bar">
+          <view class="bmi-section underweight"></view>
+          <view class="bmi-section normal"></view>
+          <view class="bmi-section overweight"></view>
+          <view class="bmi-section obese"></view>
+          <view class="bmi-indicator" style="left: {{bmiIndicatorPosition}}%"></view>
+        </view>
+
+        <view class="bmi-labels">
+          <text class="bmi-label">偏瘦</text>
+          <text class="bmi-label">正常</text>
+          <text class="bmi-label">偏重</text>
+          <text class="bmi-label">肥胖</text>
+        </view>
+
+        <view class="bmi-status">
+          <text class="status-text">当前状态：{{bmiStatus}}</text>
+        </view>
+
+        <view class="bmi-advice">
+          <text class="advice-icon">💡</text>
+          <text class="advice-title">健康建议</text>
+          <view class="advice-list">
+            <text class="advice-item" wx:for="{{bmiSuggestions}}" wx:key="*item">{{item}}</text>
+          </view>
+        </view>
       </view>
 
       <view class="action-buttons">

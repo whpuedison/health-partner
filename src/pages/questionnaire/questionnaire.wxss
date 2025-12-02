@@ -213,6 +213,11 @@
   width: 100%;
 }
 
+.weight-container {
+  margin-bottom: 100rpx;
+  width: 100%;
+}
+
 /* 身高/体重显示 */
 .height-display {
   margin-top: 40rpx;
@@ -233,4 +238,133 @@
   font-size: 32rpx;
   color: #666666;
   line-height: 1;
+}
+
+/* BMI 卡片 */
+.bmi-card {
+  background: white;
+  border: 2rpx solid #B8E6C8;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(184, 230, 200, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.card-value {
+  font-size: 48rpx;
+  font-weight: 600;
+  color: #3cc51f;
+}
+
+/* BMI 状态条 */
+.bmi-bar {
+  position: relative;
+  height: 16rpx;
+  background: linear-gradient(to right,
+    #87CEEB 0%,    /* 偏瘦: 天蓝色 - 青色表示轻微偏离 */
+    #87CEEB 15%,
+    #66BB6A 15%,   /* 正常: 深绿色 - 绿色表示健康 */
+    #66BB6A 40%,
+    #FFA726 40%,   /* 偏重: 橙色 - 橙色表示注意 */
+    #FFA726 65%,
+    #EF5350 65%,   /* 肥胖: 红色 - 红色表示警报 */
+    #EF5350 100%
+  );
+  border-radius: 8rpx;
+  margin-bottom: 20rpx;
+  overflow: visible;
+}
+
+.bmi-section {
+  float: left;
+}
+
+.underweight { width: 15%; }
+.normal { width: 25%; }
+.overweight { width: 25%; }
+.obese { width: 35%; }
+
+.bmi-indicator {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8rpx;
+  height: 24rpx;
+  background: #006400;
+  border-radius: 4rpx;
+  z-index: 10;
+}
+
+/* BMI 标签 */
+.bmi-labels {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20rpx;
+  padding: 0 20rpx;
+}
+
+.bmi-label {
+  font-size: 26rpx;
+  color: #666666;
+  text-align: center;
+  flex: 1;
+}
+
+/* BMI 状态 */
+.bmi-status {
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.status-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* 健康建议 */
+.bmi-advice {
+  background: #F8FAFC;
+  border-radius: 16rpx;
+  padding: 32rpx;
+}
+
+.advice-icon {
+  font-size: 32rpx;
+}
+
+.advice-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-left: 8rpx;
+  vertical-align: middle;
+}
+
+.advice-list {
+  margin-top: 20rpx;
+}
+
+.advice-item {
+  display: block;
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.6;
+  margin-bottom: 12rpx;
+}
+
+.advice-item:last-child {
+  margin-bottom: 0;
 }
