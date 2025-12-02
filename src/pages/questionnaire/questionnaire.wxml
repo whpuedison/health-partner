@@ -76,10 +76,6 @@
           value="{{selectedWeight}}"
           bindchange="onWeightChange"
         />
-        <view class="height-display">
-          <text class="height-value">{{selectedWeight}}</text>
-          <text class="height-unit">kg</text>
-        </view>
       </view>
 
       <view class="action-buttons">

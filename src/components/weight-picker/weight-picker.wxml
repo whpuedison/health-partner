@@ -7,5 +7,6 @@
   </view>
   <view class="weight-pointer">
     <view class="pointer-triangle"></view>
+    <text class="pointer-value">{{value}}kg</text>
   </view>
 </view>

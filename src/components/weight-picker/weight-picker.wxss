@@ -54,10 +54,11 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: -25rpx;
+  bottom: -90rpx;
   pointer-events: none;
   z-index: 10;
   display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
@@ -68,4 +69,11 @@
   background: #54c07a;
   position: relative;
   left: 2rpx;
+}
+
+.pointer-value {
+  margin-top: 12rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #000000;
 }
