@@ -81,7 +81,7 @@ Component({
       const deltaX = currentX - touchStartX;
 
       // 添加阻尼系数，减缓滑动速度
-      const dampingFactor = 0.2; // 0.2倍速度，更平滑
+      const dampingFactor = 0.05; // 0.2倍速度，更平滑
       const dampedDeltaX = deltaX * dampingFactor;
 
       let newTranslateX = lastTranslateX + dampedDeltaX;

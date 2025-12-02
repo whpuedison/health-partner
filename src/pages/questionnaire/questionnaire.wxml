@@ -48,7 +48,7 @@
       </view>
 
       <view class="ruler-container">
-        <ruler-picker
+        <height-picker
           min="120"
           max="220"
           value="{{selectedHeight}}"
