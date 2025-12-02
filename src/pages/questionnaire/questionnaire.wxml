@@ -150,8 +150,41 @@
       </view>
     </view>
 
-    <!-- 步骤5及后续步骤占位 -->
-    <view class="step-content" wx:if="{{currentStep > 4}}">
+    <!-- 步骤5：目标体重选择 -->
+    <view class="step-content" wx:if="{{currentStep === 5}}">
+      <view class="question-section">
+        <text class="question-title">你的目标体重是?</text>
+        <text class="question-desc">设定清晰的目标，有助于你更好地管理体重健康</text>
+      </view>
+
+      <view class="weight-container target-weight-container">
+        <weight-picker
+          min="30"
+          max="200"
+          value="{{targetWeight}}"
+          bindchange="onTargetWeightChange"
+        />
+      </view>
+
+      <!-- 目标体重对比 box -->
+      <view class="target-comparison" wx:if="{{weightChangeType !== 'maintain'}}">
+        <view class="comparison-header">
+          <text class="comparison-value">目标{{weightChangeType === 'gain' ? '增重' : '减重'}}: {{weightChangePercent}}%</text>
+        </view>
+        <view class="comparison-content">
+          <text class="comparison-text">{{targetEncouragement}}</text>
+        </view>
+      </view>
+
+      <!-- 完成问卷按钮 -->
+      <view class="action-buttons">
+        <button class="btn btn-secondary" bindtap="prevStep">上一步</button>
+        <button class="btn btn-primary" bindtap="submitQuestionnaire">完成问卷</button>
+      </view>
+    </view>
+
+    <!-- 步骤6及后续步骤占位 -->
+    <view class="step-content" wx:if="{{currentStep > 5}}">
       <view class="question-section">
         <text class="question-title">步骤 {{currentStep}}</text>
         <text class="question-desc">后续步骤开发中...</text>

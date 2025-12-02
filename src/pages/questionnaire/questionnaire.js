@@ -13,6 +13,12 @@ Page({
     selectedHeight: 170,
     // 选择的体重
     selectedWeight: 70,
+    // 选择的目标体重（默认为当前体重减2kg作为合理减重目标）
+    targetWeight: 70,
+    // 目标体重对比
+    weightChangePercent: 0,
+    weightChangeType: 'maintain', // maintain | gain | lose
+    targetEncouragement: '',
     // 出生日期选择
     currentDate: new Date('2000-01-01').getTime(), // 默认2000年1月1日的时间戳
     showDatePicker: false,
@@ -43,7 +49,8 @@ Page({
       weight: null,
       birth_date: null,
       age: null,
-      bmi: null
+      bmi: null,
+      target_weight: null
     }
   },
 
@@ -67,6 +74,9 @@ Page({
       ageDescription: ageDescription,
       formattedDate: formattedDate
     });
+
+    // 初始化目标体重对比
+    this.calculateTargetComparison();
   },
 
   // 选择性别
@@ -97,11 +107,25 @@ Page({
     const weight = e.detail.value;
     this.setData({
       selectedWeight: weight,
+      targetWeight: weight, // 同时更新目标体重，保证进入第五步时无延迟
       'questionnaireData.weight': weight
     });
 
-    // 实时计算BMI
+    // 实时计算BMI和目标体重对比
     this.calculateBMI();
+    this.calculateTargetComparison();
+  },
+
+  // 目标体重变化处理
+  onTargetWeightChange(e) {
+    const targetWeight = e.detail.value;
+    this.setData({
+      targetWeight: targetWeight,
+      'questionnaireData.target_weight': targetWeight
+    });
+
+    // 计算目标体重对比结果
+    this.calculateTargetComparison();
   },
 
   // 显示日期选择器
@@ -210,9 +234,20 @@ Page({
   // 下一步
   nextStep() {
     if (this.data.currentStep < this.data.totalSteps) {
-      this.setData({
-        currentStep: this.data.currentStep + 1
-      });
+      const nextStepNum = this.data.currentStep + 1;
+
+      // 如果进入第五步（目标体重选择），设置默认目标体重等于当前体重
+      if (nextStepNum === 5 && this.data.selectedWeight) {
+        this.setData({
+          targetWeight: this.data.selectedWeight, // 默认等于当前体重
+          'questionnaireData.target_weight': this.data.selectedWeight,
+          currentStep: nextStepNum
+        });
+      } else {
+        this.setData({
+          currentStep: nextStepNum
+        });
+      }
     } else {
       // 完成问卷
       this.submitQuestionnaire();
@@ -328,6 +363,60 @@ Page({
       // 肥胖区段：BMI 28-40 映射到 65-100%
       return 65 + Math.min(35, ((bmi - 28) / (40 - 28)) * 35);
     }
+  },
+
+  // 计算目标体重对比
+  calculateTargetComparison() {
+    const { selectedWeight, targetWeight } = this.data;
+
+    if (!selectedWeight || !targetWeight) {
+      this.setData({
+        weightChangePercent: 0,
+        weightChangeType: 'maintain',
+        targetEncouragement: '设定清晰目标是成功的第一步！'
+      });
+      return;
+    }
+
+    // 计算体重差异和百分比
+    const diff = targetWeight - selectedWeight;
+    const percent = Math.abs(diff) / selectedWeight * 100;
+    const roundedPercent = Math.round(percent * 10) / 10; // 保留一位小数
+
+    let changeType = 'maintain';
+    let encouragement = '';
+
+    if (diff > 0) {
+      // 需要增重
+      changeType = 'gain';
+      if (roundedPercent <= 5) {
+        encouragement = '👏 小幅增重更容易坚持！相信你可以逐步达成目标，加油！';
+      } else if (roundedPercent <= 15) {
+        encouragement = '💪 增重目标很合理！通过优质蛋白质和规律运动，你能健康达成目标！';
+      } else {
+        encouragement = '🌟 增重决心很棒！在专业指导下合理增重，身体会发生积极变化！';
+      }
+    } else if (diff < 0) {
+      // 需要减重
+      changeType = 'lose';
+      if (roundedPercent <= 5) {
+        encouragement = '🎯 温和减重最健康！逐步调整饮食习惯，你会发现身体发生惊喜变化！';
+      } else if (roundedPercent <= 15) {
+        encouragement = '🏃‍♀️ 减重目标积极进取！结合运动和饮食控制，你一定能实现理想身材！';
+      } else {
+        encouragement = '🔥 减重决心值得赞赏！在医生指导下科学减重，恭喜你开启健康之旅！';
+      }
+    } else {
+      // 体重目标等于当前体重
+      changeType = 'maintain';
+      encouragement = '📍 你比其他人都了解自己！保持当前体重，意味着你已经找到了平衡状态！';
+    }
+
+    this.setData({
+      weightChangePercent: roundedPercent,
+      weightChangeType: changeType,
+      targetEncouragement: encouragement
+    });
   },
 
   // 计算进度百分比
