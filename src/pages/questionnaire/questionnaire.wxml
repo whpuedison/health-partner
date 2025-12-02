@@ -119,8 +119,39 @@
       </view>
     </view>
 
-    <!-- 步骤4及后续步骤占位 -->
-    <view class="step-content" wx:if="{{currentStep > 3}}">
+    <!-- 步骤4：出生日期选择 -->
+    <view class="step-content" wx:if="{{currentStep === 4}}">
+      <view class="question-section">
+        <text class="question-title">你的出生日期是?</text>
+        <text class="question-desc">年龄与基础代谢水平、身体活动水平息息相关</text>
+      </view>
+
+      <view class="date-selector-container">
+        <view class="date-display" bindtap="showDatePicker">
+          <text class="date-label">选择出生日期</text>
+          <text class="selected-date">{{formattedDate}}</text>
+          <text class="date-arrow">📅</text>
+        </view>
+      </view>
+
+      <!-- 年龄评估 box -->
+      <view class="age-assessment" wx:if="{{age > 0}}">
+        <view class="assessment-header">
+          <text class="assessment-value">{{age}} 岁</text>
+        </view>
+        <view class="assessment-content">
+          <text class="assessment-text">{{ageDescription}}</text>
+        </view>
+      </view>
+
+      <view class="action-buttons">
+        <button class="btn btn-secondary" bindtap="prevStep">上一步</button>
+        <button class="btn btn-primary" bindtap="nextStep">下一步</button>
+      </view>
+    </view>
+
+    <!-- 步骤5及后续步骤占位 -->
+    <view class="step-content" wx:if="{{currentStep > 4}}">
       <view class="question-section">
         <text class="question-title">步骤 {{currentStep}}</text>
         <text class="question-desc">后续步骤开发中...</text>
@@ -131,4 +162,23 @@
       </view>
     </view>
   </view>
+
+  <!-- 日期选择器弹窗 -->
+  <van-popup
+    show="{{ showDatePicker }}"
+    position="bottom"
+    bind:close="onPopupClose"
+  >
+    <van-datetime-picker
+      value="{{ currentDate }}"
+      type="date"
+      title="选择出生日期"
+      min-date="{{ minDate }}"
+      max-date="{{ maxDate }}"
+      bind:input="onInput"
+      bind:confirm="onDateConfirm"
+      bind:cancel="onDateCancel"
+      formatter="{{ formatter }}"
+    />
+  </van-popup>
 </view>

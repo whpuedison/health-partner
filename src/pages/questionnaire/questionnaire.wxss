@@ -368,3 +368,78 @@
 .advice-item:last-child {
   margin-bottom: 0;
 }
+
+/* 日期选择器 */
+.date-selector-container {
+  display: flex;
+  justify-content: center;
+  margin: 40rpx 0;
+}
+
+.date-display {
+  background: #f8f9fa;
+  border: 2rpx solid #e9ecef;
+  border-radius: 16rpx;
+  padding: 32rpx 40rpx;
+  min-width: 300rpx;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.date-display:active {
+  background: #e9ecef;
+  border-color: #B8E6C8;
+}
+
+.date-label {
+  display: block;
+  font-size: 28rpx;
+  color: #6c757d;
+  margin-bottom: 16rpx;
+}
+
+.selected-date {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #495057;
+}
+
+.date-arrow {
+  display: block;
+  font-size: 32rpx;
+  margin-top: 16rpx;
+}
+
+/* 年龄评估 box */
+.age-assessment {
+  background: white;
+  border: 2rpx solid #B8E6C8;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin: 40rpx 0;
+  box-shadow: 0 4rpx 16rpx rgba(184, 230, 200, 0.1);
+}
+
+.assessment-header {
+  text-align: center;
+  margin-bottom: 24rpx;
+}
+
+.assessment-value {
+  font-size: 48rpx;
+  font-weight: 600;
+  color: #3cc51f;
+}
+
+.assessment-content {
+  border-top: 1rpx solid #f0f0f0;
+  padding-top: 24rpx;
+}
+
+.assessment-text {
+  font-size: 28rpx;
+  color: #666666;
+  line-height: 1.6;
+  text-align: justify;
+}

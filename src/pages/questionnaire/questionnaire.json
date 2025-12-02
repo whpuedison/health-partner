@@ -5,6 +5,8 @@
   "backgroundColor": "#F7FAFC",
   "usingComponents": {
     "height-picker": "../../components/height-picker/height-picker",
-    "weight-picker": "../../components/weight-picker/weight-picker"
+    "weight-picker": "../../components/weight-picker/weight-picker",
+    "van-datetime-picker": "@vant/weapp/datetime-picker/index",
+    "van-popup": "@vant/weapp/popup/index"
   }
 }

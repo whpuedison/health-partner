@@ -13,6 +13,24 @@ Page({
     selectedHeight: 170,
     // 选择的体重
     selectedWeight: 70,
+    // 出生日期选择
+    currentDate: new Date('2000-01-01').getTime(), // 默认2000年1月1日的时间戳
+    showDatePicker: false,
+    minDate: new Date(new Date().getFullYear() - 80, 0, 1).getTime(), // 最小日期为80年前 (约1944年)
+    maxDate: new Date(new Date().getFullYear() - 18, 11, 31).getTime(), // 最大日期为18年前 (约2006年)
+    formatter(type, value) {
+      if (type === 'year') {
+        return `${value}年`;
+      }
+      if (type === 'month') {
+        return `${value}月`;
+      }
+      return value;
+    },
+    formattedDate: '2000-01-01',  // 用于显示的格式化日期字符串
+    // 年龄计算结果
+    age: 0,
+    ageDescription: '',
     // BMI计算结果
     bmi: 0,
     bmiStatus: '正常',
@@ -23,6 +41,8 @@ Page({
       gender: null,
       height: null,
       weight: null,
+      birth_date: null,
+      age: null,
       bmi: null
     }
   },
@@ -35,6 +55,18 @@ Page({
 
     // 初始化时如果已经有身高体重数据，计算BMI
     this.calculateBMI();
+
+    // 初始化年龄评估（默认2000-01-01）
+    const defaultBirth = new Date('2000-01-01');
+    const age = this.calculateAge(defaultBirth);
+    const ageDescription = this.getAgeDescription(age);
+    const formattedDate = this.formatDate(defaultBirth);
+
+    this.setData({
+      age: age,
+      ageDescription: ageDescription,
+      formattedDate: formattedDate
+    });
   },
 
   // 选择性别
@@ -70,6 +102,109 @@ Page({
 
     // 实时计算BMI
     this.calculateBMI();
+  },
+
+  // 显示日期选择器
+  showDatePicker() {
+    this.setData({ showDatePicker: true });
+  },
+
+  // 隐藏日期选择器
+  hideDatePicker() {
+    this.setData({ showDatePicker: false });
+  },
+
+  // 日期输入处理（用于bind:input）
+  onInput(e) {
+    this.setData({
+      currentDate: e.detail,
+    });
+  },
+
+  // 日期选择器确认（点击确定按钮）
+  onDateConfirm(e) {
+    const date = new Date(e.detail);
+    const formattedDate = this.formatDate(date);
+    const age = this.calculateAge(date);
+    const ageDescription = this.getAgeDescription(age);
+
+    this.setData({
+      showDatePicker: false,
+      formattedDate: formattedDate,
+      age: age,
+      ageDescription: ageDescription,
+      'questionnaireData.birth_date': formattedDate,
+      'questionnaireData.age': age
+    });
+  },
+
+  // 日期选择器取消（点击取消按钮）
+  onDateCancel() {
+    this.setData({
+      showDatePicker: false
+    });
+  },
+
+  // 出生日期确认（弹窗关闭时触发）
+  onPopupClose() {
+    // 弹窗手动关闭时也更新数据
+    const date = new Date(this.data.currentDate);
+    const formattedDate = this.formatDate(date);
+    const age = this.calculateAge(date);
+    const ageDescription = this.getAgeDescription(age);
+
+    this.setData({
+      showDatePicker: false,
+      formattedDate: formattedDate,
+      age: age,
+      ageDescription: ageDescription,
+      'questionnaireData.birth_date': formattedDate,
+      'questionnaireData.age': age
+    });
+  },
+
+  // 隐藏日期选择器（弃用）
+  hideDatePicker() {
+    this.setData({ showDatePicker: false });
+  },
+
+  // 格式化日期为YYYY-MM-DD格式
+  formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  },
+
+  // 计算年龄
+  calculateAge(birthDate) {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+
+    return age;
+  },
+
+  // 获取年龄描述
+  getAgeDescription(age) {
+    if (age < 18) {
+      return '青少年时期，身体发育关键阶段。基础代谢水平较高，建议保持均衡营养摄入和适量运动，促进身体健康成长。';
+    } else if (age < 30) {
+      return '青年时期，新陈代谢旺盛，能量消耗较高。这是建立健康生活习惯的最好时机，坚持规律锻炼可以帮助维持体形。';
+    } else if (age < 45) {
+      return '中年初期，工作压力增大，基础代谢水平开始下降。建议注重饮食健康，规律运动，避免脂肪堆积。';
+    } else if (age < 60) {
+      return '中年后期，基础代谢水平进一步下降，身体各项机能需要保养。建议定期体检，注重骨骼健康和心血管保健。';
+    } else if (age < 75) {
+      return '老年初期，基础代谢水平明显下降，肌肉量减少。建议补充优质蛋白质，轻柔有氧运动，促进钙吸收。';
+    } else {
+      return '高龄阶段，需要特别关注营养均衡和身体机能保养。建议定期咨询医生，定制适合的养生方案。';
+    }
   },
 
   // 下一步
