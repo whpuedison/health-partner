@@ -201,94 +201,124 @@
 
 /* 食物识别对话框 */
 .recognition-dialog {
-  max-height: 80vh;
+  max-height: 85vh;
+  width: 90%;
+  max-width: 700rpx;
 }
 
-.recognition-list {
-  max-height: 400rpx;
+.recognition-body {
+  max-height: 60vh;
   overflow-y: auto;
+}
+
+/* 总览信息 */
+.recognition-summary {
+  background: linear-gradient(135deg, #667EEA15 0%, #764BA215 100%);
+  border-radius: 16rpx;
+  padding: 24rpx;
   margin-bottom: 24rpx;
 }
 
-.recognition-item {
-  background: white;
-  border: 2rpx solid #E2E8F0;
-  border-radius: 12rpx;
-  padding: 24rpx;
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  margin-bottom: 12rpx;
-  transition: all 0.2s;
-}
-
-.recognition-item:active {
-  background: #F7FAFC;
-  border-color: #667EEA;
-}
-
-.recognition-item.active {
-  background: #EDF2F7;
-  border-color: #667EEA;
-}
-
-.recognition-icon {
-  font-size: 40rpx;
-}
-
-.recognition-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4rpx;
-}
-
-.recognition-name {
-  font-size: 28rpx;
-  font-weight: 500;
-  color: #2D3748;
-}
-
-.recognition-meta {
+.summary-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 8rpx 0;
 }
 
-.recognition-calorie {
-  font-size: 22rpx;
-  color: #4ECDC4;
-  font-weight: bold;
-}
-
-.recognition-probability {
-  font-size: 22rpx;
-  color: #718096;
-}
-
-.recognition-arrow {
-  font-size: 28rpx;
-  color: #A0AEC0;
-}
-
-/* 分量设置 */
-.weight-section {
-  background: linear-gradient(135deg, #F093FB15 0%, #F5576C15 100%);
-  border-radius: 16rpx;
-  padding: 24rpx;
-  margin-top: 24rpx;
-}
-
-.weight-label {
-  display: block;
+.summary-label {
   font-size: 26rpx;
   color: #4A5568;
-  margin-bottom: 12rpx;
   font-weight: 500;
 }
 
-.weight-input {
-  margin-top: 24rpx;
+.summary-value {
+  font-size: 28rpx;
+  color: #2D3748;
+  font-weight: bold;
+}
+
+.health-score {
+  color: #4ECDC4;
+  font-size: 32rpx;
+}
+
+/* 成分列表标题 */
+.recognition-foods-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #2D3748;
+  margin-bottom: 16rpx;
+}
+
+/* 成分列表 */
+.recognition-foods-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.recognition-food-item {
+  background: white;
+  border: 2rpx solid #E2E8F0;
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.food-item-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+
+.food-icon-wrapper {
+  flex-shrink: 0;
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #F093FB15 0%, #F5576C15 100%);
+  border-radius: 16rpx;
+}
+
+.food-icon-display {
+  font-size: 48rpx;
+  line-height: 1;
+}
+
+.food-info-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8rpx;
+  padding-left: 20rpx;
+}
+
+.food-name-display {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #2D3748;
+  line-height: 1.4;
+}
+
+.food-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-top: 4rpx;
+}
+
+.food-calorie {
+  font-size: 24rpx;
+  color: #4ECDC4;
+  font-weight: 600;
+}
+
+.food-weight {
+  font-size: 24rpx;
+  color: #718096;
 }
 
 .record-time {

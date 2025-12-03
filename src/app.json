@@ -2,14 +2,12 @@
   "pages": [
     "pages/questionnaire/questionnaire",
     "pages/index/index",
-    "pages/square/square",
     "pages/profile/profile",
     "pages/health/health",
     "pages/diet/diet",
     "pages/exercise/exercise",
     "pages/goal/goal",
-    "pages/post/create",
-    "pages/timeline/timeline"
+    "pages/post/create"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -27,10 +25,6 @@
       {
         "pagePath": "pages/index/index",
         "text": "首页"
-      },
-      {
-        "pagePath": "pages/square/square",
-        "text": "广场"
       },
       {
         "pagePath": "pages/profile/profile",

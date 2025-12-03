@@ -48,9 +48,9 @@ Page({
 
     // 拍照识图状态
     showRecognitionDialog: false,
-    recognizedFoods: [], // 识别到的食物列表（前6个）
-    selectedRecognition: null, //
-    recognitionWeight: '', // 识别食物的重量
+    recognitionData: null, // 识别结果数据 { foods, totalNutrition, healthScore }
+    editingFoodIndex: -1, // 正在编辑的食物索引
+    isSavingRecognition: false, // 是否正在保存识别结果（防止重复点击）
 
     _loadingCategories: false,
     _loadingFoods: false,
@@ -583,15 +583,13 @@ Page({
 
     Http.post(API.FOOD_RECOGNIZE, {
       imageBase64: imageBase64
-    })
+    }, null, true)
       .then(res => {
         wx.hideLoading();
-        if (res.data && res.data.length > 0) {
+        if (res.data && res.data.foods && res.data.foods.length > 0) {
           this.setData({
             showRecognitionDialog: true,
-            recognizedFoods: res.data,
-            selectedRecognition: null,
-            recognitionWeight: '',
+            recognitionData: res.data
           });
         } else {
           wx.showToast({
@@ -614,45 +612,23 @@ Page({
   closeRecognitionDialog() {
     this.setData({
       showRecognitionDialog: false,
-      recognizedFoods: [],
-      selectedRecognition: null,
-      recognitionWeight: '',
+      recognitionData: null,
+      isSavingRecognition: false // 重置保存状态
     });
   },
 
-  // 选择识别结果
-  selectRecognizedFood(e) {
-    const food = e.currentTarget.dataset.food;
-    this.setData({
-      selectedRecognition: food,
-      recognitionWeight: '',
-    });
-  },
-
-  // 重量输入
-  onRecognitionWeightInput(e) {
-    const weight = e.detail.value;
-    this.setData({
-      recognitionWeight: weight,
-    });
-  },
-
-  // 确认添加识别的食物
-  confirmRecognitionAdd() {
-    const { selectedRecognition, recognitionWeight } = this.data;
-
-    if (!selectedRecognition) {
-      wx.showToast({
-        title: '请选择食物',
-        icon: 'none',
-      });
+  // 保存识别结果（批量添加）
+  saveRecognitionResults() {
+    // 防止重复点击
+    if (this.data.isSavingRecognition) {
       return;
     }
 
-    const weight = parseFloat(recognitionWeight);
-    if (!weight || weight <= 0) {
+    const { recognitionData } = this.data;
+    
+    if (!recognitionData || !recognitionData.foods || recognitionData.foods.length === 0) {
       wx.showToast({
-        title: '请输入有效重量',
+        title: '没有可保存的食物',
         icon: 'none',
       });
       return;
@@ -667,34 +643,54 @@ Page({
       return;
     }
 
-    wx.showLoading({ title: '添加中...' });
+    // 设置保存中状态
+    this.setData({
+      isSavingRecognition: true
+    });
 
-     // 直接通过食物名称和克数添加记录（服务端自动计算卡路里）
-    Http.post(API.FOOD_QUICK_ADD, {
-      openId,
-      foodName: selectedRecognition.name,
-      weightGrams: weight,
-      caloriePer100g: parseFloat(selectedRecognition.calorie) || null, // 传递百度AI识别的基础卡路里信息
-    })
+    wx.showLoading({ title: '保存中...' });
+
+    // 批量添加饮食记录
+    const promises = recognitionData.foods.map(food => {
+      return Http.post(API.USER_DIET_RECORDS, {
+        openId,
+        mealType: '', // 不指定餐次
+        foodName: food.name,
+        calories: food.calorie || 0,
+        protein: food.protein || 0,
+        carbs: food.carbs || 0,
+        fat: food.fat || 0,
+        customWeight: food.weight || 100
+      });
+    });
+
+    Promise.all(promises)
       .then(() => {
         wx.hideLoading();
         wx.showToast({
-          title: '添加成功',
+          title: '保存成功',
           icon: 'success',
         });
         this.loadTodayRecords();
         this.loadTodayStats();
         this.closeRecognitionDialog();
+        // 重置保存状态
+        this.setData({
+          isSavingRecognition: false
+        });
       })
       .catch(err => {
         wx.hideLoading();
-        console.error('添加识别食物失败:', err);
-        if (err.response && err.response.data && err.response.data.message) {
-          wx.showToast({
-            title: err.response.data.message,
-            icon: 'none',
-      })}
-    })
+        console.error('保存识别结果失败:', err);
+        wx.showToast({
+          title: '保存失败，请重试',
+          icon: 'none',
+        });
+        // 重置保存状态，允许重试
+        this.setData({
+          isSavingRecognition: false
+        });
+      });
   },
 
   // 阻止事件冒泡

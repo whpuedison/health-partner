@@ -8,11 +8,11 @@ Component({
         text: '首页',
         icon: '🏠',
       },
-      {
-        pagePath: '/pages/square/square',
-        text: '广场',
-        icon: '🌿',
-      },
+      // {
+      //   pagePath: '/pages/square/square',
+      //   text: '广场',
+      //   icon: '🌿',
+      // },
       {
         pagePath: '/pages/profile/profile',
         text: '我的',

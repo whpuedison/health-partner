@@ -21,7 +21,7 @@
   </view>
 
   <!-- 标签切换 -->
-  <!-- <view class="tabs">
+  <view class="tabs">
     <view 
       class="tab-item {{activeTab === index ? 'active' : ''}}" 
       wx:for="{{tabs}}" 
@@ -31,7 +31,7 @@
     >
       {{item}}
     </view>
-  </view> -->
+  </view>
 
   <!-- 今日记录 -->
   <view class="tab-content" wx:if="{{activeTab === 0}}">
@@ -281,52 +281,72 @@
   <view class="dialog-mask" wx:if="{{showRecognitionDialog}}" bindtap="closeRecognitionDialog">
     <view class="dialog-content recognition-dialog" catchtap="stopPropagation">
       <view class="dialog-header">
-        <text class="dialog-title">选择识别结果</text>
+        <text class="dialog-title">{{recognitionData.mealName || '识别结果'}}</text>
         <text class="dialog-close" bindtap="closeRecognitionDialog">✕</text>
       </view>
 
-      <view class="dialog-body">
-        <!-- 识别结果列表 -->
-        <view class="recognition-list">
-          <view
-            class="recognition-item {{selectedRecognition && selectedRecognition.name === item.name ? 'active' : ''}}"
-            wx:for="{{recognizedFoods}}"
-            wx:key="name"
-            data-food="{{item}}"
-            bindtap="selectRecognizedFood"
-          >
-            <text class="recognition-icon">🍽️</text>
-            <view class="recognition-info">
-              <text class="recognition-name">{{item.name}}</text>
-              <view class="recognition-meta">
-                <text class="recognition-calorie">{{item.calorie}}卡/100g</text>
-              </view>
-            </view>
-            <text class="recognition-probability">相似度: {{item.probability}}</text>
-            <text class="recognition-arrow">></text>
+      <view class="dialog-body recognition-body">
+        <!-- 总览信息 -->
+        <view class="recognition-summary" wx:if="{{recognitionData}}">
+          <view class="summary-row">
+            <text class="summary-label">总卡路里：</text>
+            <text class="summary-value">{{recognitionData.totalNutrition.totalCalories}} kcal</text>
+          </view>
+          <view class="summary-row">
+            <text class="summary-label">蛋白质：</text>
+            <text class="summary-value">{{recognitionData.totalNutrition.totalProtein}}g</text>
+          </view>
+          <view class="summary-row">
+            <text class="summary-label">碳水：</text>
+            <text class="summary-value">{{recognitionData.totalNutrition.totalCarbs}}g</text>
+          </view>
+          <view class="summary-row">
+            <text class="summary-label">脂肪：</text>
+            <text class="summary-value">{{recognitionData.totalNutrition.totalFat}}g</text>
+          </view>
+          <view class="summary-row">
+            <text class="summary-label">健康评分：</text>
+            <text class="summary-value health-score">{{recognitionData.healthScore}}/10</text>
           </view>
         </view>
 
-        <!-- 分量设置 -->
-        <view class="weight-section" wx:if="{{selectedRecognition}}">
-          <text class="weight-label">请输入{{selectedRecognition.name}}的分量（克）</text>
-          <input
-            class="form-input weight-input"
-            type="digit"
-            placeholder="例如：150"
-            value="{{recognitionWeight}}"
-            bindinput="onRecognitionWeightInput"
-          />
+        <!-- 成分列表 -->
+        <view class="recognition-foods-title">成分列表</view>
+        <view class="recognition-foods-list">
+          <view
+            class="recognition-food-item"
+            wx:for="{{recognitionData.foods}}"
+            wx:key="index"
+            wx:for-index="idx"
+          >
+            <view class="food-item-content">
+              <!-- 图标 -->
+              <view class="food-icon-wrapper">
+                <text class="food-icon-display">{{item.icon}}</text>
+              </view>
+              
+              <!-- 食物信息 -->
+              <view class="food-info-wrapper">
+                <text class="food-name-display">{{item.name}}</text>
+                <view class="food-meta-row">
+                  <text class="food-calorie">{{item.calorie}} kcal</text>
+                  <text class="food-weight">{{item.weight}}g</text>
+                </view>
+              </view>
+            </view>
+          </view>
         </view>
       </view>
 
       <view class="dialog-footer">
-        <button class="dialog-btn cancel" bindtap="closeRecognitionDialog">取消</button>
+        <button class="dialog-btn cancel" bindtap="closeRecognitionDialog" disabled="{{isSavingRecognition}}">取消</button>
         <button
           class="dialog-btn confirm"
-          bindtap="confirmRecognitionAdd"
-          wx:if="{{selectedRecognition && recognitionWeight}}"
-        >确定</button>
+          bindtap="saveRecognitionResults"
+          disabled="{{isSavingRecognition}}"
+          loading="{{isSavingRecognition}}"
+          wx:if="{{recognitionData && recognitionData.foods && recognitionData.foods.length > 0}}"
+        >{{isSavingRecognition ? '保存中...' : '保存'}}</button>
       </view>
     </view>
   </view>
