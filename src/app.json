@@ -6,8 +6,7 @@
     "pages/health/health",
     "pages/diet/diet",
     "pages/exercise/exercise",
-    "pages/goal/goal",
-    "pages/post/create"
+    "pages/goal/goal"
   ],
   "window": {
     "backgroundTextStyle": "light",
