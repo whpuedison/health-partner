@@ -1,176 +1,198 @@
 Component({
-  properties: {
-    min: { type: Number, value: 120 },
-    max: { type: Number, value: 220 },
-    value: { type: Number, value: 170 },
-    step: { type: Number, value: 1 },
-    unit: { type: String, value: 'cm' }
-  },
-  data: {
-    marks: [],
-    translateY: 0,
-    markHeight: 10, // rpx per step
-    containerHeight: 500, // rpx
-    touchStartY: 0,
-    lastTouchY: 0,    // 上次触点位置
-    lastDeltaY: 0,     // 上次增量
-    isTouching: false
-  },
-  lifetimes: {
-    attached() {
-      this.initRuler();
-    }
-  },
-  observers: {
-    'value': function(value) {
-      if (this.data.marks.length > 0) {
-        this.updateScrollPosition();
+    properties: {
+      min: { type: Number, value: 120 },
+      max: { type: Number, value: 220 },
+      value: { type: Number, value: 170 },
+      step: { type: Number, value: 1 },
+      unit: { type: String, value: 'cm' }
+    },
+    data: {
+      marks: [],
+      translateY: 0,
+      markHeight: 10, // rpx per step
+      containerHeight: 500, // rpx
+      touchStartY: 0,
+      lastTouchY: 0,
+      lastDeltaY: 0,
+      isTouching: false,
+      lastTranslateY: 0,
+      minTranslate: 0,
+      maxTranslate: 0,
+      // 防抖动的速度平滑处理
+      recentVelocities: [],
+      recentPositions: []
+    },
+    lifetimes: {
+      attached() {
+        this.initRuler();
       }
-    }
-  },
-  methods: {
-    initRuler() {
-      console.log('ruler-picker initRuler 开始初始化');
-      const { min, max, step } = this.properties;
-      const marks = [];
-
-      for (let i = min; i <= max; i += step) {
-        const index = Math.floor((i - min) / step);
-        const top = 250 + index * this.data.markHeight; // 从中心线开始向下分布
-
-        marks.push({
-          value: i,
-          isLong: i % 10 === 0,
-          top: top
+    },
+    observers: {
+      'value': function(value) {
+        if (this.data.marks.length > 0 && !this.data.isTouching) {
+          this.updateScrollPosition();
+        }
+      }
+    },
+    methods: {
+      initRuler() {
+        console.log('ruler-picker initRuler 开始初始化');
+        const { min, max, step } = this.properties;
+        const marks = [];
+  
+        for (let i = min; i <= max; i += step) {
+          const index = Math.floor((i - min) / step);
+          const top = 250 + index * this.data.markHeight; // 从中心线开始向下分布
+  
+          marks.push({
+            value: i,
+            isLong: i % 10 === 0,
+            top: top
+          });
+        }
+  
+        // 计算边界位置
+        const maxIndex = Math.floor((max - min) / step);
+        const minTranslate = -maxIndex * this.data.markHeight; // 最大值的边界（最下方）
+        const maxTranslate = 0; // 最小值的边界（最上方）
+        
+        console.log('ruler-picker 初始化完成，marks数量:', marks.length);
+        console.log('边界范围:', minTranslate, '到', maxTranslate);
+        
+        this.setData({ 
+          marks,
+          minTranslate,
+          maxTranslate
         });
-      }
-
-      console.log('ruler-picker 初始化完成，marks数量:', marks.length);
-      this.setData({ marks });
-      this.updateScrollPosition();
-    },
-
-    updateScrollPosition() {
-      const { value, min, step } = this.properties;
-      const { markHeight } = this.data;
-      const index = Math.round((value - min) / step);
-      const translateY = -index * markHeight;
-
-      // 确保translateY在合理范围内
-      const minTranslate = -(Math.floor((this.properties.max - min) / step)) * markHeight;
-      this.setData({
-        translateY: Math.max(minTranslate, Math.min(0, translateY)),
-        lastTranslateY: Math.max(minTranslate, Math.min(0, translateY))
-      });
-    },
-
-    onTouchStart(e) {
-      const pixelRatio = 750 / wx.getSystemInfoSync().windowWidth;
-      this.setData({
-        touchStartY: e.touches[0].clientY * pixelRatio,
-        isTouching: true
-      });
-    },
-
-    onTouchMove(e) {
-      if (!this.data.isTouching) return;
-
-      const { min, step } = this.properties;
-      const { markHeight, touchStartY, lastTranslateY, lastTouchY } = this.data;
-      const pixelRatio = 750 / wx.getSystemInfoSync().windowWidth;
-      const currentY = e.touches[0].clientY * pixelRatio;
-
-      // 计算总移动距离和每次增量
-      const totalDeltaY = currentY - touchStartY;
-      const deltaIncrement = currentY - this.data.lastTouchY;
-
-      // 🚀 高级阻尼系统设计
-
-      // 1️⃣ 三段式距离感知阻尼
-      const preciseZoneThreshold = 50;   // 精准响应区：0-8rpx内100%响应
-      const dampingZoneThreshold = 100;  // 渐进阻尼区：8-20rpx内逐渐衰减
-      const absTotalDeltaY = Math.abs(totalDeltaY);
-
-      let dampingFactor = 1.0;
-
-      if (absTotalDeltaY <= preciseZoneThreshold) {
-        // 🎯 精准响应区：完美1:1映射，超敏感精确 (50rpx以内)
-        dampingFactor = 1.5;
-      } else if (absTotalDeltaY <= dampingZoneThreshold) {
-        // 🌟 过渡区域：渐进阻尼从0.95到0.8 (50-100rpx间)
-        const progress = (absTotalDeltaY - preciseZoneThreshold) / (dampingZoneThreshold - preciseZoneThreshold);
-        dampingFactor = 0.95 - (1 - Math.pow(Math.cos(progress * Math.PI / 2), 2)) * 0.15;
-      } else {
-        // 🔒 强阻尼区域：加速衰减到0.6以下 （100rpx以上)
-        const excessDistance = absTotalDeltaY - dampingZoneThreshold;
-        dampingFactor = Math.max(0.6, 0.65 * Math.pow(0.96, excessDistance / 8));
-      }
-
-      // 2️⃣ 速度控制增强
-      // 分析最近几帧的速度趋势，防止突然加速
-      const currentDirection = Math.sign(deltaIncrement);
-      const lastDirection = Math.sign(this.data.lastDeltaY);
-      const velocityChange = Math.abs(currentDirection - lastDirection);
-
-      // 如果方向变化剧烈，增强阻尼（防止抖动）
-      if (velocityChange > 0) {
-        dampingFactor *= 0.8;
-      }
-
-      // 基础速度上限：每帧最大移动15rpx
-      const maxSpeed = 15;
-      let processedDelta = deltaIncrement * dampingFactor;
-      processedDelta = Math.max(-maxSpeed, Math.min(maxSpeed, processedDelta));
-
-      // 3️⃣ 边界弹性处理
-      let newTranslateY = lastTranslateY + processedDelta;
-
-      const minTranslate = -(Math.floor((this.properties.max - min) / step)) * markHeight - 60;
-      const maxTranslate = 60;
-
-      const boundaryBuffer = 30; // 边界缓冲区
-
-      if (newTranslateY < minTranslate) {
-        // 🔴 下边界弹性处理
-        const excess = minTranslate - newTranslateY;
-        if (excess <= boundaryBuffer) {
-          // 缓冲区内：渐进弹性 (二次函数曲线)
-          newTranslateY = minTranslate - (excess * excess) / (boundaryBuffer * boundaryBuffer) * boundaryBuffer / 2;
-        } else {
-          // 强烈阻挡区域：线性递增阻力
-          newTranslateY = minTranslate - boundaryBuffer / 2 - (excess - boundaryBuffer) * 0.4;
+        this.updateScrollPosition();
+      },
+  
+      updateScrollPosition() {
+        const { value, min, step } = this.properties;
+        const { markHeight, minTranslate, maxTranslate } = this.data;
+        
+        const index = Math.round((value - min) / step);
+        const translateY = -index * markHeight;
+        
+        const clampedTranslateY = Math.max(minTranslate, Math.min(maxTranslate, translateY));
+        
+        this.setData({
+          translateY: clampedTranslateY,
+          lastTranslateY: clampedTranslateY
+        });
+      },
+  
+      onTouchStart(e) {
+        const pixelRatio = 750 / wx.getSystemInfoSync().windowWidth;
+        const touchY = e.touches[0].clientY * pixelRatio;
+        
+        this.setData({
+          touchStartY: touchY,
+          lastTouchY: touchY,
+          isTouching: true,
+          recentVelocities: [],
+          recentPositions: []
+        });
+      },
+  
+      onTouchMove(e) {
+        if (!this.data.isTouching) return;
+  
+        const pixelRatio = 750 / wx.getSystemInfoSync().windowWidth;
+        const currentY = e.touches[0].clientY * pixelRatio;
+        const deltaY = currentY - this.data.lastTouchY;
+        
+        // 🎯 简单的速度平滑处理（防抖动）
+        // 记录最近的位置
+        const recentPositions = [...this.data.recentPositions, { y: currentY, time: Date.now() }];
+        // 只保留最近5帧
+        if (recentPositions.length > 5) recentPositions.shift();
+        
+        // 计算平滑后的位移
+        let smoothedDeltaY = deltaY;
+        if (recentPositions.length >= 2) {
+          // 使用加权平均：最近的帧权重更高
+          smoothedDeltaY = 0;
+          let totalWeight = 0;
+          for (let i = 0; i < recentPositions.length - 1; i++) {
+            const weight = i + 1; // 权重：1, 2, 3...
+            const frameDelta = recentPositions[i + 1].y - recentPositions[i].y;
+            smoothedDeltaY += frameDelta * weight;
+            totalWeight += weight;
+          }
+          smoothedDeltaY = smoothedDeltaY / totalWeight;
         }
-      } else if (newTranslateY > maxTranslate) {
-        // 🔴 上边界弹性处理 (对称处理)
-        const excess = newTranslateY - maxTranslate;
-        if (excess <= boundaryBuffer) {
-          newTranslateY = maxTranslate + (excess * excess) / (boundaryBuffer * boundaryBuffer) * boundaryBuffer / 2;
-        } else {
-          newTranslateY = maxTranslate + boundaryBuffer / 2 + (excess - boundaryBuffer) * 0.4;
+        
+        // 限制最大移动速度（防止抖动）
+        const maxSpeed = 30; // rpx per move
+        smoothedDeltaY = Math.max(-maxSpeed, Math.min(maxSpeed, smoothedDeltaY));
+        
+        // 🎯 计算新位置（无阻尼，直接移动）
+        let newTranslateY = this.data.lastTranslateY + smoothedDeltaY;
+        
+        // 🎯 边界直接固定（无弹性效果）
+        newTranslateY = Math.max(
+          this.data.minTranslate, 
+          Math.min(this.data.maxTranslate, newTranslateY)
+        );
+        
+        // 🎯 更新状态
+        this.setData({
+          translateY: newTranslateY,
+          lastTouchY: currentY,
+          lastTranslateY: newTranslateY,
+          recentPositions: recentPositions
+        });
+        
+        // 🎯 实时计算当前值（用于显示，但不立即吸附）
+        const { min, step, value } = this.properties;
+        const { markHeight } = this.data;
+        
+        // 计算当前最接近的值（四舍五入到最近的刻度）
+        const currentValue = Math.round((-newTranslateY / markHeight) * step + min);
+        const clampedValue = Math.max(min, Math.min(this.properties.max, currentValue));
+        
+        // 只有当值发生变化时才触发change事件
+        if (clampedValue !== value) {
+          this.triggerEvent('change', { value: clampedValue });
+        }
+      },
+  
+      onTouchEnd() {
+        if (!this.data.isTouching) return;
+        
+        this.setData({
+          isTouching: false
+        });
+        
+        // 🎯 触摸结束后直接吸附到最接近的刻度
+        this.snapToNearestMark();
+      },
+  
+      // 🎯 吸附到最近刻度（触摸结束后调用）
+      snapToNearestMark() {
+        const { min, step, value } = this.properties;
+        const { markHeight, translateY } = this.data;
+        
+        // 计算最近的刻度（四舍五入）
+        const nearestIndex = Math.round(-translateY / markHeight);
+        const nearestValue = min + nearestIndex * step;
+        const clampedValue = Math.max(min, Math.min(this.properties.max, nearestValue));
+        
+        // 计算目标位置
+        const targetIndex = (clampedValue - min) / step;
+        const targetTranslateY = -targetIndex * markHeight;
+        
+        // 🎯 直接设置到目标位置（无动画）
+        this.setData({
+          translateY: targetTranslateY,
+          lastTranslateY: targetTranslateY
+        });
+        
+        // 如果值变化了，触发change事件
+        if (clampedValue !== value) {
+          this.triggerEvent('change', { value: clampedValue });
         }
       }
-
-      // 4️⃣ 更新状态和位置映射
-      this.setData({
-        translateY: newTranslateY,
-        lastTouchY: currentY,
-        lastDeltaY: deltaIncrement
-      });
-
-      // 计算对应数值（平滑映射）
-      const index = Math.round(-newTranslateY / markHeight);
-      const value = Math.max(min, Math.min(this.properties.max, min + index * step));
-
-      if (value !== this.properties.value) {
-        this.triggerEvent('change', { value });
-      }
-    },
-
-    onTouchEnd() {
-      this.setData({
-        isTouching: false,
-        lastTranslateY: this.data.translateY
-      });
     }
-  }
-});
+  });
