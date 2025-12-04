@@ -412,6 +412,12 @@ Page({
     }
   },
 
+  objToParams(obj) {
+    return Object.keys(obj)
+      .map(key => `${key}=${encodeURIComponent(obj[key])}`)
+      .join('&');
+  },
+
   // 提交问卷
   async submitQuestionnaire() {
     const openId = app.globalData.openId || wx.getStorageSync('openId');
@@ -419,7 +425,7 @@ Page({
 
     // 显示加载提示
     wx.showLoading({
-      title: '提交中...',
+      title: '方案生成中...',
       mask: true
     });
 
@@ -457,23 +463,32 @@ Page({
         app.globalData.profile = profileResult.data;
         wx.setStorageSync('profile', profileResult.data);
       }
+    
+      const userData = {
+        age,
+        targetWeight,
+        targetDate,
+        gender: selectedGender,
+        height: selectedHeight,
+        currentWeight: selectedWeight,
+      };
 
+      const userDataString = this.objToParams(userData);
+
+     setTimeout(() => {
       wx.hideLoading();
-      
-      // 显示成功提示
-      wx.showToast({
-        title: '提交成功！',
-        icon: 'success',
-        duration: 2000
-      });
+      wx.navigateTo({
+        url: `/pages/plan/plan?${userDataString}`
+      })
+     }, 2000);
 
       // 延迟跳转，让用户看到成功提示
-      setTimeout(() => {
-        // 跳转到首页
-        wx.reLaunch({
-          url: '/pages/index/index',
-        });
-      }, 2000);
+      // setTimeout(() => {
+      //   // 跳转到首页
+      //   wx.reLaunch({
+      //     url: '/pages/index/index',
+      //   });
+      // }, 2000);
 
     } catch (error) {
       wx.hideLoading();

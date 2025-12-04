@@ -1,0 +1,673 @@
+/* pages/plan/plan.wxss - 小清新风格，参考问卷样式 */
+.plan-page {
+    min-height: 100vh;
+    background: #F0F9F5; /* 使用问卷页面的绿色背景 */
+  }
+  
+
+  
+  /* 主内容区域 */
+  .plan-content {
+    height: 100vh;
+    padding: 40rpx 30rpx 68rpx;
+    box-sizing: border-box;
+  }
+  
+  /* 卡片通用样式 */
+  .card {
+    background: white;
+    border-radius: 24rpx;
+    padding: 32rpx;
+    margin-bottom: 24rpx;
+    box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.04);
+    border: 2rpx solid #B8E6C8;
+    animation: fadeInUp 0.6s ease-out;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30rpx);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24rpx;
+  }
+  
+  .card-title {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .card-subtitle {
+    font-size: 24rpx;
+    color: #5a7c78;
+    background: #f0f9fb;
+    padding: 8rpx 16rpx;
+    border-radius: 20rpx;
+  }
+  
+  /* 信息卡片 */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20rpx;
+  }
+  
+  .info-item {
+    padding: 20rpx;
+    background: #f9fdfe;
+    border-radius: 16rpx;
+    border: 1rpx solid #e9f2f1;
+  }
+  
+  .info-label {
+    display: block;
+    font-size: 22rpx;
+    color: #666;
+    margin-bottom: 8rpx;
+  }
+  
+  .info-value {
+    display: block;
+    font-size: 28rpx;
+    font-weight: 500;
+    color: #333;
+    display: flex;
+    align-items: center;
+  }
+  
+  .bmi-status {
+    display: inline-block;
+    padding: 4rpx 12rpx;
+    border-radius: 12rpx;
+    font-size: 20rpx;
+    margin-left: 12rpx;
+  }
+  
+  .bmi-normal {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  .bmi-overweight {
+    background: #fff3e0;
+    color: #ef6c00;
+  }
+  
+  .bmi-obese {
+    background: #ffebee;
+    color: #c62828;
+  }
+  
+  /* 代谢水平 */
+  .metabolism-high {
+    color: #2e7d32;
+    font-weight: 600;
+  }
+  
+  .metabolism-medium {
+    color: #ef6c00;
+    font-weight: 600;
+  }
+  
+  .metabolism-low {
+    color: #c62828;
+    font-weight: 600;
+  }
+  
+  /* 目标卡片 */
+  .difficulty-tag {
+    padding: 6rpx 16rpx;
+    border-radius: 20rpx;
+    font-size: 22rpx;
+  }
+  
+  .difficulty-easy {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  .difficulty-medium {
+    background: #fff3e0;
+    color: #ef6c00;
+  }
+  
+  .difficulty-hard {
+    background: #ffebee;
+    color: #c62828;
+  }
+  
+  .goal-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20rpx;
+    margin-bottom: 32rpx;
+  }
+  
+  .stat-item {
+    text-align: center;
+    padding: 20rpx;
+    background: #f9fdfe;
+    border-radius: 16rpx;
+    border: 1rpx solid #e9f2f1;
+  }
+  
+  .stat-label {
+    display: block;
+    font-size: 22rpx;
+    color: #666;
+    margin-bottom: 8rpx;
+  }
+  
+  .stat-value {
+    display: block;
+    font-size: 32rpx;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .highlight {
+    color: #5a7c78;
+  }
+  
+  /* 时间轴 */
+  .timeline-section {
+    margin-top: 32rpx;
+  }
+  
+  .timeline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    margin: 40rpx 0 24rpx;
+  }
+  
+  .timeline-start,
+  .timeline-end {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+  }
+  
+  .timeline-dot {
+    width: 20rpx;
+    height: 20rpx;
+    border-radius: 50%;
+    margin-bottom: 12rpx;
+  }
+  
+  .start-dot {
+    background: #5a7c78;
+    box-shadow: 0 0 0 8rpx rgba(90, 124, 120, 0.2);
+  }
+  
+  .end-dot {
+    background: #9ad4cb;
+    box-shadow: 0 0 0 8rpx rgba(154, 212, 203, 0.2);
+  }
+  
+  .timeline-label {
+    text-align: center;
+  }
+  
+  .timeline-date {
+    display: block;
+    font-size: 22rpx;
+    color: #666;
+  }
+  
+  .timeline-weight {
+    display: block;
+    font-size: 28rpx;
+    font-weight: 600;
+    color: #333;
+    margin-top: 4rpx;
+  }
+  
+  .timeline-line {
+    flex: 1;
+    height: 6rpx;
+    background: #e9f2f1;
+    margin: 0 20rpx;
+    border-radius: 3rpx;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .timeline-progress {
+    height: 100%;
+    background: linear-gradient(to right, #5a7c78, #9ad4cb);
+    border-radius: 3rpx;
+    transition: width 1s ease-out;
+  }
+  
+  .timeline-rate {
+    text-align: center;
+    font-size: 24rpx;
+    color: #666;
+  }
+  
+  .rate-value {
+    color: #5a7c78;
+    font-weight: 600;
+    margin-left: 8rpx;
+  }
+  
+  /* 饮食方案 */
+  .calorie-section {
+    margin: 24rpx 0;
+  }
+  
+  .section-title {
+    display: block;
+    font-size: 28rpx;
+    font-weight: 500;
+    color: #2e7d32;
+    margin-bottom: 24rpx;
+    text-align: center;
+  }
+  
+  .macronutrients {
+    display: flex;
+    flex-direction: column;
+    gap: 24rpx;
+  }
+  
+  .macro-item {
+    padding: 18rpx 20rpx;
+    background: #f9fdfe;
+    border-radius: 16rpx;
+    border: 1rpx solid #e9f2f1;
+  }
+  
+  .macro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom:6rpx;
+  }
+  
+  .macro-name {
+    font-size: 26rpx;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .macro-percent {
+    font-size: 32rpx;
+    font-weight: 600;
+  }
+  
+  .protein .macro-percent {
+    color: #64b5f6;
+  }
+  
+  .fat .macro-percent {
+    color: #ffb74d;
+  }
+  
+  .carbs .macro-percent {
+    color: #81c784;
+  }
+  
+  .macro-grams {
+    display: block;
+    font-size: 22rpx;
+    color: #666;
+    margin-bottom: 12rpx;
+  }
+  
+  .macro-bar {
+    height: 8rpx;
+    background: #e9f2f1;
+    border-radius: 4rpx;
+    overflow: hidden;
+  }
+  
+  .macro-fill {
+    height: 100%;
+    border-radius: 4rpx;
+  }
+  
+  .protein-fill {
+    background: #64b5f6;
+  }
+  
+  .fat-fill {
+    background: #ffb74d;
+  }
+  
+  .carbs-fill {
+    background: #81c784;
+  }
+  
+  .diet-tips {
+    margin-top: 32rpx;
+    display: flex;
+    flex-direction: column;
+    gap: 16rpx;
+  }
+  
+  .tip-item {
+    display: flex;
+    align-items: center;
+    padding: 16rpx;
+    background: #f0f9fb;
+    border-radius: 12rpx;
+    border-left: 4rpx solid #9ad4cb;
+  }
+  
+  .tip-icon {
+    font-size: 32rpx;
+    margin-right: 16rpx;
+    margin-top: 4rpx;
+  }
+  
+  .tip-text {
+    flex: 1;
+    font-size: 24rpx;
+    color: #666;
+    line-height: 1.5;
+  }
+  
+  /* 运动方案 */
+  .exercise-plan {
+    display: flex;
+    flex-direction: column;
+    gap: 24rpx;
+    margin-top: 24rpx;
+  }
+  
+  .exercise-type {
+    padding: 24rpx;
+    background: #f9fdfe;
+    border-radius: 16rpx;
+    border: 1rpx solid #e9f2f1;
+  }
+  
+  .exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12rpx;
+  }
+  
+  .exercise-name {
+    font-size: 26rpx;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .exercise-frequency {
+    font-size: 22rpx;
+    color: #5a7c78;
+    background: #f0f9fb;
+    padding: 4rpx 12rpx;
+    border-radius: 12rpx;
+  }
+  
+  .exercise-detail {
+    display: block;
+    font-size: 24rpx;
+    color: #666;
+    margin-bottom: 12rpx;
+    line-height: 1.5;
+  }
+  
+  .exercise-calories {
+    font-size: 22rpx;
+    color: #ff9800;
+  }
+  
+  /* 成功案例 */
+  .success-stories {
+    display: flex;
+    flex-direction: column;
+    gap: 20rpx;
+    margin-top: 24rpx;
+  }
+  
+  .story-item {
+    padding: 24rpx;
+    background: #f9fdfe;
+    border-radius: 16rpx;
+    border: 1rpx solid #e9f2f1;
+  }
+  
+  .story-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16rpx;
+  }
+  
+  .story-user {
+    font-size: 24rpx;
+    font-weight: 500;
+    color: #5a7c78;
+  }
+  
+  .story-time {
+    font-size: 22rpx;
+    color: #666;
+  }
+  
+  .story-content {
+    font-size: 24rpx;
+    color: #666;
+    line-height: 1.6;
+    font-style: italic;
+  }
+  
+  /* 开始按钮 */
+  .start-section {
+    margin: 40rpx 0 80rpx;
+    text-align: center;
+  }
+  
+  .start-btn {
+    background: #29ac57;
+    color: white;
+    border: none;
+    border-radius: 20rpx;
+    padding: 20rpx 0;
+    font-size: 32rpx;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8rpx 32rpx rgba(90, 124, 120, 0.3);
+    margin-bottom: 32rpx;
+  }
+  
+  .btn-text {
+    margin-right: 12rpx;
+  }
+  
+  .btn-emoji {
+    font-size: 36rpx;
+  }
+  
+  .share-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20rpx;
+  }
+  
+  .share-text {
+    font-size: 24rpx;
+    color: #666;
+  }
+  
+  .share-btn {
+    background: #f0f9fb;
+    border: none;
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .share-icon {
+    font-size: 32rpx;
+  }
+  
+  /* 问题区域样式 - Modern卡片式设计 */
+  .question-section {
+    margin-bottom: 32rpx;
+    position: relative;
+  }
+
+  .question-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.95) 100%);
+    backdrop-filter: blur(20rpx);
+    -webkit-backdrop-filter: blur(20rpx);
+    border-radius: 28rpx;
+    padding: 40rpx 32rpx;
+    box-shadow: 0 20rpx 60rpx rgba(90, 124, 120, 0.15),
+                0 8rpx 32rpx rgba(154, 212, 203, 0.1),
+                inset 0 1rpx 0 rgba(255, 255, 255, 0.4);
+    border: 1rpx solid rgba(154, 212, 203, 0.2);
+    position: relative;
+    overflow: hidden;
+    animation: slideInModern 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-bottom: 24rpx;
+    transform: translateZ(0);
+  }
+
+  .question-header {
+    text-align: center;
+    margin-bottom: 36rpx;
+    position: relative;
+    z-index: 2;
+  }
+
+  .question-title {
+    display: block;
+    font-size: 40rpx;
+    font-weight: 700;
+    color: #1a365d;
+    margin-bottom: 12rpx;
+    position: relative;
+    letter-spacing: -1rpx;
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 50%, #718096 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .question-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8rpx;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60rpx;
+    height: 4rpx;
+    background: linear-gradient(90deg, #9ad4cb 0%, #5a7c78 100%);
+    border-radius: 2rpx;
+  }
+
+  .question-subtitle {
+    display: block;
+    font-size: 30rpx;
+    color: #5a7c78;
+    font-weight: 600;
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(135deg, rgba(154, 212, 203, 0.15) 0%, rgba(90, 124, 120, 0.1) 100%);
+    padding: 16rpx 32rpx;
+    border-radius: 24rpx;
+    display: inline-block;
+    margin: 0 auto;
+    border: 1rpx solid rgba(154, 212, 203, 0.3);
+    backdrop-filter: blur(10rpx);
+    box-shadow: 0 4rpx 16rpx rgba(154, 212, 203, 0.1);
+  }
+
+  .answer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24rpx;
+    position: relative;
+    z-index: 2;
+  }
+
+  .answer-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 24rpx;
+    padding: 28rpx 24rpx;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(15rpx);
+    border-radius: 20rpx;
+    border: 1rpx solid rgba(154, 212, 203, 0.2);
+    box-shadow: 0 8rpx 32rpx rgba(90, 124, 120, 0.08),
+                inset 0 1rpx 0 rgba(255, 255, 255, 0.3);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
+  }
+
+  .answer-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 8rpx;
+    background: linear-gradient(180deg, #9ad4cb 0%, #68d391 100%);
+    border-radius: 20rpx 0 0 20rpx;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .answer-item:hover {
+    transform: translateY(-8rpx) scale(1.02);
+    box-shadow: 0 20rpx 60rpx rgba(90, 124, 120, 0.15),
+                0 8rpx 32rpx rgba(154, 212, 203, 0.2),
+                inset 0 1rpx 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .answer-item:hover::before {
+    opacity: 1;
+  }
+
+  .answer-dot {
+    width: 20rpx;
+    height: 20rpx;
+    background: radial-gradient(circle, #9ad4cb 0%, #68d391 100%);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 14rpx;
+    box-shadow: 0 4rpx 16rpx rgba(154, 212, 203, 0.4),
+                inset 0 1rpx 0 rgba(255, 255, 255, 0.3);
+    animation: pulse 2s ease-in-out infinite;
+    position: relative;
+  }
+
+  .answer-text {
+    font-size: 30rpx;
+    color: #4a5568;
+    line-height: 1.6;
+    flex: 1;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+  }

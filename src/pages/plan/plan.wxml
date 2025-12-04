@@ -1,0 +1,308 @@
+<!--pages/plan/plan.wxml-->
+<view class="plan-page">
+  <!-- 主内容区域 -->
+  <scroll-view class="plan-content" scroll-y enable-back-to-top>
+    
+    <!-- 用户信息概览卡片 -->
+    <view wx-if="{{false}}" class="card info-card">
+      <view class="card-header">
+        <text class="card-title">你的信息概览</text>
+      </view>
+      <view class="info-grid">
+        <view class="info-item">
+          <text class="info-label">性别</text>
+          <text class="info-value">{{gender === 'male' ? '男' : '女'}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">年龄</text>
+          <text class="info-value">{{age}}岁</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">身高</text>
+          <text class="info-value">{{height}}cm</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">当前体重</text>
+          <text class="info-value">{{currentWeight}}kg</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">当前BMI</text>
+          <text class="info-value">
+            <text>{{bmi}}</text>
+            <text class="bmi-status {{bmiStatusClass}}">{{bmiStatus}}</text> 
+          </text> 
+        </view>
+        <view class="info-item">
+          <text class="info-label">代谢水平</text>
+          <text class="info-value metabolism-{{metabolismLevel}}">{{metabolismText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 目标概览卡片 -->
+    <view class="card goal-card">
+      <view class="card-header">
+        <text class="card-title">减重目标</text>
+        <view class="difficulty-tag {{difficultyClass}}">
+          <text>{{difficultyText}}</text>
+        </view>
+      </view>
+      
+      <view class="goal-stats">
+        <view class="stat-item">
+          <text class="stat-label">目标体重</text>
+          <text class="stat-value highlight">{{targetWeight}}kg</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-label">期望减重</text>
+          <text class="stat-value">{{weightLossTotal}}kg</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-label">减重周期</text>
+          <text class="stat-value">{{planDays}}天</text>
+        </view>
+      </view>
+
+      <!-- 时间轴进度 -->
+      <view class="timeline-section">
+        <view class="timeline">
+          <view class="timeline-start">
+            <view class="timeline-dot start-dot"></view>
+            <view class="timeline-label">
+              <text class="timeline-date">今日</text>
+              <text class="timeline-weight">{{currentWeight}}kg</text>
+            </view>
+          </view>
+          
+          <view class="timeline-line">
+            <view class="timeline-progress" style="width: {{progressPercentage}}%"></view>
+          </view>
+          
+          <view class="timeline-end">
+            <view class="timeline-dot end-dot"></view>
+            <view class="timeline-label">
+              <text class="timeline-date">{{formattedTargetDate}}</text>
+              <text class="timeline-weight">{{targetWeight}}kg</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="timeline-rate">
+          <text>预计减重速率：</text>
+          <text class="rate-value">{{weeklyLossRate}}kg/周</text>
+        </view>
+      </view>
+    </view>
+
+       <!-- 饮食方案卡片 -->
+       <view class="card diet-card">
+      <view class="card-header">
+        <text class="card-title">专属饮食方案</text>
+        <text class="card-subtitle">{{dietMethod}}</text>
+      </view>
+
+      <!-- 热量分配 -->
+      <view class="calorie-section">
+        <text class="section-title">每日热量摄入：{{dailyCalories}}kcal</text>
+
+        <view class="macronutrients">
+          <view class="macro-item protein">
+            <view class="macro-header">
+              <text class="macro-name">蛋白质</text>
+              <text class="macro-percent">{{proteinPercent}}%</text>
+            </view>
+            <text class="macro-grams">{{proteinGrams}}克/天</text>
+            <view class="macro-bar">
+              <view class="macro-fill protein-fill" style="width: {{proteinPercent}}%"></view>
+            </view>
+          </view>
+
+          <view class="macro-item fat">
+            <view class="macro-header">
+              <text class="macro-name">脂肪</text>
+              <text class="macro-percent">{{fatPercent}}%</text>
+            </view>
+            <text class="macro-grams">{{fatGrams}}克/天</text>
+            <view class="macro-bar">
+              <view class="macro-fill fat-fill" style="width: {{fatPercent}}%"></view>
+            </view>
+          </view>
+
+          <view class="macro-item carbs">
+            <view class="macro-header">
+              <text class="macro-name">碳水化合物</text>
+              <text class="macro-percent">{{carbsPercent}}%</text>
+            </view>
+            <text class="macro-grams">{{carbsGrams}}克/天</text>
+            <view class="macro-bar">
+              <view class="macro-fill carbs-fill" style="width: {{carbsPercent}}%"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 饮食建议 -->
+    <view class="diet-tips">
+        <view class="tip-item">
+          <text class="tip-icon">⏰</text>
+          <text class="tip-text">采用16:8轻断食，每天8小时内完成进食</text>
+        </view>
+        <view class="tip-item">
+          <text class="tip-icon">🥦</text>
+          <text class="tip-text">多吃蔬菜、优质蛋白，控制精制碳水</text>
+        </view>
+        <view class="tip-item">
+          <text class="tip-icon">💧</text>
+          <text class="tip-text">每天饮用2000ml以上水，避免含糖饮料</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 减肥吃什么? -->
+    <view class="question-section">
+      <view class="question-card">
+        <view class="question-header">
+          <text class="question-title">减肥吃什么?</text>
+        </view>
+        <view class="answer-content">
+          <view class="answer-item">
+            <view class="answer-dot"></view>
+            <text class="answer-text">个性化食谱任你挑选</text>
+          </view>
+          <view class="answer-item">
+            <view class="answer-dot"></view>
+            <text class="answer-text">热量精准把控食谱动态调整</text>
+          </view>
+          <view class="answer-item">
+            <view class="answer-dot"></view>
+            <text class="answer-text">专业饮食建议</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 减肥吃多少? -->
+    <view class="question-section">
+      <view class="question-card">
+        <view class="question-header">
+          <text class="question-title">减肥吃多少?</text>
+        </view>
+        <view class="answer-content">
+          <view class="answer-item">
+            <view class="answer-dot"></view>
+            <text class="answer-text">拍照识别食物热量</text>
+          </view>
+          <view class="answer-item">
+            <view class="answer-dot"></view>
+            <text class="answer-text">一键获悉热量</text>
+          </view>
+          <view class="answer-item">
+            <view class="answer-dot"></view>
+            <text class="answer-text">智能营养分析</text>
+          </view>
+          <view class="answer-item">
+            <view class="answer-dot"></view>
+            <text class="answer-text">实时记录三餐</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+
+    <!-- 减肥没动力? -->
+    <view class="question-section">
+      <view class="question-card">
+        <view class="question-header">
+          <text class="question-title">减肥没动力?</text>
+        </view>
+        <view class="answer-content">
+          <view class="answer-item">
+            <view class="answer-dot"></view>
+            <text class="answer-text">轻断食打卡祝你一臂之力</text>
+          </view>
+          <view class="answer-item">
+            <view class="answer-dot"></view>
+            <text class="answer-text">一键开启打卡间歇饮食建议</text>
+          </view>
+          <view class="answer-item">
+            <view class="answer-dot"></view>
+            <text class="answer-text">专业指征分析</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 运动方案卡片 -->
+    <view class="card exercise-card">
+      <view class="card-header">
+        <text class="card-title">运动建议</text>
+        <text class="card-subtitle">每周运动计划</text>
+      </view>
+      
+      <view class="exercise-plan">
+        <view class="exercise-type">
+          <view class="exercise-header">
+            <text class="exercise-name">有氧运动</text>
+            <text class="exercise-frequency">3-4次/周</text>
+          </view>
+          <text class="exercise-detail">跑步、快走、游泳、跳绳等，每次30-45分钟</text>
+          <view class="exercise-calories">
+            <text>🔥 约消耗 {{cardioCalories}}kcal/次</text>
+          </view>
+        </view>
+        
+        <view class="exercise-type">
+          <view class="exercise-header">
+            <text class="exercise-name">力量训练</text>
+            <text class="exercise-frequency">2-3次/周</text>
+          </view>
+          <text class="exercise-detail">深蹲、俯卧撑、哑铃训练等，每次20-30分钟</text>
+          <view class="exercise-calories">
+            <text>💪 增强基础代谢，塑形燃脂</text>
+          </view>
+        </view>
+        
+        <view class="exercise-type">
+          <view class="exercise-header">
+            <text class="exercise-name">日常活动</text>
+            <text class="exercise-frequency">每天</text>
+          </view>
+          <text class="exercise-detail">多站立、少久坐，每天步行8000步以上</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 成功案例 -->
+    <view class="card success-card">
+      <view class="card-header">
+        <text class="card-title">伙伴们的成功故事</text>
+      </view>
+      
+      <view class="success-stories">
+        <view class="story-item">
+          <view class="story-header">
+            <text class="story-user">健康小达人</text>
+            <text class="story-time">8个月 · 减重20斤</text>
+          </view>
+          <text class="story-content">"没有刻意节食，通过科学饮食和规律运动，不仅瘦了，身体也更健康了！"</text>
+        </view>
+        
+        <view class="story-item">
+          <view class="story-header">
+            <text class="story-user">阳光女孩</text>
+            <text class="story-time">5个月 · 减重15斤</text>
+          </view>
+          <text class="story-content">"食谱很丰富，不会觉得单调，慢慢就养成了健康的饮食习惯。"</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 立即开始按钮 -->
+    <view class="start-section">
+      <button class="start-btn" bindtap="startPlan">
+        <text class="btn-text">开始我的减重计划</text>
+        <text class="btn-emoji">🚀</text>
+      </button>
+    </view>
+  </scroll-view>
+</view>

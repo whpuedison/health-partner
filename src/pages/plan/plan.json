@@ -1,0 +1,8 @@
+{
+    "usingComponents": {},
+    "navigationBarTitleText": "我的专属方案",
+    "navigationBarBackgroundColor": "#F7FAFC",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F7FAFC",
+    "enablePullDownRefresh": false
+  }
