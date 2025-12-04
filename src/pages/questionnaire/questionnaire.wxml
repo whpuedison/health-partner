@@ -163,13 +163,15 @@
     <view class="step-content" wx:if="{{currentStep === 5}}">
       <view class="question-section">
         <text class="question-title">你的目标体重是?</text>
-        <text class="question-desc">设定清晰的目标，有助于你更好地管理体重健康</text>
+        <text class="question-desc">请设定您的减重目标，我们专注于以健康速率
+        （如每周0.5-1公斤）安全减肥，并为您生成个性化方案
+        </text>
       </view>
 
       <view class="weight-container target-weight-container">
         <weight-picker
           min="30"
-          max="200"
+          max="{{selectedWeight}}"
           value="{{targetWeight}}"
           bindchange="onTargetWeightChange"
         />
