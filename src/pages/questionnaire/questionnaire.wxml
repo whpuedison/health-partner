@@ -172,6 +172,7 @@
         <weight-picker
           min="30"
           max="{{selectedWeight}}"
+          markWidth="{{20}}"
           value="{{targetWeight}}"
           bindchange="onTargetWeightChange"
         />

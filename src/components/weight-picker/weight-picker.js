@@ -1,11 +1,12 @@
 Component({
-    properties: {
-      min: { type: Number, value: 30 },
-      max: { type: Number, value: 200 },
-      value: { type: Number, value: 70 },
-      step: { type: Number, value: 1 },
-      unit: { type: String, value: 'kg' }
-    },
+  properties: {
+    min: { type: Number, value: 30 },
+    max: { type: Number, value: 200 },
+    value: { type: Number, value: 70 },
+    step: { type: Number, value: 1 },
+    unit: { type: String, value: 'kg' },
+    markWidth: { type: Number, value: 10 }
+  },
     data: {
       marks: [],
       translateX: 0,
@@ -36,34 +37,45 @@ Component({
         if (this.data.marks.length > 0 && !this.data.isTouching) {
           this.updateScrollPosition();
         }
+      },
+      'markWidth': function(newMarkWidth) {
+        // markWidth变化时重新初始化刻度尺
+        if (this.data.marks.length > 0) {
+          this.initRuler();
+        }
+      },
+      'min,max,step': function() {
+        // 这些属性变化时也需要重新初始化
+        this.initRuler();
       }
     },
     methods: {
       initRuler() {
         console.log('weight-picker initRuler 开始初始化');
-        const { min, max, step } = this.properties;
+        const { min, max, step, markWidth } = this.properties;
         const marks = [];
-  
+
         for (let i = min; i <= max; i += step) {
           const index = Math.floor((i - min) / step);
-          const left = 319 + index * this.data.markWidth;
-  
+          const left = 319 + index * markWidth;
+
           marks.push({
             value: i,
             isLong: i % 10 === 0,
             left: left
           });
         }
-  
+
         // 计算边界位置
         const maxIndex = Math.floor((max - min) / step);
-        const minTranslate = -maxIndex * this.data.markWidth;
+        const minTranslate = -maxIndex * markWidth;
         const maxTranslate = 0;
-        
+
         console.log('weight-picker 初始化完成，marks数量:', marks.length);
+        console.log('markWidth:', markWidth);
         console.log('边界范围:', minTranslate, '到', maxTranslate);
-        
-        this.setData({ 
+
+        this.setData({
           marks,
           minTranslate,
           maxTranslate,
