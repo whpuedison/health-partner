@@ -20,7 +20,11 @@ Component({
       maxTranslate: 0,
       // 防抖动的速度平滑处理
       recentVelocities: [],
-      recentPositions: []
+      recentPositions: [],
+      // 震动反馈相关
+      lastTickValue: null, // 上次触发震动的值
+      currentPreciseValue: 0, // 当前精确值
+      previousPreciseValue: 0 // 上一次的精确值，用于检测经过了多少个刻度
     },
     lifetimes: {
       attached() {
@@ -62,7 +66,10 @@ Component({
         this.setData({ 
           marks,
           minTranslate,
-          maxTranslate
+          maxTranslate,
+          lastTickValue: this.properties.value, // 初始化为当前值
+          currentPreciseValue: this.properties.value,
+          previousPreciseValue: this.properties.value
         });
         this.updateScrollPosition();
       },
@@ -78,20 +85,27 @@ Component({
         
         this.setData({
           translateX: clampedTranslateX,
-          lastTranslateX: clampedTranslateX
+          lastTranslateX: clampedTranslateX,
+          currentPreciseValue: value, // 同步精确值
+          previousPreciseValue: value,
+          lastTickValue: value // 重置最后一次震动的值
         });
       },
   
       onTouchStart(e) {
         const pixelRatio = 750 / wx.getSystemInfoSync().windowWidth;
         const touchX = e.touches[0].clientX * pixelRatio;
+        const currentValue = this.properties.value;
         
         this.setData({
           touchStartX: touchX,
           lastTouchX: touchX,
           isTouching: true,
           recentVelocities: [],
-          recentPositions: []
+          recentPositions: [],
+          lastTickValue: currentValue, // 触摸开始时重置
+          currentPreciseValue: currentValue,
+          previousPreciseValue: currentValue
         });
       },
   
@@ -144,17 +158,88 @@ Component({
           recentPositions: recentPositions
         });
         
-        // 🎯 实时计算当前值（用于显示，但不立即吸附）
+        // 🎯 实时计算当前精确值
         const { min, step, value } = this.properties;
         const { markWidth } = this.data;
         
-        // 计算当前最接近的值（四舍五入到最近的刻度）
-        const currentValue = Math.round((-newTranslateX / markWidth) * step + min);
+        // 计算当前精确值（不四舍五入）
+        const preciseValue = (-newTranslateX / markWidth) * step + min;
+        const currentValue = Math.round(preciseValue);
         const clampedValue = Math.max(min, Math.min(this.properties.max, currentValue));
+        
+        // 🎯 保存当前精确值
+        this.setData({ 
+          currentPreciseValue: preciseValue 
+        });
+        
+        // 🎯 检测经过了多少个整数刻度并触发震动
+        this.checkTickFeedback();
+        
+        // 更新上一次精确值为当前精确值
+        this.setData({
+          previousPreciseValue: preciseValue
+        });
         
         // 只有当值发生变化时才触发change事件
         if (clampedValue !== value) {
           this.triggerEvent('change', { value: clampedValue });
+        }
+      },
+  
+      // 🎯 检测经过了多少个整数刻度并触发震动
+      checkTickFeedback() {
+        const { min, max, step } = this.properties;
+        const { previousPreciseValue, currentPreciseValue } = this.data;
+        
+        // 计算上一次和当前的四舍五入值
+        const previousRounded = Math.round(previousPreciseValue);
+        const currentRounded = Math.round(currentPreciseValue);
+        
+        // 如果四舍五入后的值相同，说明还在同一个整数刻度内，不触发震动
+        if (previousRounded === currentRounded) {
+          return;
+        }
+        
+        // 🎯 计算经过了多少个整数刻度
+        const direction = currentRounded > previousRounded ? 1 : -1; // 1:向右，-1:向左
+        const startValue = direction === 1 ? previousRounded : previousRounded;
+        const endValue = direction === 1 ? currentRounded : currentRounded;
+        
+        // 确保值在[min, max]范围内
+        const clampedStart = Math.max(min, Math.min(max, startValue));
+        const clampedEnd = Math.max(min, Math.min(max, endValue));
+        
+        // 计算需要震动的次数（经过了多少个整数刻度）
+        const tickCount = Math.abs(clampedEnd - clampedStart);
+        
+        if (tickCount > 0) {
+          // 🎯 对经过的每个整数刻度都触发一次震动
+          for (let i = 1; i <= tickCount; i++) {
+            // 使用setTimeout分散震动时间，避免同时触发
+            setTimeout(() => {
+              this.triggerVibration();
+            }, i * 5); // 每个震动间隔5ms
+          }
+        }
+      },
+  
+      // 🎯 触发震动
+      triggerVibration() {
+        // 检查是否支持震动API
+        if (wx.vibrateShort) {
+          try {
+            wx.vibrateShort({
+              type: 'light', // 使用轻触模式
+              success: () => {
+                // 震动成功
+              },
+              fail: (err) => {
+                console.warn('震动失败:', err);
+              }
+            });
+          } catch (error) {
+            console.warn('震动API不可用:', error);
+          }
         }
       },
   
@@ -169,27 +254,29 @@ Component({
         this.snapToNearestMark();
       },
   
-      // 🎯 吸附到最近刻度（触摸结束后调用）
+      // 🎯 吸附到最近刻度
       snapToNearestMark() {
         const { min, step, value } = this.properties;
         const { markWidth, translateX } = this.data;
         
-        // 计算最近的刻度（四舍五入）
         const nearestIndex = Math.round(-translateX / markWidth);
         const nearestValue = min + nearestIndex * step;
         const clampedValue = Math.max(min, Math.min(this.properties.max, nearestValue));
         
-        // 计算目标位置
         const targetIndex = (clampedValue - min) / step;
         const targetTranslateX = -targetIndex * markWidth;
         
-        // 🎯 直接设置到目标位置（无动画）
+        // 🎯 吸附时也触发震动
+        this.triggerVibration();
+        
         this.setData({
           translateX: targetTranslateX,
-          lastTranslateX: targetTranslateX
+          lastTranslateX: targetTranslateX,
+          lastTickValue: clampedValue,
+          currentPreciseValue: clampedValue,
+          previousPreciseValue: clampedValue
         });
         
-        // 如果值变化了，触发change事件
         if (clampedValue !== value) {
           this.triggerEvent('change', { value: clampedValue });
         }
