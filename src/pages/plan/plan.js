@@ -27,11 +27,11 @@ Page({
       // 饮食方案
       dailyCalories: 1856,
       proteinPercent: 21,
-      proteinGrams: 85.6,
+      proteinGrams: null,
       fatPercent: 21,
-      fatGrams: 36.6,
+      fatGrams: null,
       carbsPercent: 58,
-      carbsGrams: 235.9,
+      carbsGrams: null,
       dietMethod: '16+8轻断食减肥法',
       
       // 运动方案
@@ -106,14 +106,20 @@ Page({
       
       // 5. 计算每日热量
       const dailyCalories = this.calculateDailyCalories();
-      
-      // 6. 计算计划天数（如果提供了目标日期）
+
+      // 6. 计算营养素克数
+      const { proteinPercent, fatPercent, carbsPercent } = this.data;
+      const proteinGrams = ((proteinPercent / 100) * dailyCalories / 4).toFixed(1);
+      const fatGrams = ((fatPercent / 100) * dailyCalories / 9).toFixed(1);
+      const carbsGrams = ((carbsPercent / 100) * dailyCalories / 4).toFixed(1);
+
+      // 7. 计算计划天数（如果提供了目标日期）
       if (this.data.formattedTargetDate) {
         const planDays = this.calculatePlanDays(this.data.formattedTargetDate);
         this.setData({ planDays: planDays });
       }
-      
-      // 7. 计算每周减重率
+
+      // 8. 计算每周减重率
       const weeklyLossRate = (weightLossTotal / (this.data.planDays / 7)).toFixed(1);
       
       // 更新数据
@@ -127,6 +133,9 @@ Page({
         difficultyClass: difficultyClass,
         difficultyText: difficultyText,
         dailyCalories: dailyCalories,
+        proteinGrams: proteinGrams,
+        fatGrams: fatGrams,
+        carbsGrams: carbsGrams,
         weeklyLossRate: weeklyLossRate
       });
     },
@@ -189,20 +198,20 @@ Page({
       }
       
       // 根据活动水平调整
-      let activityMultiplier;
-      switch(metabolismLevel) {
-        case 'high':
-          activityMultiplier = 1.55; // 中等活动
-          break;
-        case 'medium':
-          activityMultiplier = 1.375; // 轻度活动
-          break;
-        case 'low':
-          activityMultiplier = 1.2; // 久坐
-          break;
-        default:
-          activityMultiplier = 1.375;
-      }
+      let activityMultiplier = 1.375;
+      // switch(metabolismLevel) {
+      //   case 'high':
+      //     activityMultiplier = 1.55; // 中等活动
+      //     break;
+      //   case 'medium':
+      //     activityMultiplier = 1.375; // 轻度活动
+      //     break;
+      //   case 'low':
+      //     activityMultiplier = 1.2; // 久坐
+      //     break;
+      //   default:
+      //     activityMultiplier = 1.375;
+      // }
       
       // 维持当前体重的每日热量
       const maintenanceCalories = bmr * activityMultiplier;

@@ -480,7 +480,7 @@ Page({
       wx.navigateTo({
         url: `/pages/plan/plan?${userDataString}`
       })
-     }, 2000);
+     }, 500);
 
       // 延迟跳转，让用户看到成功提示
       // setTimeout(() => {
