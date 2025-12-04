@@ -417,18 +417,21 @@
 }
 
 .date-display {
-  background: #f8f9fa;
-  border: 2rpx solid #e9ecef;
-  border-radius: 16rpx;
-  padding: 32rpx 40rpx;
-  min-width: 300rpx;
+  background: #ffffff; /* 纯白背景，更干净 */
+  border: 2rpx solid #B8E6C8; /* 改为虚线边框，更活泼 */
+  border-radius: 24rpx; /* 更大的圆角 */
+  padding: 32rpx 36rpx;
+  min-width: 280rpx;
   text-align: center;
   transition: all 0.3s ease;
+  color: #4a6b66; /* 沉稳的深青色 */
+  font-weight: 400;
 }
 
 .date-display:active {
-  background: #e9ecef;
-  border-color: #B8E6C8;
+  border-color: #9ad4cb;
+  box-shadow: 0 6rpx 20rpx rgba(154, 212, 203, 0.12);
+  transform: translateY(-2rpx);
 }
 
 .date-label {
@@ -467,8 +470,7 @@
 }
 
 .assessment-value {
-  font-size: 48rpx;
-  font-weight: 600;
+  font-size: 32rpx;
   color: #3cc51f;
 }
 
@@ -501,10 +503,8 @@
 
 .comparison-value {
   font-size: 32rpx;
-  font-weight: 600;
   color: #3cc51f;
   padding: 16rpx 24rpx;
-  background: #F0F9F5;
   border-radius: 16rpx;
   display: inline-block;
 }
@@ -548,10 +548,8 @@
 
 .planning-value {
   font-size: 32rpx;
-  font-weight: 600;
   color: #3cc51f;
   padding: 16rpx 24rpx;
-  background: #F0F9F5;
   border-radius: 16rpx;
   display: inline-block;
   line-height: 1.4;
@@ -584,13 +582,4 @@
   padding: 40rpx;
   margin: 40rpx 0;
   box-shadow: 0 4rpx 16rpx rgba(184, 230, 200, 0.1);
-}
-
-.goal-planning .planning-value,
-.goal-planning .planning-text {
-  color: #3cc51f;
-}
-
-.goal-planning .planning-value {
-  background: #F0F9F5;
 }
