@@ -1,13 +1,17 @@
 <!--custom-tab-bar/index.wxml-->
-<view class="tab-bar">
+<view class="tab-bar {{showSubMenu ? 'transparent' : ''}}">
   <view 
-    class="tab-item {{active === index ? 'active' : ''}} {{item.isAdd ? 'add-button' : ''}}" 
+    class="tab-item {{active === index ? 'active' : ''}} {{item.isAdd ? 'add-button' : ''}} {{showSubMenu && !item.isAdd ? 'hidden' : ''}}" 
     wx:for="{{list}}" 
     wx:key="text"
     data-index="{{index}}"
-    bindtap="{{item.isAdd ? 'onAddButtonClick' : 'onChange'}}"
+    bindtap="{{item.isAdd ? '' : 'onChange'}}"
   >
-    <text class="tab-icon">{{item.icon}}</text>
+    <text 
+      class="tab-icon {{showSubMenu && item.isAdd ? 'rotate' : ''}}"
+      bindtap="{{item.isAdd ? 'onAddButtonClick' : ''}}"
+      catchtap="{{item.isAdd ? 'onAddButtonClick' : ''}}"
+    >{{item.icon}}</text>
     <text class="tab-text" wx:if="{{!item.isAdd}}">{{item.text}}</text>
   </view>
 </view>

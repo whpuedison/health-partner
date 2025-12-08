@@ -11,6 +11,14 @@
   box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.05);
   z-index: 9999;
   border-top: 1rpx solid #E2E8F0;
+  transition: all 0.3s;
+}
+
+/* 子菜单弹出时，TabBar背景透明 */
+.tab-bar.transparent {
+  background: transparent;
+  box-shadow: none;
+  border-top: none;
 }
 
 .tab-item {
@@ -44,9 +52,17 @@
   font-weight: 600;
 }
 
+/* 子菜单弹出时隐藏主菜单项 */
+.tab-item.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
 /* 中间添加按钮特殊样式 */
 .tab-item.add-button {
   position: relative;
+  z-index: 10001; /* 确保在子菜单之上 */
 }
 
 .tab-item.add-button .tab-icon {
@@ -61,13 +77,24 @@
   box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.4);
   transform: translateY(-20rpx);
   transition: all 0.3s;
+  position: relative;
+  z-index: 10001; /* 确保图标在最上层 */
+}
+
+/* +按钮旋转45度变成× */
+.tab-item.add-button .tab-icon.rotate {
+  transform: translateY(-20rpx) rotate(45deg);
 }
 
 .tab-item.add-button:active .tab-icon {
   transform: translateY(-20rpx) scale(0.95);
 }
 
-/* 遮罩层 */
+.tab-item.add-button:active .tab-icon.rotate {
+  transform: translateY(-20rpx) rotate(45deg) scale(0.95);
+}
+
+/* 遮罩层 - 覆盖整个屏幕 */
 .mask {
   position: fixed;
   top: 0;
@@ -90,19 +117,19 @@
 .sub-menu-container {
   position: fixed;
   left: 50%;
-  bottom: 170rpx;  /* 提高位置，避免与TabBar遮挡 */
+  bottom: 120rpx;  /* 提高位置，避免与TabBar遮挡 */
   width: 500rpx;
   height: 300rpx;
   transform: translateX(-50%);
   z-index: 10000;
-  pointer-events: none;
+  pointer-events: none; /* 容器本身不响应点击，让点击穿透 */
   opacity: 0;
   transition: opacity 0.3s;
 }
 
 .sub-menu-container.show {
   opacity: 1;
-  pointer-events: auto;
+  /* 不设置pointer-events: auto，保持none让点击穿透 */
 }
 
 /* 子菜单项（单圈扇形排列） */
@@ -117,6 +144,7 @@
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   opacity: 0;
   transform: translateY(0) scale(0);
+  pointer-events: auto; /* 子菜单项可点击 */
 }
 
 .sub-menu-container.show .sub-menu-item {
