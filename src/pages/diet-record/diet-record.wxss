@@ -659,10 +659,10 @@
   border: none !important;
 }
 
-/* 识别结果弹窗 - 650rpx宽 */
+/* 识别结果弹窗 - 630rpx宽 */
 .recognition-popup {
   padding: 40rpx 32rpx;
-  width: 680rpx;
+  width: 630rpx;
   max-height: 84vh;
   display: flex;
   flex-direction: column;
