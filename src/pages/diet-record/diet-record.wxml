@@ -1,0 +1,294 @@
+<!--pages/diet-record/diet-record.wxml-->
+<view class="diet-record-page">
+  <!-- 周历 -->
+  <view class="week-calendar">
+    <view class="calendar-header">
+      <text class="calendar-nav" bindtap="changeWeek" data-type="prev">◀</text>
+      <text class="calendar-title">本周饮食</text>
+      <text class="calendar-nav" bindtap="changeWeek" data-type="next">▶</text>
+    </view>
+    
+    <view class="calendar-days">
+      <view 
+        class="day-item {{item.isToday ? 'today' : ''}} {{selectedDate === item.date ? 'selected' : ''}}"
+        wx:for="{{weekDays}}"
+        wx:key="date"
+        data-date="{{item.date}}"
+        bindtap="selectDate"
+      >
+        <text class="day-week">{{item.weekDay}}</text>
+        <text class="day-number">{{item.day}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 营养数据卡片 -->
+  <view class="nutrition-overview">
+    <view class="overview-row">
+      <view class="overview-item">
+        <text class="item-label">饮食摄入</text>
+        <text class="item-value">{{todayIntake}} kcal</text>
+      </view>
+      <view class="overview-item center">
+        <text class="item-label">还可以吃</text>
+        <text class="item-value">{{todayRemaining}}</text>
+        <text class="item-value">kcal</text>
+      </view>
+      <view class="overview-item">
+        <text class="item-label">运动消耗</text>
+        <text class="item-value">{{todayBurned}} kcal</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 营养素统计 -->
+  <view class="nutrients-card">
+    <view class="nutrient-item">
+      <view class="nutrient-header">
+        <text class="nutrient-name">蛋白质</text>
+        <text class="nutrient-value">{{protein.current}}g / {{protein.target}}g</text>
+      </view>
+      <view class="nutrient-bar">
+        <view class="bar-fill protein" style="width: {{(protein.current / protein.target) * 100}}%"></view>
+      </view>
+    </view>
+    
+    <view class="nutrient-item">
+      <view class="nutrient-header">
+        <text class="nutrient-name">脂肪</text>
+        <text class="nutrient-value">{{fat.current}}g / {{fat.target}}g</text>
+      </view>
+      <view class="nutrient-bar">
+        <view class="bar-fill fat" style="width: {{(fat.current / fat.target) * 100}}%"></view>
+      </view>
+    </view>
+    
+    <view class="nutrient-item">
+      <view class="nutrient-header">
+        <text class="nutrient-name">碳水</text>
+        <text class="nutrient-value">{{carbs.current}}g / {{carbs.target}}g</text>
+      </view>
+      <view class="nutrient-bar">
+        <view class="bar-fill carbs" style="width: {{(carbs.current / carbs.target) * 100}}%"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 拍照识别按钮 -->
+  <view class="photo-btn" bindtap="showPhotoTipDialog">
+    <text class="photo-icon">📷</text>
+    <view class="photo-text">
+      <text class="photo-title">拍照识别菜品</text>
+      <text class="photo-desc">AI智能识别，秒算卡路里</text>
+    </view>
+  </view>
+
+  <!-- 今日饮食记录 -->
+  <view class="records-section">
+    <text class="section-title">今日饮食</text>
+    
+    <!-- 早餐 -->
+    <view class="meal-section" wx:if="{{mealGroups['早餐'].length > 0}}">
+      <view class="meal-header" bindtap="toggleMeal" data-meal="早餐">
+        <text class="meal-icon">🌅</text>
+        <text class="meal-title">早餐</text>
+        <view class="meal-summary">
+          <text class="meal-count">{{mealStats['早餐'].count}}项</text>
+          <text class="meal-calories">{{mealStats['早餐'].totalCalories}} kcal</text>
+        </view>
+        <text class="expand-icon {{expandedMeals['早餐'] ? 'expanded' : ''}}">▼</text>
+      </view>
+      <view class="records-list {{expandedMeals['早餐'] ? 'expanded' : 'collapsed'}}">
+        <view class="record-item" wx:for="{{mealGroups['早餐']}}" wx:key="id">
+          <view class="record-info">
+            <text class="food-name">{{item.foodName}}</text>
+            <text class="record-time">{{item.time}}</text>
+          </view>
+          <text class="food-calories">{{item.calories}} kcal</text>
+          <text class="delete-icon" data-id="{{item.id}}" bindtap="deleteRecord">✕</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 午餐 -->
+    <view class="meal-section" wx:if="{{mealGroups['午餐'].length > 0}}">
+      <view class="meal-header" bindtap="toggleMeal" data-meal="午餐">
+        <text class="meal-icon">🌞</text>
+        <text class="meal-title">午餐</text>
+        <view class="meal-summary">
+          <text class="meal-count">{{mealStats['午餐'].count}}项</text>
+          <text class="meal-calories">{{mealStats['午餐'].totalCalories}} kcal</text>
+        </view>
+        <text class="expand-icon {{expandedMeals['午餐'] ? 'expanded' : ''}}">▼</text>
+      </view>
+      <view class="records-list {{expandedMeals['午餐'] ? 'expanded' : 'collapsed'}}">
+        <view class="record-item" wx:for="{{mealGroups['午餐']}}" wx:key="id">
+          <view class="record-info">
+            <text class="food-name">{{item.foodName}}</text>
+            <text class="record-time">{{item.time}}</text>
+          </view>
+          <text class="food-calories">{{item.calories}} kcal</text>
+          <text class="delete-icon" data-id="{{item.id}}" bindtap="deleteRecord">✕</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 晚餐 -->
+    <view class="meal-section" wx:if="{{mealGroups['晚餐'].length > 0}}">
+      <view class="meal-header" bindtap="toggleMeal" data-meal="晚餐">
+        <text class="meal-icon">🌙</text>
+        <text class="meal-title">晚餐</text>
+        <view class="meal-summary">
+          <text class="meal-count">{{mealStats['晚餐'].count}}项</text>
+          <text class="meal-calories">{{mealStats['晚餐'].totalCalories}} kcal</text>
+        </view>
+        <text class="expand-icon {{expandedMeals['晚餐'] ? 'expanded' : ''}}">▼</text>
+      </view>
+      <view class="records-list {{expandedMeals['晚餐'] ? 'expanded' : 'collapsed'}}">
+        <view class="record-item" wx:for="{{mealGroups['晚餐']}}" wx:key="id">
+          <view class="record-info">
+            <text class="food-name">{{item.foodName}}</text>
+            <text class="record-time">{{item.time}}</text>
+          </view>
+          <text class="food-calories">{{item.calories}} kcal</text>
+          <text class="delete-icon" data-id="{{item.id}}" bindtap="deleteRecord">✕</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加餐 -->
+    <view class="meal-section" wx:if="{{mealGroups['加餐'].length > 0}}">
+      <view class="meal-header" bindtap="toggleMeal" data-meal="加餐">
+        <text class="meal-icon">🍎</text>
+        <text class="meal-title">加餐</text>
+        <view class="meal-summary">
+          <text class="meal-count">{{mealStats['加餐'].count}}项</text>
+          <text class="meal-calories">{{mealStats['加餐'].totalCalories}} kcal</text>
+        </view>
+        <text class="expand-icon {{expandedMeals['加餐'] ? 'expanded' : ''}}">▼</text>
+      </view>
+      <view class="records-list {{expandedMeals['加餐'] ? 'expanded' : 'collapsed'}}">
+        <view class="record-item" wx:for="{{mealGroups['加餐']}}" wx:key="id">
+          <view class="record-info">
+            <text class="food-name">{{item.foodName}}</text>
+            <text class="record-time">{{item.time}}</text>
+          </view>
+          <text class="food-calories">{{item.calories}} kcal</text>
+          <text class="delete-icon" data-id="{{item.id}}" bindtap="deleteRecord">✕</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-records" wx:if="{{mealGroups['早餐'].length === 0 && mealGroups['午餐'].length === 0 && mealGroups['晚餐'].length === 0 && mealGroups['加餐'].length === 0}}">
+      <text class="empty-icon">🍽️</text>
+      <text class="empty-text">今天还没有记录哦</text>
+    </view>
+  </view>
+
+  <!-- 拍照提示弹窗 -->
+  <van-popup
+    show="{{showPhotoTip}}"
+    round
+    closeable
+    bind:close="closePhotoTip"
+  >
+    <view class="photo-tip-popup">
+      <text class="tip-title">📸 拍照小贴士</text>
+      <view class="tip-list">
+        <view class="tip-item">
+          <text class="tip-icon">💡</text>
+          <text class="tip-text">将食物放在光线充足的地方</text>
+        </view>
+        <view class="tip-item">
+          <text class="tip-icon">📐</text>
+          <text class="tip-text">向下俯拍图片效果好</text>
+        </view>
+        <view class="tip-item">
+          <text class="tip-icon">🚫</text>
+          <text class="tip-text">避免遮挡和阴影</text>
+        </view>
+        <view class="tip-item">
+          <text class="tip-icon">🍱</text>
+          <text class="tip-text">可以拍摄多种食物</text>
+        </view>
+      </view>
+      <van-button type="primary" block custom-class="start-photo-btn" bindtap="startPhoto">
+        开始拍照
+      </van-button>
+    </view>
+  </van-popup>
+
+  <!-- 识别结果弹窗 -->
+  <van-popup
+    show="{{showRecognitionResult}}"
+    round
+    closeable
+    bind:close="closeRecognitionResult"
+  >
+    <view class="recognition-popup">
+      <text class="popup-title">识别结果</text>
+      
+      <view class="recognition-summary">
+        <view class="summary-item">
+          <text class="summary-label">总卡路里</text>
+          <text class="summary-value">{{recognitionData.totalNutrition.totalCalories}} kcal</text>
+        </view>
+        <view class="summary-row">
+          <text class="summary-small">蛋白质 {{recognitionData.totalNutrition.totalProtein}}g</text>
+          <text class="summary-small">脂肪 {{recognitionData.totalNutrition.totalFat}}g</text>
+          <text class="summary-small">碳水 {{recognitionData.totalNutrition.totalCarbs}}g</text>
+        </view>
+      </view>
+      
+      <view class="food-list">
+        <view class="food-item" wx:for="{{recognitionData.foods}}" wx:key="index" wx:for-index="idx">
+          <view class="food-info" wx:if="{{editingFoodIndex !== idx}}">
+            <text class="food-name">{{item.name}}</text>
+            <text class="food-detail">{{item.weight}}g · {{item.calorie}} kcal</text>
+          </view>
+          
+          <view class="food-edit" wx:else>
+            <input class="edit-input" placeholder="食物名称" value="{{editFoodName}}" bindinput="onEditNameInput" />
+            <input class="edit-input" type="digit" placeholder="重量(g)" value="{{editFoodWeight}}" bindinput="onEditWeightInput" />
+            <view class="edit-actions">
+              <text class="edit-btn cancel" bindtap="cancelEdit">取消</text>
+              <text class="edit-btn save" bindtap="saveEdit">保存</text>
+            </view>
+          </view>
+          
+          <text class="edit-icon" data-index="{{idx}}" bindtap="editFood" wx:if="{{editingFoodIndex !== idx}}">✎</text>
+        </view>
+      </view>
+      
+      <van-button type="primary" block custom-class="save-result-btn" bindtap="showMealSelector">
+        保存记录
+      </van-button>
+    </view>
+  </van-popup>
+
+  <!-- 餐次选择弹窗 -->
+  <van-popup
+    show="{{showMealTypeSelector}}"
+    position="bottom"
+    round
+  >
+    <view class="meal-selector">
+      <text class="selector-title">选择餐次</text>
+      <view class="meal-options">
+        <view 
+          class="meal-option"
+          wx:for="{{mealTypes}}"
+          wx:key="value"
+          data-value="{{item.value}}"
+          bindtap="selectMealType"
+        >
+          <text class="meal-icon">{{item.icon}}</text>
+          <text class="meal-name">{{item.value}}</text>
+        </view>
+      </view>
+    </view>
+  </van-popup>
+
+  <van-toast id="van-toast" />
+</view>

@@ -26,6 +26,7 @@ const API = {
   FOOD_CALCULATE: '/api/v1/food/calculate',
   FOOD_RECOGNIZE: '/api/v1/food/recognize',
   FOOD_QUICK_ADD: '/api/v1/food/quick-add',
+  FOOD_ANALYZE: '/api/v1/food/analyze',
   // 帖子相关
   POST_CREATE: '/api/v1/post/create',
   POST_LIST: '/api/v1/post/list',

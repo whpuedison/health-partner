@@ -30,7 +30,7 @@ Component({
       {
         icon: '🍎',
         text: '记饮食',
-        pagePath: '/pages/diet/diet',
+        pagePath: '/pages/diet-record/diet-record',
       },
       {
         icon: '🏃',
