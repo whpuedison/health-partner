@@ -44,8 +44,8 @@ Page({
     onLoad: function(options) {
       console.log('方案页面接收到的参数：', options);
       
-      // 从URL参数中获取数据
-      this.initDataFromOptions(options);
+      // 从app.globalData中获取数据
+      this.initDataFromGlobalData();
       
       // 计算相关数据
       this.calculatePlanData();
@@ -67,17 +67,20 @@ Page({
     },
   
     /**
-     * 从URL参数初始化数据
+     * 从app.globalData初始化数据
      */
-    initDataFromOptions: function(options) {
-      // 从问卷页面传递的参数
+    initDataFromGlobalData: function() {
+      const app = getApp();
+      const questionnaireData = app.globalData.questionnaireData || {};
+      
+      // 从全局数据获取问卷结果
       this.setData({
-        gender: options.gender,
-        age: parseInt(options.age),
-        height: parseFloat(options.height),
-        currentWeight: parseFloat(options.currentWeight),
-        targetWeight: parseFloat(options.targetWeight),
-        formattedTargetDate: options.targetDate
+        gender: questionnaireData.gender || 'female',
+        age: parseInt(questionnaireData.age) || 22,
+        height: parseFloat(questionnaireData.height) || 165,
+        currentWeight: parseFloat(questionnaireData.currentWeight) || 56.3,
+        targetWeight: parseFloat(questionnaireData.targetWeight) || 51.2,
+        formattedTargetDate: questionnaireData.targetDate || ''
       });
     },
   

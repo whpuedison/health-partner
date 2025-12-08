@@ -4,7 +4,7 @@
   <scroll-view class="plan-content" scroll-y enable-back-to-top>
     
     <!-- 用户信息概览卡片 -->
-    <view wx-if="{{false}}" class="card info-card">
+    <view class="card info-card">
       <view class="card-header">
         <text class="card-title">你的信息概览</text>
       </view>

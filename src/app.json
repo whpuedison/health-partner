@@ -1,8 +1,8 @@
 {
   "pages": [
+    "pages/questionnaire/questionnaire",
     "pages/index/index",
     "pages/timeline/timeline",
-    "pages/questionnaire/questionnaire",
     "pages/profile/profile",
     "pages/health/health",
     "pages/diet/diet",

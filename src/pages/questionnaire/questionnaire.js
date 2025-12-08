@@ -464,7 +464,8 @@ Page({
         wx.setStorageSync('profile', profileResult.data);
       }
     
-      const userData = {
+      // 将问卷数据保存到全局数据，供plan页面使用
+      app.globalData.questionnaireData = {
         age,
         targetWeight,
         targetDate,
@@ -473,12 +474,10 @@ Page({
         currentWeight: selectedWeight,
       };
 
-      const userDataString = this.objToParams(userData);
-
      setTimeout(() => {
       wx.hideLoading();
       wx.navigateTo({
-        url: `/pages/plan/plan?${userDataString}`
+        url: '/pages/plan/plan'
       })
      }, 500);
 
