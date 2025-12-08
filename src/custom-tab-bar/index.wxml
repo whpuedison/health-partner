@@ -1,13 +1,40 @@
 <!--custom-tab-bar/index.wxml-->
 <view class="tab-bar">
   <view 
-    class="tab-item {{active === index ? 'active' : ''}}" 
+    class="tab-item {{active === index ? 'active' : ''}} {{item.isAdd ? 'add-button' : ''}}" 
     wx:for="{{list}}" 
     wx:key="text"
     data-index="{{index}}"
-    bindtap="onChange"
+    bindtap="{{item.isAdd ? 'onAddButtonClick' : 'onChange'}}"
   >
     <text class="tab-icon">{{item.icon}}</text>
-    <text class="tab-text">{{item.text}}</text>
+    <text class="tab-text" wx:if="{{!item.isAdd}}">{{item.text}}</text>
+  </view>
+</view>
+
+<!-- 遮罩层 -->
+<view 
+  class="mask {{showSubMenu ? 'show' : ''}}" 
+  catchtap="onMaskTap"
+></view>
+
+<!-- 子菜单弹窗（扇形布局） -->
+<view 
+  class="sub-menu-container {{showSubMenu ? 'show' : ''}}"
+>
+  <!-- 三个菜单项以扇形排列 -->
+  <view 
+    class="sub-menu-item item-{{index}} {{activeSubMenu === index ? 'active' : ''}}"
+    wx:for="{{subMenus}}"
+    wx:key="text"
+    data-index="{{index}}"
+    bindtap="onSubMenuClick"
+    bindtouchstart="onSubMenuHover"
+    bindtouchend="onSubMenuLeave"
+  >
+    <view class="sub-menu-content">
+      <text class="sub-menu-icon">{{item.icon}}</text>
+      <text class="sub-menu-text">{{item.text}}</text>
+    </view>
   </view>
 </view>

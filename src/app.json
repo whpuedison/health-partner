@@ -1,7 +1,8 @@
 {
   "pages": [
-    "pages/questionnaire/questionnaire",
     "pages/index/index",
+    "pages/timeline/timeline",
+    "pages/questionnaire/questionnaire",
     "pages/profile/profile",
     "pages/health/health",
     "pages/diet/diet",
@@ -18,13 +19,17 @@
   "tabBar": {
     "custom": true,
     "color": "#7A7E83",
-    "selectedColor": "#3cc51f",
+    "selectedColor": "#667EEA",
     "borderStyle": "black",
     "backgroundColor": "#ffffff",
     "list": [
       {
+        "pagePath": "pages/timeline/timeline",
+        "text": "记录"
+      },
+      {
         "pagePath": "pages/index/index",
-        "text": "首页"
+        "text": "添加"
       },
       {
         "pagePath": "pages/profile/profile",
