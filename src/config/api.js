@@ -35,6 +35,10 @@ const API = {
   POST_COMMENTS: '/api/v1/post',
   POST_COMMENT: '/api/v1/post',
   POST_COMMENT_DELETE: '/api/v1/post/comment',
+  // 体重记录相关
+  WEIGHT_SAVE: '/api/v1/user/weight',
+  WEIGHT_MONTH: '/api/v1/user/weight/month',
+  WEIGHT_DELETE: '/api/v1/user/weight',
 };
 
 module.exports = { API };

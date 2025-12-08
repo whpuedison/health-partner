@@ -8,7 +8,8 @@
     "pages/diet/diet",
     "pages/exercise/exercise",
     "pages/goal/goal",
-    "pages/plan/plan"
+    "pages/plan/plan",
+    "pages/weight/weight"
   ],
   "window": {
     "backgroundTextStyle": "light",

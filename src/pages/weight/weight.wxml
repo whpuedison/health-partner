@@ -1,0 +1,119 @@
+<!--pages/weight/weight.wxml-->
+<view class="weight-page">
+  <!-- 头部统计 -->
+  <view class="stats-card">
+    <view class="stats-title">本月体重统计</view>
+    <view class="stats-content">
+      <view class="stat-item">
+        <text class="stat-label">最高</text>
+        <text class="stat-value">{{monthStats.max || '--'}} kg</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">最低</text>
+        <text class="stat-value">{{monthStats.min || '--'}} kg</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">平均</text>
+        <text class="stat-value">{{monthStats.avg || '--'}} kg</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">记录</text>
+        <text class="stat-value">{{monthStats.count}} 天</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 日历卡片 -->
+  <view class="calendar-card">
+    <!-- 月份切换 -->
+    <view class="month-header">
+      <view class="month-nav" bindtap="changeMonth" data-type="prev">
+        <text class="nav-icon">◀</text>
+      </view>
+      <view class="month-title">{{currentYear}}年{{currentMonth}}月</view>
+      <view class="month-nav" bindtap="changeMonth" data-type="next">
+        <text class="nav-icon">▶</text>
+      </view>
+    </view>
+
+    <!-- 星期标题 -->
+    <view class="week-header">
+      <view class="week-day" wx:for="{{weekDays}}" wx:key="index">{{item}}</view>
+    </view>
+
+    <!-- 日历网格 -->
+    <view class="calendar-grid">
+      <view 
+        class="calendar-day {{item.isEmpty ? 'empty' : ''}} {{item.isToday ? 'today' : ''}}"
+        wx:for="{{calendarDays}}"
+        wx:key="date"
+        data-date="{{item.date}}"
+        data-is-empty="{{item.isEmpty}}"
+        bindtap="onDateClick"
+      >
+        <view class="day-number" wx:if="{{!item.isEmpty}}">{{item.day}}</view>
+        <view class="day-weight" wx:if="{{weightRecords[item.date]}}">
+          {{weightRecords[item.date].weight}} kg
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 体重输入弹窗 -->
+  <van-popup
+    show="{{showWeightInput}}"
+    position="bottom"
+    round
+    bind:close="closePopup"
+  >
+    <view class="weight-input-popup">
+      <view class="popup-header">
+        <text class="popup-title">记录体重</text>
+        <text class="popup-date">{{selectedDate}}</text>
+      </view>
+
+      <view class="input-container">
+        <input
+          class="weight-input"
+          type="digit"
+          value="{{inputWeight}}"
+          placeholder="请输入体重"
+          bindinput="onWeightInput"
+          maxlength="5"
+        />
+        <text class="input-unit">kg</text>
+      </view>
+
+      <view class="popup-actions">
+        <van-button
+          wx:if="{{currentWeight}}"
+          type="default"
+          size="large"
+          custom-class="delete-btn"
+          bindtap="deleteWeight"
+        >
+          删除
+        </van-button>
+        <van-button
+          wx:if="{{!currentWeight}}"
+          type="default"
+          size="large"
+          custom-class="cancel-btn"
+          bindtap="closePopup"
+        >
+          取消
+        </van-button>
+        <van-button
+          type="primary"
+          size="large"
+          custom-class="save-btn"
+          bindtap="saveWeight"
+        >
+          保存
+        </van-button>
+      </view>
+    </view>
+  </van-popup>
+
+  <van-toast id="van-toast" />
+</view>

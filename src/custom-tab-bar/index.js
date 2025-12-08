@@ -25,7 +25,7 @@ Component({
       {
         icon: '⚖️',
         text: '记体重',
-        pagePath: '/pages/health/health',
+        pagePath: '/pages/weight/weight',
       },
       {
         icon: '🍎',
