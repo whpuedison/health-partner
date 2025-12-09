@@ -43,7 +43,7 @@ Component({
         pagePath: '/pages/measure/measure',
       },
       {
-        icon: '👕',
+        icon: '💃',
         text: '记体型',
         pagePath: '/pages/timeline/timeline',
       },
