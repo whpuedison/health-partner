@@ -13,7 +13,10 @@ Page({
     todayStats: {
       bust: null,
       waist: null,
-      hip: null
+      hip: null,
+      arm: null,
+      thigh: null,
+      calf: null
     },
 
     // 弹窗控制
@@ -30,7 +33,10 @@ Page({
     measureConfig: {
       bust: { name: '胸围', min: 60, max: 130, default: '', icon: '👕', desc: '沿胸部最高点水平测量' },
       waist: { name: '腰围', min: 50, max: 120, default: '', icon: '🧵', desc: '沿腰部最细处水平测量' },
-      hip: { name: '臀围', min: 70, max: 130, default: '', icon: '👖', desc: '沿臀部最宽处水平测量' }
+      hip: { name: '臀围', min: 70, max: 130, default: '', icon: '👖', desc: '沿臀部最宽处水平测量' },
+      arm: { name: '上臂围', min: 15, max: 60, default: '', icon: '💪', desc: '手臂自然下垂，测量上臂最粗处' },
+      thigh: { name: '大腿围', min: 30, max: 100, default: '', icon: '🦵', desc: '双腿分开与肩同宽，测量大腿根部' },
+      calf: { name: '小腿围', min: 20, max: 60, default: '', icon: '🦶', desc: '测量小腿肚最粗处' }
     },
     
     // 状态标记

@@ -46,6 +46,27 @@
         <text class="stat-unit">cm</text>
       </view>
     </view>
+    <view class="stat-card">
+      <text class="stat-label">上臂围</text>
+      <view class="stat-value-box">
+        <text class="stat-value">{{todayStats.arm || '--'}}</text>
+        <text class="stat-unit">cm</text>
+      </view>
+    </view>
+    <view class="stat-card">
+      <text class="stat-label">大腿围</text>
+      <view class="stat-value-box">
+        <text class="stat-value">{{todayStats.thigh || '--'}}</text>
+        <text class="stat-unit">cm</text>
+      </view>
+    </view>
+    <view class="stat-card">
+      <text class="stat-label">小腿围</text>
+      <view class="stat-value-box">
+        <text class="stat-value">{{todayStats.calf || '--'}}</text>
+        <text class="stat-unit">cm</text>
+      </view>
+    </view>
   </view>
 
   <!-- WXS 模块用于计算和格式化 -->
@@ -68,8 +89,6 @@
 
   <!-- 测量指南与录入入口 -->
   <view class="instruction-list">
-    <view class="section-title">开始测量</view>
-    
     <view class="instruction-card" bindtap="openMeasure" data-type="bust">
       <view class="card-icon-box" style="background: #E0F2F1; color: #009688;">
         <text class="card-icon">👕</text>
@@ -86,7 +105,7 @@
 
     <view class="instruction-card" bindtap="openMeasure" data-type="waist">
       <view class="card-icon-box" style="background: #E8F5E9; color: #4CAF50;">
-        <text class="card-icon">🧵</text>
+        <text class="card-icon">⏳</text>
       </view>
       <view class="card-content">
         <text class="card-title">测量腰围</text>
@@ -105,6 +124,48 @@
       <view class="card-content">
         <text class="card-title">测量臀围</text>
         <text class="card-desc">并拢双腿，沿臀部最宽处水平测量一周</text>
+      </view>
+      <view class="card-action">
+        <text class="action-text">记录</text>
+        <van-icon name="arrow" />
+      </view>
+    </view>
+
+    <view class="instruction-card" bindtap="openMeasure" data-type="arm">
+      <view class="card-icon-box" style="background: #FFF3E0; color: #FF9800;">
+        <text class="card-icon">💪</text>
+      </view>
+      <view class="card-content">
+        <text class="card-title">测量上臂围</text>
+        <text class="card-desc">手臂自然下垂，测量上臂最粗处</text>
+      </view>
+      <view class="card-action">
+        <text class="action-text">记录</text>
+        <van-icon name="arrow" />
+      </view>
+    </view>
+
+    <view class="instruction-card" bindtap="openMeasure" data-type="thigh">
+      <view class="card-icon-box" style="background: #F3E5F5; color: #9C27B0;">
+        <text class="card-icon">🦵</text>
+      </view>
+      <view class="card-content">
+        <text class="card-title">测量大腿围</text>
+        <text class="card-desc">双腿分开与肩同宽，测量大腿根部</text>
+      </view>
+      <view class="card-action">
+        <text class="action-text">记录</text>
+        <van-icon name="arrow" />
+      </view>
+    </view>
+
+    <view class="instruction-card" bindtap="openMeasure" data-type="calf">
+      <view class="card-icon-box" style="background: #FCE4EC; color: #E91E63;">
+        <text class="card-icon">🏃‍♀️</text>
+      </view>
+      <view class="card-content">
+        <text class="card-title">测量小腿围</text>
+        <text class="card-desc">测量小腿肚最粗处</text>
       </view>
       <view class="card-action">
         <text class="action-text">记录</text>
