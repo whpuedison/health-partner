@@ -42,6 +42,10 @@ Page({
     showRecognitionResult: false,
     recognitionData: null,
     
+    // 一句话记饮食
+    showTextInput: false,
+    dietText: '',
+    
     // 餐次选择
     showMealTypeSelector: false,
     selectedMealType: '',
@@ -523,6 +527,169 @@ Page({
    */
   cancelEdit() {
     this.setData({ editingFoodIndex: -1 });
+  },
+
+  /**
+   * 新增食物
+   */
+  addNewFood() {
+    const { recognitionData } = this.data;
+    const newFood = {
+      name: '',
+      weight: '',
+      calorie: 0,
+      protein: 0,
+      carbs: 0,
+      fat: 0
+    };
+    
+    const foods = [...(recognitionData?.foods || []), newFood];
+    
+    this.setData({
+      recognitionData: {
+        ...recognitionData,
+        foods
+      },
+      editingFoodIndex: foods.length - 1,
+      editFoodName: '',
+      editFoodWeight: '',
+      originalFoodName: ''
+    });
+  },
+
+  /**
+   * 删除食物
+   */
+  deleteFood(e) {
+    const { index } = e.currentTarget.dataset;
+    const { recognitionData } = this.data;
+    
+    wx.showModal({
+      title: '确认删除',
+      content: '确定要删除这个食物吗？',
+      success: (res) => {
+        if (res.confirm) {
+          const foods = recognitionData.foods.filter((_, i) => i !== index);
+          const totalNutrition = this.calculateTotalNutrition(foods);
+          
+          this.setData({
+            recognitionData: {
+              ...recognitionData,
+              foods,
+              totalNutrition
+            }
+          });
+        }
+      }
+    });
+  },
+
+  /**
+   * 显示文本输入弹窗
+   */
+  showTextInputDialog() {
+    this.setData({ 
+      showTextInput: true,
+      dietText: ''
+    });
+  },
+
+  /**
+   * 关闭文本输入弹窗
+   */
+  closeTextInput() {
+    this.setData({ showTextInput: false });
+  },
+
+  /**
+   * 文本输入
+   */
+  onDietTextInput(e) {
+    this.setData({ dietText: e.detail.value });
+  },
+
+  /**
+   * 提交文本识别
+   */
+  async submitTextRecognition() {
+    const { dietText } = this.data;
+    
+    if (!dietText || !dietText.trim()) {
+      wx.showToast({ title: '请输入饮食内容', icon: 'none' });
+      return;
+    }
+
+    this.closeTextInput();
+    
+    // 提示语列表
+    const tips = [
+      'AI正在分析中',
+      '正在识别食物',
+      '分析营养成分中',
+      '计算卡路里中'
+    ];
+    
+    let currentTipIndex = 0;
+    
+    // 显示初始提示
+    wx.showLoading({ 
+      title: tips[0], 
+      mask: true 
+    });
+
+    // 每5秒轮播一次提示，到最后一条就停止
+    const tipTimer = setInterval(() => {
+      if (currentTipIndex < tips.length - 1) {
+        currentTipIndex++;
+        wx.showLoading({ 
+          title: tips[currentTipIndex], 
+          mask: true 
+        });
+      }
+    }, 5000);
+
+    try {
+      // 调用文本识别API（复用食物识别的后端逻辑）
+      const result = await Http.post(API.FOOD_RECOGNIZE_TEXT, {
+        text: dietText.trim()
+      }, null, true);
+
+      // 清除定时器
+      clearInterval(tipTimer);
+      wx.hideLoading();
+
+      if (result.data && result.data.foods && result.data.foods.length > 0) {
+        // 格式化数据
+        const formattedData = {
+          ...result.data,
+          foods: result.data.foods.map(food => ({
+            ...food,
+            calorie: parseFloat((food.calorie || 0).toFixed(1)),
+            protein: parseFloat((food.protein || 0).toFixed(1)),
+            carbs: parseFloat((food.carbs || 0).toFixed(1)),
+            fat: parseFloat((food.fat || 0).toFixed(1))
+          })),
+          totalNutrition: {
+            totalCalories: parseFloat((result.data.totalNutrition?.totalCalories || 0).toFixed(1)),
+            totalProtein: parseFloat((result.data.totalNutrition?.totalProtein || 0).toFixed(1)),
+            totalCarbs: parseFloat((result.data.totalNutrition?.totalCarbs || 0).toFixed(1)),
+            totalFat: parseFloat((result.data.totalNutrition?.totalFat || 0).toFixed(1))
+          }
+        };
+
+        this.setData({
+          showRecognitionResult: true,
+          recognitionData: formattedData
+        });
+      } else {
+        wx.showToast({ title: '未识别到食物', icon: 'none' });
+      }
+    } catch (error) {
+      clearInterval(tipTimer);
+      wx.hideLoading();
+      console.error('识别失败:', error);
+      wx.showToast({ title: '识别失败，请重试', icon: 'none' });
+    }
   },
 
   /**
