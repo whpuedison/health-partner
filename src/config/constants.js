@@ -1,6 +1,6 @@
 export const CONFIG = {
   // 应用配置
-  APP_NAME: '健康伙伴',
+  APP_NAME: '番茄控卡',
   VERSION: '1.0.0',
 
   // 默认配置

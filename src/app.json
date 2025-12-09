@@ -16,7 +16,7 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "健康伙伴",
+    "navigationBarTitleText": "番茄控卡",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
