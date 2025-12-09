@@ -452,6 +452,19 @@ Page({
         targetDate: targetDate // YYYY-MM-DD 格式
       };
 
+      // 计算每日所需卡路里
+      const healthCalculator = require('../../utils/health-calculator');
+      const dailyCalories = healthCalculator.calculateDailyCalories({
+        currentWeight: selectedWeight,
+        height: selectedHeight,
+        age: age,
+        gender: selectedGender,
+        metabolismLevel: 'medium' // 默认中等代谢
+      });
+
+      // 将卡路里添加到目标数据中
+      goalsData.targetCalories = dailyCalories;
+
       const goalsResult = await Http.post(API.USER_GOALS, goalsData);
       
       if (!goalsResult.success) {
@@ -472,6 +485,7 @@ Page({
         gender: selectedGender,
         height: selectedHeight,
         currentWeight: selectedWeight,
+        dailyCalories: dailyCalories // 传递计算好的卡路里
       };
 
      setTimeout(() => {

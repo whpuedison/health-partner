@@ -80,50 +80,58 @@ Page({
         height: parseFloat(questionnaireData.height) || 165,
         currentWeight: parseFloat(questionnaireData.currentWeight) || 56.3,
         targetWeight: parseFloat(questionnaireData.targetWeight) || 51.2,
-        formattedTargetDate: questionnaireData.targetDate || ''
+        formattedTargetDate: questionnaireData.targetDate || '',
+        dailyCalories: questionnaireData.dailyCalories || null // 读取计算好的卡路里
       });
     },
   
     /**
-     * 计算计划相关数据
+     * 计算计划数据
      */
     calculatePlanData: function() {
-      const { currentWeight, targetWeight, age, height } = this.data;
+      const healthCalculator = require('../../utils/health-calculator');
+      const { currentWeight, targetWeight, height, age, gender, dailyCalories: preCalculatedCalories } = this.data;
       
-      // 1. 计算总减重量
+      // 1. 计算总减重目标
       const weightLossTotal = (currentWeight - targetWeight).toFixed(1);
       
-      // 2. 计算BMI和状态
-      const heightInM = height / 100;
-      const bmi = (currentWeight / (heightInM * heightInM)).toFixed(1);
-      const { bmiStatus, bmiStatusClass } = this.getBMIStatus(bmi);
+      // 2. 计算BMI
+      const bmi = healthCalculator.calculateBMI(currentWeight, height);
+      const { status: bmiStatus, statusClass: bmiStatusClass } = healthCalculator.getBMIStatus(parseFloat(bmi));
       
       // 3. 计算代谢水平
-      const { metabolismLevel, metabolismText } = this.getMetabolismLevel(age);
+      const { metabolismLevel, metabolismText } = healthCalculator.getMetabolismLevel(age);
       
       // 4. 计算减重难度
-      const { difficultyClass, difficultyText } = this.getDifficultyLevel(
+      const { difficultyClass, difficultyText } = healthCalculator.getDifficultyLevel(
         weightLossTotal, 
         this.data.planDays
       );
       
-      // 5. 计算每日热量
-      const dailyCalories = this.calculateDailyCalories();
+      // 5. 使用预计算的每日热量（从问卷传过来的）
+      const dailyCalories = preCalculatedCalories || healthCalculator.calculateDailyCalories({
+        currentWeight,
+        height,
+        age,
+        gender,
+        metabolismLevel
+      });
 
       // 6. 计算营养素克数
       const { proteinPercent, fatPercent, carbsPercent } = this.data;
-      const proteinGrams = ((proteinPercent / 100) * dailyCalories / 4).toFixed(1);
-      const fatGrams = ((fatPercent / 100) * dailyCalories / 9).toFixed(1);
-      const carbsGrams = ((carbsPercent / 100) * dailyCalories / 4).toFixed(1);
+      const { proteinGrams, fatGrams, carbsGrams } = healthCalculator.calculateNutrientGrams(
+        dailyCalories,
+        { protein: proteinPercent, fat: fatPercent, carbs: carbsPercent }
+      );
 
       // 7. 计算计划天数（如果提供了目标日期）
       if (this.data.formattedTargetDate) {
-        const planDays = this.calculatePlanDays(this.data.formattedTargetDate);
+        const planDays = healthCalculator.calculatePlanDays(this.data.formattedTargetDate);
         this.setData({ planDays: planDays });
       }
 
       // 8. 计算每周减重率
-      const weeklyLossRate = (weightLossTotal / (this.data.planDays / 7)).toFixed(1);
+      const weeklyLossRate = healthCalculator.calculateWeeklyLossRate(weightLossTotal, this.data.planDays);
       
       // 更新数据
       this.setData({
@@ -141,102 +149,6 @@ Page({
         carbsGrams: carbsGrams,
         weeklyLossRate: weeklyLossRate
       });
-    },
-  
-    /**
-     * 获取BMI状态
-     */
-    getBMIStatus: function(bmi) {
-      if (bmi < 18.5) {
-        return { bmiStatus: '偏瘦', bmiStatusClass: 'bmi-underweight' };
-      } else if (bmi < 24) {
-        return { bmiStatus: '正常', bmiStatusClass: 'bmi-normal' };
-      } else if (bmi < 28) {
-        return { bmiStatus: '偏重', bmiStatusClass: 'bmi-overweight' };
-      } else {
-        return { bmiStatus: '肥胖', bmiStatusClass: 'bmi-obese' };
-      }
-    },
-  
-    /**
-     * 获取代谢水平
-     */
-    getMetabolismLevel: function(age) {
-      if (age < 30) {
-        return { metabolismLevel: 'high', metabolismText: '高' };
-      } else if (age < 50) {
-        return { metabolismLevel: 'medium', metabolismText: '中' };
-      } else {
-        return { metabolismLevel: 'low', metabolismText: '低' };
-      }
-    },
-  
-    /**
-     * 获取难度等级
-     */
-    getDifficultyLevel: function(weightLossTotal, planDays) {
-      const weeklyLoss = (weightLossTotal / (planDays / 7)).toFixed(1);
-      
-      if (weeklyLoss < 0.5) {
-        return { difficultyClass: 'difficulty-easy', difficultyText: '轻松' };
-      } else if (weeklyLoss < 0.8) {
-        return { difficultyClass: 'difficulty-medium', difficultyText: '适中' };
-      } else {
-        return { difficultyClass: 'difficulty-hard', difficultyText: '挑战' };
-      }
-    },
-  
-    /**
-     * 计算每日建议热量
-     */
-    calculateDailyCalories: function() {
-      const { currentWeight, height, age, gender, metabolismLevel } = this.data;
-      
-      // 基础代谢率 (BMR) 计算
-      let bmr;
-      if (gender === 'male') {
-        bmr = 10 * currentWeight + 6.25 * height - 5 * age + 5;
-      } else {
-        bmr = 10 * currentWeight + 6.25 * height - 5 * age - 161;
-      }
-      
-      // 根据活动水平调整
-      let activityMultiplier = 1.375;
-      // switch(metabolismLevel) {
-      //   case 'high':
-      //     activityMultiplier = 1.55; // 中等活动
-      //     break;
-      //   case 'medium':
-      //     activityMultiplier = 1.375; // 轻度活动
-      //     break;
-      //   case 'low':
-      //     activityMultiplier = 1.2; // 久坐
-      //     break;
-      //   default:
-      //     activityMultiplier = 1.375;
-      // }
-      
-      // 维持当前体重的每日热量
-      const maintenanceCalories = bmr * activityMultiplier;
-      
-      // 减重热量缺口 (500卡路里缺口，约每周减重0.5kg)
-      const weightLossCalories = maintenanceCalories - 500;
-      
-      return Math.round(weightLossCalories);
-    },
-  
-    /**
-     * 计算计划天数
-     */
-    calculatePlanDays: function(targetDateStr) {
-      const today = new Date();
-      const targetDate = new Date(targetDateStr);
-      
-      // 计算相差的天数
-      const timeDiff = targetDate.getTime() - today.getTime();
-      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-      
-      return Math.max(daysDiff, 1); // 至少1天
     },
   
     /**
