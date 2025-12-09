@@ -35,7 +35,7 @@ Component({
       {
         icon: '🏃',
         text: '记运动',
-        pagePath: '/pages/exercise/exercise',
+        pagePath: '/pages/exercise-record/exercise-record',
       },
       {
         icon: '📏',
