@@ -46,7 +46,7 @@
       </view>
        <view class="tip">
         <view class="tip-title">📸 拍照小贴士</view>
-        <view>🌱 为了更好地记录你的变化，建议拍摄正面、侧面和背面三个角度的照片</view>
+        <view>🌱 为了更好地记录你的变化，建议拍摄正面、侧面、背面的平视图</view>
         <view>🔐 你上传的每一张照片都会进行加密存储，构成你专属的蜕变时间轴</view>
       </view>
     </view>
