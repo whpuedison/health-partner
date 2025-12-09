@@ -10,23 +10,76 @@
  */
 function calculateBMI(weight, height) {
   const heightInMeters = height / 100;
-  return (weight / (heightInMeters * heightInMeters)).toFixed(1);
+  return parseFloat((weight / (heightInMeters * heightInMeters)).toFixed(1));
 }
 
 /**
- * 获取BMI状态
+ * 获取BMI状态、样式和建议
  * @param {number} bmi - BMI值
- * @returns {Object} {status: string, statusClass: string}
+ * @returns {Object} {status: string, statusClass: string, suggestions: string[]}
  */
 function getBMIStatus(bmi) {
   if (bmi < 18.5) {
-    return { status: '偏瘦', statusClass: 'underweight' };
+    return { 
+      status: '偏瘦', 
+      statusClass: 'underweight',
+      suggestions: [
+        '您的BMI偏低，需要增加营养摄入',
+        '建议多吃高蛋白食品，如肉类、蛋类、豆制品'
+      ]
+    };
   } else if (bmi < 24) {
-    return { status: '正常', statusClass: 'normal' };
+    return { 
+      status: '正常', 
+      statusClass: 'normal',
+      suggestions: [
+        '您的BMI在正常范围内，请保持健康生活方式',
+        '坚持规律饮食和适量运动'
+      ]
+    };
   } else if (bmi < 28) {
-    return { status: '偏胖', statusClass: 'overweight' };
+    return { 
+      status: '偏重', 
+      statusClass: 'overweight',
+      suggestions: [
+        '您的BMI偏高，建议控制饮食并增加运动',
+        '减少高脂、高糖食物摄入'
+      ]
+    };
   } else {
-    return { status: '肥胖', statusClass: 'obese' };
+    return { 
+      status: '肥胖', 
+      statusClass: 'obese',
+      suggestions: [
+        '您的BMI较高，建议咨询专业医生',
+        '制定合理的减重计划'
+      ]
+    };
+  }
+}
+
+/**
+ * 计算BMI指示器位置
+ * @param {number} bmi - BMI值
+ * @returns {number} 指示器位置百分比(0-100)
+ */
+function calculateIndicatorPosition(bmi) {
+  // 使用中国标准：偏瘦(<18.5), 正常(18.5-24), 偏重(24-28), 肥胖(≥28)
+  // 各区段对应bar的百分比：
+  // 偏瘦(15%), 正常(25%), 偏重(25%), 肥胖(35%) 合计100%
+
+  if (bmi < 18.5) {
+    // 偏瘦区段：BMI 12-18.5 映射到 0-15%
+    return Math.max(0, ((bmi - 12) / (18.5 - 12)) * 15);
+  } else if (bmi < 24) {
+    // 正常区段：BMI 18.5-24 映射到 15-40%
+    return 15 + ((bmi - 18.5) / (24 - 18.5)) * 25;
+  } else if (bmi < 28) {
+    // 偏重区段：BMI 24-28 映射到 40-65%
+    return 40 + ((bmi - 24) / (28 - 24)) * 25;
+  } else {
+    // 肥胖区段：BMI 28-40 映射到 65-100%
+    return 65 + Math.min(35, ((bmi - 28) / (40 - 28)) * 35);
   }
 }
 
@@ -149,5 +202,6 @@ module.exports = {
   calculateDailyCalories,
   calculatePlanDays,
   calculateNutrientGrams,
-  calculateWeeklyLossRate
+  calculateWeeklyLossRate,
+  calculateIndicatorPosition
 };

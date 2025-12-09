@@ -3,6 +3,7 @@
   min-height: 100vh;
   background: #F7FAFC;
   padding: 20rpx 24rpx 120rpx;
+  box-sizing: border-box;
 }
 
 /* 周历 */
