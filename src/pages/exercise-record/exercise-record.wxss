@@ -66,22 +66,29 @@
 
 /* Stats & List Section */
 .stats-section {
-  background: #fff;
-  border-radius: 20rpx;
-  padding: 24rpx;
+  /* Remove container style to let children be separate cards */
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
   margin-bottom: 24rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.03);
 }
 
 .stats-card.compact {
-  margin-bottom: 24rpx;
-  padding: 10rpx 0;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 40rpx 0;
+  margin-bottom: 30rpx;
+  box-shadow: 0 10rpx 30rpx rgba(102, 126, 234, 0.1);
+  position: relative;
+  overflow: hidden;
 }
 
 .stat-row {
   display: flex;
   align-items: center;
   justify-content: space-around;
+  position: relative;
+  z-index: 1;
 }
 
 .stat-item {
@@ -91,46 +98,77 @@
 }
 
 .stat-val {
-  font-size: 44rpx;
-  font-weight: bold;
+  font-size: 72rpx;
+  font-weight: 800;
   color: #2D3748;
-  line-height: 1.2;
+  line-height: 1;
+  margin-bottom: 12rpx;
+  font-family: 'DIN Alternate', sans-serif;
+  text-shadow: 0 2rpx 4rpx rgba(0,0,0,0.05);
+}
+
+/* Add color distinction */
+.stat-item:first-child .stat-val {
+  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .stat-val.red {
-  color: #FF6B6B;
+  background: linear-gradient(135deg, #FF9966 0%, #FF5E62 100%);
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .stat-label {
-  font-size: 24rpx;
+  font-size: 26rpx;
   color: #718096;
-  margin-top: 4rpx;
+  font-weight: 500;
+  background: #F7FAFC;
+  padding: 6rpx 20rpx;
+  border-radius: 20rpx;
 }
 
 .stat-divider {
-  width: 1rpx;
-  height: 60rpx;
+  width: 2rpx;
+  height: 80rpx;
   background: #EDF2F7;
 }
 
 /* Today List Compact */
 .today-list {
-  border-top: 1rpx solid #F7FAFC;
-  padding-top: 20rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.04);
+  margin-top: 24rpx;
 }
 
 .list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16rpx;
+  margin-bottom: 20rpx;
   padding: 10rpx 0;
+  border-bottom: 1rpx solid #F7FAFC;
 }
 
 .list-title {
-  font-size: 30rpx;
+  font-size: 32rpx;
   font-weight: bold;
   color: #2D3748;
+  display: flex;
+  align-items: center;
+}
+
+.list-title::before {
+  content: '';
+  display: block;
+  width: 8rpx;
+  height: 32rpx;
+  background: #667EEA;
+  border-radius: 4rpx;
+  margin-right: 16rpx;
 }
 
 .record-item.compact {
