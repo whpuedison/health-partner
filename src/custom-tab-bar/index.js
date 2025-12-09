@@ -1,4 +1,6 @@
 // custom-tab-bar/index.js
+const { API } = require('../config/api');
+const { Http } = require('../utils/http');
 Component({
   data: {
     active: 0,
@@ -45,7 +47,7 @@ Component({
       {
         icon: '💃',
         text: '记体型',
-        pagePath: '/pages/timeline/timeline',
+        pagePath: '/pages/post/post',
       },
     ],
     showSubMenu: false, // 是否显示子菜单
@@ -62,6 +64,36 @@ Component({
       this.setData({
         subMenuHeight: this.data.subMenus.length * itemHeight * rpxRatio,
       });
+
+      // 获取功能开关状态
+      const app = getApp();
+      
+      const updateShapeMenu = (enable) => {
+        const subMenus = this.data.subMenus;
+        // 更新"记体型"菜单的跳转路径
+        const shapeMenuIndex = subMenus.findIndex(item => item.text === '记体型');
+        if (shapeMenuIndex !== -1) {
+          subMenus[shapeMenuIndex].pagePath = `/pages/post/post?powerEnable=${enable ? 1 : 0}`;
+          this.setData({ subMenus });
+        }
+      };
+
+      if (app.globalData && typeof app.globalData.powerEnable !== 'undefined') {
+        // 使用缓存
+        updateShapeMenu(app.globalData.powerEnable);
+      } else {
+        // 请求接口
+        Http.get(API.POST_POWER_ENABLE).then(res => {
+          const powerEnable = res.data;
+          // 写入缓存
+          if (app.globalData) {
+            app.globalData.powerEnable = powerEnable;
+          }
+          updateShapeMenu(powerEnable);
+        }).catch(err => {
+          console.error('获取功能开关失败:', err);
+        });
+      }
     },
   },
 

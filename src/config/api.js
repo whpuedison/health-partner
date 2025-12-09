@@ -45,6 +45,7 @@ const API = {
   POST_COMMENTS: '/api/v1/post',
   POST_COMMENT: '/api/v1/post',
   POST_COMMENT_DELETE: '/api/v1/post/comment',
+  POST_POWER_ENABLE: '/api/v1/post/power-enable',
   // 体重记录相关
   WEIGHT_SAVE: '/api/v1/user/weight',
   WEIGHT_MONTH: '/api/v1/user/weight/month',
