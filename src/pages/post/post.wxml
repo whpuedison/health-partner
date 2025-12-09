@@ -1,4 +1,4 @@
-<!--pages/post/create.wxml-->
+<!--pages/post/post.wxml-->
 <view class="create-page">
   <view class="form-section">
 
@@ -6,7 +6,7 @@
       <view class="form-item">
         <textarea
           class="content-input"
-          placeholder="记录你的健康生活..."
+          placeholder="记录你的体型变化"
           value="{{content}}"
           bindinput="onContentInput"
           maxlength="500"
@@ -52,7 +52,7 @@
       <view class="status-picker-section">
         <picker mode="selector" range="{{exerciseStatuses}}" bindchange="onStatusSelect">
           <view class="picker">
-            <text class="picker-label">锻炼状态</text>
+            <text class="picker-label">体型状态</text>
             <text class="picker-value" wx:if="{{selectedStatus}}" style="color: #2D3748;">{{selectedStatus}}</text>
             <text class="picker-placeholder" wx:else></text>
           </view>

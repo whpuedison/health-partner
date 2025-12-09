@@ -35,7 +35,7 @@ Page({
     
     // 功能菜单
     menuItems: [
-      // { id: 'timeline', icon: '📸', title: '时光轴', arrow: true },
+      // { id: 'timeline', icon: '📸', title: '体态记录', arrow: true },
       { id: 'about', icon: 'ℹ️', title: '关于我们', arrow: true },
     ],
     

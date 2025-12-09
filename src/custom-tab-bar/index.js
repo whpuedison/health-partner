@@ -45,7 +45,7 @@ Component({
       {
         icon: '👕',
         text: '记体型',
-        pagePath: '/pages/health/health',
+        pagePath: '/pages/timeline/timeline',
       },
     ],
     showSubMenu: false, // 是否显示子菜单

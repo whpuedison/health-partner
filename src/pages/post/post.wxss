@@ -1,4 +1,4 @@
-/* pages/post/create.wxss */
+/* pages/post/post.wxss */
 .create-page {
   background: #F7FAFC;
   padding-bottom: 120rpx;

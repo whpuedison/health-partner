@@ -1,4 +1,4 @@
-// pages/post/create.js
+// pages/post/post.js
 const { Http } = require('../../utils/http');
 const { API } = require('../../config/api');
 
@@ -11,13 +11,11 @@ Page({
     uploading: false,
     canPublish: false, // 是否可以发布
     powerEnable: 1, // 默认为1，支持文字输入
-    selectedStatus: '', // 选择的锻炼状态
+    selectedStatus: '', // 选择的体型状态
     exerciseStatuses: [
-      '今天很棒！',
-      '继续努力',
-      '状态一般',
-      '需要休息'
-    ] // 固定的锻炼状态选项
+      '很棒！',
+      '一般'
+    ] // 固定的体型状态选项
   },
 
   onLoad(options) {
@@ -33,7 +31,7 @@ Page({
     });
   },
 
-  // 选择锻炼状态
+  // 选择体型状态
   onStatusSelect(e) {
     const selectedStatus = this.data.exerciseStatuses[e.detail.value];
     this.setData({

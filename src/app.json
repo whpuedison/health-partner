@@ -9,7 +9,8 @@
     "pages/plan/plan",
     "pages/weight/weight",
     "pages/diet-record/diet-record",
-    "pages/exercise-record/exercise-record"
+    "pages/exercise-record/exercise-record",
+    "pages/post/post"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -25,12 +26,8 @@
     "backgroundColor": "#ffffff",
     "list": [
       {
-        "pagePath": "pages/timeline/timeline",
-        "text": "记录"
-      },
-      {
         "pagePath": "pages/index/index",
-        "text": "添加"
+        "text": "记录"
       },
       {
         "pagePath": "pages/profile/profile",
