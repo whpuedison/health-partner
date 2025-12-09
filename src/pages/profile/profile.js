@@ -52,30 +52,7 @@ Page({
   },
 
   // 加载用户资料
-  loadProfile() {
-    // 优先从全局数据或本地存储获取（登录时已获取）
-    const cachedProfile = app.globalData.profile || wx.getStorageSync('profile');
-    
-    if (cachedProfile) {
-      const profile = cachedProfile;
-      // 计算 BMI
-      const bmi = calculateBMI(profile.height, profile.weight);
-      
-      this.setData({
-        profile: {
-          height: profile.height || 0,
-          weight: profile.weight || 0,
-          age: profile.age || 0,
-          bmi: bmi > 0 ? parseFloat(bmi.toFixed(1)) : 0,
-        },
-      });
-      
-      // 后台刷新数据（不阻塞UI）
-      this.refreshProfile();
-      return;
-    }
-    
-    // 如果没有缓存数据，从接口获取
+  loadProfile() {    
     const openId = app.globalData.openId || wx.getStorageSync('openId');
     if (!openId) {
       // 如果没有 openId，等待一下再试
@@ -95,7 +72,7 @@ Page({
         wx.setStorageSync('profile', profile);
         
         // 计算 BMI
-        const bmi = calculateBMI(profile.height, profile.weight);
+        const bmi = calculateBMI(profile.weight, profile.height);
         
         this.setData({
           profile: {

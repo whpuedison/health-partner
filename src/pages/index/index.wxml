@@ -1,7 +1,7 @@
 <!--pages/index/index.wxml-->
 <view class="index-page">
   <!-- 用户信息卡片 -->
-  <view class="user-card">
+  <view wx:if="{{false}}" class="user-card">
     <view class="user-info">
       <block wx:if="{{hasUserInfo}}">
         <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
@@ -119,7 +119,7 @@
   <!-- 健康小贴士 -->
   <view class="tips-section">
     <view class="section-header">
-      <text class="section-title">健康小贴士</text>
+      <!-- <text class="section-title">健康小贴士</text> -->
     </view>
     
     <view class="tip-card">
