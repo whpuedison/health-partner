@@ -29,8 +29,8 @@ Page({
     goals: [
       { id: 'weight', icon: '⚖️', title: '目标体重', value: '', unit: 'kg', color: '#FFB6C1' }, // 浅粉色
       { id: 'exercise', icon: '🏃', title: '每日运动', value: '', unit: '分钟', color: '#87CEEB' }, // 天蓝色
-      { id: 'restDayIntake', icon: '🍽️', title: '非运动日摄入', value: '', unit: '卡', color: '#98D8C8' }, // 薄荷绿
-      { id: 'exerciseDayIntake', icon: '🔥', title: '运动日摄入', value: '', unit: '卡', color: '#D4A5FF' }, // 淡紫色
+      // { id: 'restDayIntake', icon: '🍽️', title: '非运动日摄入', value: '', unit: '卡', color: '#98D8C8' }, // 薄荷绿
+      // { id: 'exerciseDayIntake', icon: '🔥', title: '运动日摄入', value: '', unit: '卡', color: '#D4A5FF' }, // 淡紫色
     ],
     
     // 功能菜单

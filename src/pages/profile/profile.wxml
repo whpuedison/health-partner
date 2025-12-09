@@ -36,7 +36,7 @@
   </view>
 
   <!-- 统计数据 -->
-  <view class="stats-section">
+  <view wx-if="{{false}}" class="stats-section">
     <view class="stats-card">
       <view class="stat-item">
         <text class="stat-value">{{stats.totalDays}}</text>

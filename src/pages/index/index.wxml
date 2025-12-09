@@ -41,7 +41,7 @@
   </view>
 
   <!-- 今日数据 -->
-  <view class="today-section">
+  <view wx-if="{{false}}" class="today-section">
     <view class="section-header">
       <text class="section-title">今日目标</text>
     </view>
@@ -95,7 +95,7 @@
   </view>
 
   <!-- 快捷功能 -->
-  <view class="quick-actions">
+  <view wx-if="{{false}}" class="quick-actions">
     <view class="section-header">
       <text class="section-title">快捷功能</text>
     </view>
