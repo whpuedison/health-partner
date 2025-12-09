@@ -97,16 +97,7 @@ Page({
 
   // 发布帖子
   publishPost() {
-    const { content, images } = this.data;
-
-    if (!content.trim()) {
-      wx.showToast({
-        title: '请输入内容',
-        icon: 'none'
-      });
-      return;
-    }
-
+    const { content = '', images } = this.data;
     const openId = app.globalData.openId || wx.getStorageSync('openId');
     if (!openId) {
       wx.showToast({
