@@ -4,7 +4,7 @@ Component({
     active: 0,
     list: [
       {
-        pagePath: '/pages/timeline/timeline',
+        pagePath: '/pages/index/index',
         text: '记录',
         icon: '📊',
       },

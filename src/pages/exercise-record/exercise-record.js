@@ -54,9 +54,9 @@ Page({
   // 初始化日历
   initCalendar() {
     const today = new Date();
-    this.updateWeekDays(today);
+    this.updateWeekDays(new Date(today)); // 传递副本
     this.setData({
-      selectedDate: this.formatDate(today)
+      selectedDate: this.formatDate(today) // 保持 today 不变
     });
   },
 
