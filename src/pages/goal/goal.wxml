@@ -1,189 +1,114 @@
 <!--pages/goal/goal.wxml-->
 <view class="goal-page">
-  <view class="page-header">
-    <text class="page-title">🎯 目标设置</text>
-    <text class="page-subtitle">设定明确目标，坚持就是胜利</text>
-  </view>
-
-  <!-- 当前状态 -->
-  <view class="current-status">
-    <text class="section-title">当前状态</text>
-    <view class="status-grid">
-      <view class="status-item">
-        <text class="status-label">体重</text>
-        <text class="status-value">{{profile.weight}} kg</text>
-      </view>
-      <view class="status-item">
-        <text class="status-label">BMI</text>
-        <text class="status-value">{{profile.bmi}}</text>
+  <!-- 列表卡片 -->
+  <view class="list-card">
+    <!-- 身高 -->
+    <view class="list-item" bindtap="onItemTap" data-field="height" data-type="number" data-title="身高" data-unit="cm">
+      <text class="item-label">身高</text>
+      <view class="item-right">
+        <text class="item-value">{{profile.height || '--'}}</text>
+        <text class="item-unit">cm</text>
+        <text class="arrow">›</text>
       </view>
     </view>
+
+    <!-- 体重 -->
+    <view class="list-item" bindtap="onItemTap" data-field="weight" data-type="number" data-title="体重" data-unit="kg">
+      <text class="item-label">体重</text>
+      <view class="item-right">
+        <text class="item-value">{{profile.weight || '--'}}</text>
+        <text class="item-unit">kg</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 年龄 -->
+    <view class="list-item" bindtap="onItemTap" data-field="age" data-type="number" data-title="年龄" data-unit="岁">
+      <text class="item-label">年龄</text>
+      <view class="item-right">
+        <text class="item-value">{{profile.age || '--'}}</text>
+        <text class="item-unit">岁</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 性别 (Picker) -->
+    <picker mode="selector" range="{{genderRange}}" value="{{genderIndex}}" bindchange="onGenderChange">
+      <view class="list-item">
+        <text class="item-label">性别</text>
+        <view class="item-right">
+          <text class="item-value">{{profile.gender || '男'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </view>
+    </picker>
   </view>
 
-  <!-- 理想体重范围 -->
-  <view class="info-card">
-    <text class="info-title">💡 参考数据</text>
-    <view class="info-item">
-      <text class="info-label">理想体重范围</text>
-      <text class="info-value">{{idealWeightRange.min}} - {{idealWeightRange.max}} kg</text>
+  <view class="list-card margin-top">
+    <!-- 目标体重 -->
+    <view class="list-item" bindtap="onItemTap" data-field="targetWeight" data-type="number" data-title="目标体重" data-unit="kg">
+      <text class="item-label">目标体重</text>
+      <view class="item-right">
+        <text class="item-value">{{goals.targetWeight || '--'}}</text>
+        <text class="item-unit">kg</text>
+        <text class="arrow">›</text>
+      </view>
     </view>
-    <view class="info-item">
-      <text class="info-label">基础代谢率 (BMR)</text>
-      <text class="info-value">{{bmr}} 卡/天</text>
-    </view>
+
+    <!-- 目标日期 (Date Picker) -->
+    <picker mode="date" value="{{goals.targetDate}}" start="{{today}}" bindchange="onDateChange">
+      <view class="list-item">
+        <text class="item-label">目标日期</text>
+        <view class="item-right">
+          <text class="item-value">{{goals.targetDate || '请选择'}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </view>
+    </picker>
   </view>
 
-  <!-- 热量推荐 -->
-  <view class="info-card" wx:if="{{calorieRecommendation}}">
-    <text class="info-title">🔥 热量推荐</text>
-    <view class="info-item">
-      <text class="info-label">非运动日推荐摄入</text>
-      <text class="info-value highlight">{{calorieRecommendation.restDayIntake}} 卡</text>
-    </view>
-    <view class="info-item" wx:if="{{goals.dailyExercise > 0}}">
-      <text class="info-label">运动消耗（{{goals.dailyExercise}}分钟）</text>
-      <text class="info-value">{{calorieRecommendation.exerciseCalories}} 卡</text>
-    </view>
-    <view class="info-item" wx:if="{{goals.dailyExercise > 0}}">
-      <text class="info-label">运动日推荐摄入</text>
-      <text class="info-value highlight">{{calorieRecommendation.exerciseDayIntake}} 卡</text>
-    </view>
-    <view class="info-hint" wx:if="{{calorieRecommendation.goalType === 'lose'}}">
-      <text>💡 减肥建议：每日热量缺口 {{calorieRecommendation.calorieDeficit}} 卡，健康减重速度约每周0.75kg</text>
-    </view>
-    <view class="info-hint" wx:if="{{calorieRecommendation.goalType === 'gain'}}">
-      <text>💡 增重建议：每日热量盈余 {{calorieRecommendation.calorieSurplus}} 卡</text>
-    </view>
-  </view>
+  <!-- 数值输入弹窗 (复用体重记录样式) -->
+  <van-popup
+    show="{{showInputPopup}}"
+    position="bottom"
+    round
+    bind:close="closePopup"
+  >
+    <view class="input-popup">
+      <view class="popup-header">
+        <text class="popup-title">{{popupTitle}}</text>
+      </view>
 
-  <!-- 目标设置表单 -->
-  <view class="goal-form">
-    <text class="section-title">设定目标</text>
-    
-    <view class="form-section">
-      <text class="form-section-title">体重目标</text>
-      
-      <view class="form-item">
-        <text class="form-label">目标体重 (kg)</text>
-        <input 
-          class="form-input" 
+      <view class="input-container">
+        <input
+          class="popup-input"
           type="digit"
-          placeholder="例如：60"
-          value="{{goals.targetWeight}}"
-          data-field="targetWeight"
-          bindinput="onInputChange"
+          value="{{inputValue}}"
+          placeholder="请输入{{popupTitle}}"
+          bindinput="onPopupInput"
+          focus="{{showInputPopup}}"
         />
+        <text class="input-unit">{{popupUnit}}</text>
       </view>
-      
-      <view class="form-item">
-        <text class="form-label">目标日期</text>
-        <picker 
-          mode="date" 
-          value="{{goals.targetDate}}" 
-          bindchange="onDateChange"
-          start="{{today}}"
+
+      <view class="popup-actions">
+        <van-button
+          type="default"
+          size="large"
+          custom-class="cancel-btn"
+          bindtap="closePopup"
         >
-          <view class="picker-view">
-            {{goals.targetDate || '选择日期'}}
-          </view>
-        </picker>
+          取消
+        </van-button>
+        <van-button
+          type="primary"
+          size="large"
+          custom-class="save-btn"
+          bindtap="savePopupInput"
+        >
+          保存
+        </van-button>
       </view>
     </view>
-
-    <view class="form-section">
-      <text class="form-section-title">每日目标</text>
-      
-      <view class="form-item">
-        <view class="calorie-difference" wx:if="{{calorieRecommendation && goals.restDayCalories && parseInt(goals.restDayCalories) > 0}}">
-          <text class="difference-label" wx:if="{{calorieRecommendation.goalType === 'lose'}}">
-            热量缺口: 
-          </text>
-          <text class="difference-label" wx:if="{{calorieRecommendation.goalType === 'gain'}}">
-            热量盈余: 
-          </text>
-          <text class="difference-value" wx:if="{{calorieRecommendation.goalType === 'lose'}}">
-            {{calorieRecommendation.restDayIntake - parseInt(goals.restDayCalories)}} 卡
-          </text>
-          <text class="difference-value" wx:if="{{calorieRecommendation.goalType === 'gain'}}">
-            {{parseInt(goals.restDayCalories) - calorieRecommendation.restDayIntake}} 卡
-          </text>
-        </view>
-        <text class="form-label">非运动日热量摄入 (卡)</text>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="例如：1500"
-          value="{{goals.restDayCalories}}"
-          data-field="restDayCalories"
-          bindinput="onInputChange"
-        />
-        <text class="form-hint" wx:if="{{calorieRecommendation}}">
-          建议: {{calorieRecommendation.restDayIntake}} 卡
-        </text>
-        <text class="form-hint" wx:else>
-          建议: {{tdee}} 卡（维持体重）
-        </text>
-      </view>
-      
-      <view class="form-item">
-        <view class="calorie-difference" wx:if="{{calorieRecommendation && goals.exerciseDayCalories && parseInt(goals.exerciseDayCalories) > 0}}">
-          <text class="difference-label" wx:if="{{calorieRecommendation.goalType === 'lose'}}">
-            热量缺口: 
-          </text>
-          <text class="difference-label" wx:if="{{calorieRecommendation.goalType === 'gain'}}">
-            热量盈余: 
-          </text>
-          <text class="difference-value" wx:if="{{calorieRecommendation.goalType === 'lose'}}">
-            {{calorieRecommendation.exerciseDayIntake - parseInt(goals.exerciseDayCalories)}} 卡
-          </text>
-          <text class="difference-value" wx:if="{{calorieRecommendation.goalType === 'gain'}}">
-            {{parseInt(goals.exerciseDayCalories) - calorieRecommendation.exerciseDayIntake}} 卡
-          </text>
-        </view>
-        <text class="form-label">运动日热量摄入 (卡)</text>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="例如：2000"
-          value="{{goals.exerciseDayCalories}}"
-          data-field="exerciseDayCalories"
-          bindinput="onInputChange"
-        />
-        <text class="form-hint" wx:if="{{calorieRecommendation}}">
-          建议: {{calorieRecommendation.exerciseDayIntake}} 卡（运动消耗 {{calorieRecommendation.exerciseCalories}} 卡）
-        </text>
-        <text class="form-hint" wx:else>
-          建议: {{tdee}} 卡（维持体重）
-        </text>
-      </view>
-      
-      <view class="form-item">
-        <text class="form-label">每日运动时长 (分钟)</text>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="例如：30"
-          value="{{goals.dailyExercise}}"
-          data-field="dailyExercise"
-          bindinput="onInputChange"
-        />
-        <text class="form-hint">建议: 至少30分钟</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 保存按钮 -->
-  <view class="save-section">
-    <button class="save-btn" bindtap="saveGoals">保存目标</button>
-  </view>
-
-  <!-- 温馨提示 -->
-  <view class="tips-card">
-    <text class="tips-title">📝 温馨提示</text>
-    <text class="tips-text">• 目标应该合理可行，不要过于激进</text>
-    <text class="tips-text">• 健康减重速度为每周0.5-1kg</text>
-    <text class="tips-text">• 配合运动和饮食控制效果更佳</text>
-    <text class="tips-text">• 持之以恒是成功的关键</text>
-  </view>
+  </van-popup>
 </view>
-

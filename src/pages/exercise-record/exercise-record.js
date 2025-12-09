@@ -37,7 +37,7 @@ Page({
     recognitionResult: null,
 
     // 今日记录列表
-    todayListExpanded: true
+    todayListExpanded: false
   },
 
   onLoad() {

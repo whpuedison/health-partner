@@ -1,40 +1,44 @@
+
 // pages/goal/goal.js
 const { Http } = require('../../utils/http');
 const { API } = require('../../config/api');
-const { calculateBMI } = require('../../services/user.service');
+const { calculateBMI } = require('../../utils/health-calculator');
 
 const app = getApp();
 
 Page({
   data: {
     profile: {
-      weight: 0,
       height: 0,
+      weight: 0,
       age: 0,
-      gender: '男',
-      bmi: 0
+      gender: '男'
     },
-    idealWeightRange: { min: 0, max: 0 },
-    bmr: 0,
-    tdee: 0,
-    calorieRecommendation: null, // 新的推荐热量信息
-    today: '',
-    
     goals: {
       targetWeight: '',
       targetDate: '',
-      restDayCalories: '',
-      exerciseDayCalories: '',
-      dailyExercise: '',
     },
+    
+    // 基础数据
+    today: '',
+    genderRange: ['男', '女'],
+    genderIndex: 0,
+    
+    // 弹窗相关
+    showInputPopup: false,
+    popupTitle: '',
+    popupUnit: '',
+    popupField: '', // 当前编辑的字段名
+    inputValue: '',
   },
 
   onLoad() {
-    // 设置今天的日期（用于日期选择器的start）
+    // 初始化日期
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
+    
     this.setData({
       today: `${year}-${month}-${day}`
     });
@@ -45,176 +49,203 @@ Page({
   loadData() {
     const openId = app.globalData.openId || wx.getStorageSync('openId');
     if (!openId) {
-      setTimeout(() => {
-        this.loadData();
-      }, 500);
+      setTimeout(() => { this.loadData(); }, 500);
       return;
     }
 
-    wx.showLoading({
-      title: '加载中...',
-      mask: true
-    });
+    wx.showLoading({ title: '加载中...', mask: true });
 
-    Http.get(API.USER_GOAL_PAGE_DATA, {
-      openId: openId
-    }).then((result) => {
+    Promise.all([
+      Http.get(API.USER_PROFILE, { openId }),
+      Http.get(API.USER_GOALS, { openId })
+    ]).then(([profileRes, goalsRes]) => {
       wx.hideLoading();
-      if (result.data) {
-        const data = result.data;
-        
-        // 计算BMI（如果后端没有返回）
-        let bmi = data.profile.bmi;
-        if (!bmi && data.profile.height && data.profile.weight) {
-          bmi = calculateBMI(data.profile.height, data.profile.weight);
-        }
-        
-        this.setData({
-          profile: {
-            ...data.profile,
-            bmi: bmi
-          },
-          idealWeightRange: data.idealWeightRange,
-          bmr: data.bmr,
-          tdee: data.tdee,
-          calorieRecommendation: data.calorieRecommendation,
-          goals: {
-            targetWeight: data.goals.targetWeight ? data.goals.targetWeight.toString() : '',
-            targetDate: data.goals.targetDate || '',
-            restDayCalories: data.goals.targetCaloriesRestDay ? data.goals.targetCaloriesRestDay.toString() : (data.calorieRecommendation ? data.calorieRecommendation.restDayIntake.toString() : ''),
-            exerciseDayCalories: data.goals.targetCaloriesExerciseDay ? data.goals.targetCaloriesExerciseDay.toString() : (data.calorieRecommendation ? data.calorieRecommendation.exerciseDayIntake.toString() : ''),
-            dailyExercise: data.goals.targetExercise ? data.goals.targetExercise.toString() : '30',
-          }
-        });
-      }
+      
+      const profile = profileRes.data || {};
+      const goalsData = goalsRes.data || {};
+      
+      this.setData({
+        profile: {
+          height: profile.height || 0,
+          weight: profile.weight || 0,
+          age: profile.age || 0,
+          gender: profile.gender || '男'
+        },
+        goals: {
+          targetWeight: goalsData.targetWeight ? goalsData.targetWeight.toString() : '',
+          targetDate: goalsData.targetDate || '',
+        },
+        // 更新Picker索引
+        genderIndex: profile.gender === '女' ? 1 : 0
+      });
     }).catch((error) => {
       wx.hideLoading();
-      console.error('加载目标设置数据失败', error);
-      wx.showToast({
-        title: error.message || '加载失败，请重试',
-        icon: 'none',
-      });
+      console.error('加载数据失败', error);
+      wx.showToast({ title: '加载失败', icon: 'none' });
     });
   },
 
-  onInputChange(e) {
-    const field = e.currentTarget.dataset.field;
+  // 点击列表项（非Picker项）
+  onItemTap(e) {
+    const { field, title, unit } = e.currentTarget.dataset;
+    let currentValue = '';
+    
+    if (field === 'height' || field === 'weight' || field === 'age') {
+      currentValue = this.data.profile[field];
+    } else if (field === 'targetWeight') {
+      currentValue = this.data.goals.targetWeight;
+    }
+    
     this.setData({
-      [`goals.${field}`]: e.detail.value,
-    }, () => {
-      // 当目标体重或运动时长变化时，重新计算推荐热量
-      if (field === 'targetWeight' || field === 'dailyExercise') {
-        this.updateCalorieRecommendation();
-      }
+      showInputPopup: true,
+      popupTitle: title,
+      popupUnit: unit,
+      popupField: field,
+      inputValue: currentValue || ''
     });
   },
-  
-  // 更新推荐热量（根据当前输入的目标体重和运动时长）
-  updateCalorieRecommendation() {
-    const { profile, goals, bmr } = this.data;
-    if (!bmr || !profile.weight) return;
+
+  // 弹窗输入
+  onPopupInput(e) {
+    let value = e.detail.value;
+    const { popupField } = this.data;
     
-    const targetWeight = goals.targetWeight ? parseFloat(goals.targetWeight) : null;
-    const exerciseDuration = goals.dailyExercise ? parseInt(goals.dailyExercise) : 0;
-    
-    // 调用后端接口重新计算推荐热量
-    const openId = app.globalData.openId || wx.getStorageSync('openId');
-    if (!openId) return;
-    
-    // 防抖：避免频繁请求
-    clearTimeout(this.recommendationTimer);
-    this.recommendationTimer = setTimeout(() => {
-      const params = { openId: openId };
-      if (targetWeight) {
-        params.targetWeight = targetWeight;
+    // 年龄：仅允许正整数
+    if (popupField === 'age') {
+      value = value.replace(/[^\d]/g, '');
+      // 限制最大3位数
+      if (value.length > 3) {
+        value = value.substring(0, 3);
       }
-      if (exerciseDuration) {
-        params.exerciseDuration = exerciseDuration;
+    } 
+    // 身高、体重、目标体重：允许一位小数
+    else {
+      // 只允许数字和一个小数点
+      value = value.replace(/[^\d.]/g, '');
+      
+      // 只保留一个小数点
+      const parts = value.split('.');
+      if (parts.length > 2) {
+        value = parts[0] + '.' + parts.slice(1).join('');
       }
       
-      Http.get(API.USER_GOAL_PAGE_DATA, params)
-        .then((result) => {
-          if (result.data && result.data.calorieRecommendation) {
-            this.setData({
-              calorieRecommendation: result.data.calorieRecommendation
-            });
-          }
-        })
-        .catch((err) => {
-          console.error('更新推荐热量失败', err);
-        });
-    }, 500); // 500ms 防抖
+      // 限制小数位数为1位
+      if (parts.length === 2 && parts[1].length > 1) {
+        value = parts[0] + '.' + parts[1].substring(0, 1);
+      }
+    }
+    
+    this.setData({ inputValue: value });
   },
 
+  // 关闭弹窗
+  closePopup() {
+    this.setData({ showInputPopup: false });
+  },
+
+  // 保存弹窗输入
+  savePopupInput() {
+    const { popupField, inputValue } = this.data;
+    const value = parseFloat(inputValue);
+    
+    if (!value || isNaN(value)) {
+      wx.showToast({ title: '请输入有效数值', icon: 'none' });
+      return;
+    }
+    
+    // 根据字段分发保存逻辑
+    switch (popupField) {
+      case 'weight':
+        this.saveWeight(value);
+        break;
+      case 'height':
+        this.saveProfile({ height: value });
+        break;
+      case 'age':
+        this.saveProfile({ age: parseInt(value) });
+        break;
+      case 'targetWeight':
+        this.saveGoal({ targetWeight: value });
+        break;
+    }
+    
+    this.closePopup();
+  },
+
+  // 性别变更
+  onGenderChange(e) {
+    const index = parseInt(e.detail.value);
+    const gender = this.data.genderRange[index];
+    this.setData({ genderIndex: index });
+    this.saveProfile({ gender });
+  },
+
+  // 日期变更
   onDateChange(e) {
-    this.setData({
-      'goals.targetDate': e.detail.value,
+    const date = e.detail.value;
+    this.setData({ 'goals.targetDate': date });
+    this.saveGoal({ targetDate: date });
+  },
+
+  // === 原子化保存方法 ===
+
+  // 1. 保存体重记录
+  saveWeight(weight) {
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    const today = this.data.today;
+    
+    Http.post(API.WEIGHT_SAVE, {
+      openId,
+      weight,
+      recordDate: today // 默认记录为今天
+    }).then((res) => {
+      if (res.success) {
+        this.setData({ 'profile.weight': weight });
+        wx.showToast({ title: '已记录体重', icon: 'success' });
+      }
     });
   },
 
-  saveGoals() {
-    const { goals } = this.data;
-    
-    // 验证输入
-    if (!goals.targetWeight) {
-      wx.showToast({
-        title: '请填写目标体重',
-        icon: 'none',
-      });
-      return;
-    }
-    
+  // 2. 保存用户档案 (身高, 年龄, 性别)
+  saveProfile(data) {
     const openId = app.globalData.openId || wx.getStorageSync('openId');
-    if (!openId) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none',
-      });
-      return;
-    }
-
-    wx.showLoading({
-      title: '保存中...',
-      mask: true
+    Http.post(API.USER_PROFILE, {
+      openId,
+      ...data
+    }).then((res) => {
+      if (res.success) {
+        // 更新本地显示
+        const newProfile = { ...this.data.profile, ...data };
+        this.setData({ profile: newProfile });
+        // 更新全局缓存
+        if (app.globalData.profile) {
+          app.globalData.profile = { ...app.globalData.profile, ...data };
+        }
+        wx.showToast({ title: '已更新档案', icon: 'success' });
+      }
     });
+  },
 
-    const exerciseDuration = parseInt(goals.dailyExercise) || 30;
-    const targetWeight = parseFloat(goals.targetWeight);
-    
-    // 保存目标
+  // 3. 保存用户目标 (目标体重, 目标日期)
+  saveGoal(data) {
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
     Http.post(API.USER_GOALS, {
-      openId: openId,
-      targetWeight: targetWeight,
-      targetDate: goals.targetDate || null,
-      targetExercise: exerciseDuration,
-      targetCaloriesRestDay: goals.restDayCalories ? parseInt(goals.restDayCalories) : null,
-      targetCaloriesExerciseDay: goals.exerciseDayCalories ? parseInt(goals.exerciseDayCalories) : null
-    }).then((result) => {
-      wx.hideLoading();
-      wx.showToast({
-        title: '保存成功',
-        icon: 'success',
-        success: () => {
-          setTimeout(() => {
-            wx.navigateBack();
-          }, 1500);
-        },
-      });
-    }).catch((error) => {
-      wx.hideLoading();
-      console.error('保存目标失败', error);
-      wx.showToast({
-        title: '保存失败，请重试',
-        icon: 'none',
-      });
+      openId,
+      ...data
+    }).then((res) => {
+      if (res.success) {
+        // 更新本地显示
+        const newGoals = { ...this.data.goals, ...data };
+        this.setData({ goals: newGoals });
+        wx.showToast({ title: '已更新目标', icon: 'success' });
+      }
     });
   },
 
   onShareAppMessage() {
     return {
-      title: '设定健康目标 - 健康伙伴',
+      title: '我的健康档案',
       path: '/pages/goal/goal',
     };
   },
 });
-

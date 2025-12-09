@@ -1,5 +1,5 @@
 // pages/profile/profile.js
-const { calculateBMI } = require('../../services/user.service');
+const { calculateBMI } = require('../../utils/health-calculator');
 const { Http } = require('../../utils/http');
 const { API } = require('../../config/api');
 
@@ -16,40 +16,17 @@ Page({
       age: 0,
       bmi: 0,
     },
-    
-    // 统计数据
-    stats: {
-      totalDays: 0,
-      dietRecords: 0,
-      exerciseRecords: 0,
-      healthRecords: 0,
-    },
-    
-    // 我的目标
-    goals: [
-      { id: 'weight', icon: '⚖️', title: '目标体重', value: '', unit: 'kg', color: '#FFB6C1' }, // 浅粉色
-      { id: 'exercise', icon: '🏃', title: '每日运动', value: '', unit: '分钟', color: '#87CEEB' }, // 天蓝色
-      // { id: 'restDayIntake', icon: '🍽️', title: '非运动日摄入', value: '', unit: '卡', color: '#98D8C8' }, // 薄荷绿
-      // { id: 'exerciseDayIntake', icon: '🔥', title: '运动日摄入', value: '', unit: '卡', color: '#D4A5FF' }, // 淡紫色
-    ],
-    
     // 功能菜单
     menuItems: [
+      { id: 'goal', icon: '👤', title: '我的档案', arrow: true },
       { id: 'timeline', icon: '📸', title: '体态记录', arrow: true },
       { id: 'about', icon: 'ℹ️', title: '关于我们', arrow: true },
     ],
-    
-    // 目标设置对话框
-    showGoalDialog: false,
-    editingGoal: null,
-    goalValue: '',
   },
 
   onLoad() {
     this.loadUserInfo();
     this.loadProfile();
-    this.loadGoals();
-    this.loadStats();
   },
 
 
@@ -59,8 +36,6 @@ Page({
     }
     this.loadUserInfo();
     this.loadProfile();
-    this.loadGoals();
-    this.loadStats();
   },
 
   // 加载用户信息
@@ -186,82 +161,6 @@ Page({
     });
   },
 
-  // 加载用户目标
-  loadGoals() {
-    const openId = app.globalData.openId || wx.getStorageSync('openId');
-    if (!openId) {
-      // 如果没有 openId，等待一下再试
-      setTimeout(() => {
-        this.loadGoals();
-      }, 500);
-      return;
-    }
-
-    Http.get(API.USER_GOALS, {
-      openId: openId
-    }).then((result) => {
-      if (result.data) {
-        const goalsData = result.data;
-        // 更新目标列表
-        const goals = this.data.goals.map(goal => {
-          let value = '0';
-          if (goal.id === 'weight') {
-            value = goalsData.targetWeight ? goalsData.targetWeight.toString() : '50';
-          } else if (goal.id === 'exercise') {
-            value = goalsData.targetExercise ? goalsData.targetExercise.toString() : '30';
-          } else if (goal.id === 'restDayIntake') {
-            value = goalsData.targetCaloriesRestDay ? goalsData.targetCaloriesRestDay.toString() : '2000';
-          } else if (goal.id === 'exerciseDayIntake') {
-            value = goalsData.targetCaloriesExerciseDay ? goalsData.targetCaloriesExerciseDay.toString() : '2000';
-          }
-          return { ...goal, value };
-        });
-        
-        this.setData({ goals });
-      }
-    }).catch((error) => {
-      console.error('获取用户目标失败', error);
-      // 如果获取失败，使用默认值
-    });
-  },
-
-  // 加载统计数据
-  loadStats() {
-    const openId = app.globalData.openId || wx.getStorageSync('openId');
-    if (!openId) {
-      setTimeout(() => {
-        this.loadStats();
-      }, 500);
-      return;
-    }
-
-    Http.get(API.USER_STATS, {
-      openId: openId
-    }).then((result) => {
-      if (result.data) {
-        this.setData({
-          stats: {
-            totalDays: result.data.totalDays || 0,
-            dietRecords: result.data.dietRecords || 0,
-            exerciseRecords: result.data.exerciseRecords || 0,
-            healthRecords: result.data.healthRecords || 0,
-          },
-        });
-      }
-    }).catch((error) => {
-      console.error('获取统计数据失败', error);
-      // 如果获取失败，使用默认值
-      this.setData({
-        stats: {
-          totalDays: 0,
-          dietRecords: 0,
-          exerciseRecords: 0,
-          healthRecords: 0,
-        },
-      });
-    });
-  },
-
   // 选择头像
   onChooseAvatar(e) {
     const { avatarUrl } = e.detail;
@@ -379,89 +278,6 @@ Page({
     }, 100);
   },
 
-  // 打开目标设置对话框
-  openGoalDialog(e) {
-    const goal = e.currentTarget.dataset.goal;
-    this.setData({
-      showGoalDialog: true,
-      editingGoal: goal,
-      goalValue: goal.value,
-    });
-  },
-
-  // 关闭目标对话框
-  closeGoalDialog() {
-    this.setData({ showGoalDialog: false });
-  },
-
-  // 输入目标值
-  onGoalInput(e) {
-    this.setData({ goalValue: e.detail.value });
-  },
-
-  // 保存目标
-  saveGoal() {
-    const { editingGoal, goalValue } = this.data;
-    
-    if (!goalValue) {
-      wx.showToast({
-        title: '请输入目标值',
-        icon: 'none',
-      });
-      return;
-    }
-    
-    const openId = app.globalData.openId || wx.getStorageSync('openId');
-    if (!openId) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none',
-      });
-      return;
-    }
-    
-    // 构建更新数据
-    const updateData = { openId };
-    const numValue = parseFloat(goalValue);
-    
-    if (editingGoal.id === 'weight') {
-      updateData.targetWeight = numValue;
-    } else if (editingGoal.id === 'exercise') {
-      updateData.targetExercise = parseInt(goalValue);
-    } else if (editingGoal.id === 'restDayIntake') {
-      updateData.targetCaloriesRestDay = parseInt(goalValue);
-    } else if (editingGoal.id === 'exerciseDayIntake') {
-      updateData.targetCaloriesExerciseDay = parseInt(goalValue);
-    }
-    
-    // 调用后端接口保存
-    Http.post(API.USER_GOALS, updateData).then((result) => {
-      if (result.data) {
-        // 更新本地目标列表
-        const goals = this.data.goals.map(goal => {
-          if (goal.id === editingGoal.id) {
-            return { ...goal, value: goalValue };
-          }
-          return goal;
-        });
-        
-        this.setData({ goals });
-        this.closeGoalDialog();
-        
-        wx.showToast({
-          title: '设置成功',
-          icon: 'success',
-        });
-      }
-    }).catch((error) => {
-      console.error('保存目标失败', error);
-      wx.showToast({
-        title: '保存失败，请重试',
-        icon: 'none',
-      });
-    });
-  },
-
   // 菜单项点击
   onMenuTap(e) {
     const id = e.currentTarget.dataset.id;
@@ -475,9 +291,19 @@ Page({
         });
         break;
       case 'goal':
-        wx.showToast({
-          title: '请点击上方目标卡片设置',
-          icon: 'none',
+        console.log('跳转到目标页面');
+         wx.navigateTo({
+          url: '/pages/goal/goal',
+          success: () => {
+            console.log('跳转成功');
+          },
+          fail: (err) => {
+            console.error('跳转失败:', err);
+            wx.showToast({
+              title: '页面不存在',
+              icon: 'none'
+            });
+          }
         });
         break;
       case 'timeline':
@@ -498,8 +324,8 @@ Page({
         break;
       case 'about':
         wx.showModal({
-          title: '关于健康伙伴',
-          content: '健康伙伴 v1.0.0\n\n一款专为亚健康、高体脂人群打造的健康管理小程序。\n\n帮助您科学管理饮食、合理安排运动，轻松达成健康目标。',
+          title: '番茄控卡',
+          content: '一款专门为减肥人群打造的健康管理小程序',
           showCancel: false,
           confirmText: '知道了',
         });
@@ -510,16 +336,10 @@ Page({
     }
   },
 
-
-  // 阻止事件冒泡
-  stopPropagation() {
-    // 空函数，用于阻止事件冒泡
-  },
-
   onShareAppMessage() {
     return {
-      title: '健康伙伴 - 你的专属健康管理助手',
-      path: '/pages/index/index',
+      title: '番茄控卡 - 一款专门为减肥人群打造的健康管理小程序',
+      path: '/pages/questionnaire/questionnaire',
     };
   },
 });
