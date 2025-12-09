@@ -226,6 +226,7 @@ Page({
       openId,
       exerciseType: currentExercise.name,
       duration: parseInt(durationInput),
+      caloriesPerMinute: currentExercise.calories,
       recordDate: selectedDate
     }).then(res => {
       wx.showToast({ title: '添加成功' });
@@ -301,12 +302,11 @@ Page({
   confirmAIRecord() {
     const { recognitionResult, selectedDate } = this.data;
     const openId = app.globalData.openId || wx.getStorageSync('openId');
-    
     Http.post(API.USER_EXERCISE_RECORDS, {
       openId,
       exerciseType: recognitionResult.exercise_name,
       duration: recognitionResult.duration_minutes,
-      calories: recognitionResult.calories, // 后端如果支持传卡路里最好，不支持会自动计算(可能有偏差)
+      caloriesPerMinute: recognitionResult.calories,
       recordDate: selectedDate
     }).then(() => {
       this.setData({ showResultPopup: false });
