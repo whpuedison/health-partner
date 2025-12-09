@@ -2,23 +2,23 @@
 <view class="diet-record-page">
   <!-- 周历 -->
   <view class="week-calendar">
-    <view class="calendar-header">
+    <view class="calendar-container">
       <text class="calendar-nav" bindtap="changeWeek" data-type="prev">◀</text>
-      <text class="calendar-title">本周饮食</text>
-      <text class="calendar-nav" bindtap="changeWeek" data-type="next">▶</text>
-    </view>
-    
-    <view class="calendar-days">
-      <view 
-        class="day-item {{item.isToday ? 'today' : ''}} {{selectedDate === item.date ? 'selected' : ''}}"
-        wx:for="{{weekDays}}"
-        wx:key="date"
-        data-date="{{item.date}}"
-        bindtap="selectDate"
-      >
-        <text class="day-week">{{item.weekDay}}</text>
-        <text class="day-number">{{item.day}}</text>
+      
+      <view class="calendar-days">
+        <view 
+          class="day-item {{item.isToday ? 'today' : ''}} {{selectedDate === item.date ? 'selected' : ''}}"
+          wx:for="{{weekDays}}"
+          wx:key="date"
+          data-date="{{item.date}}"
+          bindtap="selectDate"
+        >
+          <text class="day-week">{{item.weekDay}}</text>
+          <text class="day-number">{{item.day}}</text>
+        </view>
       </view>
+      
+      <text class="calendar-nav" bindtap="changeWeek" data-type="next">▶</text>
     </view>
   </view>
 
