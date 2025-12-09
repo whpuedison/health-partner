@@ -115,7 +115,7 @@
   </view>
   <view class="popup-content">
     <view class="input-group">
-      <input class="duration-input" type="number" placeholder="输入时长" value="{{durationInput}}" bindinput="onDurationInput" auto-focus />
+      <input class="duration-input" type="number" placeholder="输入时长" value="{{durationInput}}" bindinput="onDurationInput" />
       <text class="unit-text">分钟</text>
     </view>
     <view class="estimate-info" wx:if="{{caloriesEstimate > 0}}">
