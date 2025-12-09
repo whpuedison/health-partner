@@ -1,0 +1,168 @@
+<view class="container">
+  <!-- 顶部日历区域 -->
+  <view class="calendar-section">
+    <view class="week-calendar">
+      <view class="calendar-arrow left" bindtap="changeWeek" data-type="prev">
+        <text class="arrow-icon">◀</text>
+      </view>
+      <view class="week-days">
+        <view 
+          class="day-item {{item.isToday ? 'today' : ''}} {{selectedDate === item.date ? 'active' : ''}}" 
+          wx:for="{{weekDays}}" 
+          wx:key="date"
+          bindtap="selectDate"
+          data-date="{{item.date}}"
+        >
+          <text class="week-day-text">{{item.weekDay}}</text>
+          <text class="day-text">{{item.day}}</text>
+        </view>
+      </view>
+      <view class="calendar-arrow right" bindtap="changeWeek" data-type="next">
+        <text class="arrow-icon">▶</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统计 & 列表区域 -->
+  <view class="stats-section">
+    <!-- Compact Stats Card -->
+    <view class="stats-card compact">
+      <view class="stat-row">
+        <view class="stat-item">
+          <text class="stat-val">{{todayStats.duration}}</text>
+          <text class="stat-label">分钟</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-val red">{{todayStats.calories}}</text>
+          <text class="stat-label">千卡</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Today's Record List (Immediately below stats) -->
+    <view class="today-list" wx:if="{{todayRecords.length > 0}}">
+      <view class="list-header" bindtap="toggleTodayList">
+        <text class="list-title">今日已完成</text>
+        <van-icon name="{{todayListExpanded ? 'arrow-up' : 'arrow-down'}}" color="#A0AEC0" size="16px" />
+      </view>
+      
+      <view class="record-list-container" wx:if="{{todayListExpanded}}">
+        <view class="record-item compact" wx:for="{{todayRecords}}" wx:key="id">
+          <view class="record-icon">{{item.icon}}</view>
+          <view class="record-info">
+            <text class="record-name">{{item.exerciseType}}</text>
+            <text class="record-detail">{{item.duration}}分钟 · {{item.calories}}千卡</text>
+          </view>
+          <view class="delete-btn" catchtap="deleteRecord" data-id="{{item.id}}">
+            <van-icon name="cross" color="#CBD5E0" size="16px" />
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- AI 记运动 -->
+  <view class="ai-record-section" bindtap="showTextInputDialog">
+    <view class="ai-btn">
+      <text class="ai-icon">✨</text>
+      <text class="ai-text">一句话智能识别</text>
+      <text class="ai-arrow">GO ></text>
+    </view>
+  </view>
+
+  <!-- 常见运动分类 (折叠式) -->
+  <view class="exercise-categories">
+    <view class="category-group {{item.collapsed ? 'collapsed' : ''}}" wx:for="{{exerciseCategories}}" wx:key="id">
+      <view class="category-header" bindtap="toggleCategory" data-index="{{index}}">
+        <view class="header-left">
+          <text class="category-icon">{{item.icon}}</text>
+          <text class="category-name">{{item.name}}</text>
+        </view>
+        <view class="header-right">
+          <text class="category-hint" wx:if="{{item.collapsed}}">点击展开 {{item.exercises.length}}项</text>
+          <van-icon name="{{item.collapsed ? 'arrow-down' : 'arrow-up'}}" color="#A0AEC0" />
+        </view>
+      </view>
+      
+      <view class="exercise-grid" wx:if="{{!item.collapsed}}">
+        <view 
+          class="exercise-item" 
+          wx:for="{{item.exercises}}" 
+          wx:for-item="ex" 
+          wx:key="id"
+          bindtap="openAddDialog"
+          data-exercise="{{ex}}"
+        >
+          <view class="ex-icon-box">
+            <text class="ex-icon">{{ex.icon}}</text>
+          </view>
+          <text class="ex-name">{{ex.name}}</text>
+          <!-- <text class="ex-cal">{{ex.calories}}千卡/分</text> -->
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部占位 -->
+  <view style="height: 100rpx;"></view>
+</view>
+
+<!-- 添加运动弹窗 -->
+<van-popup show="{{ showAddDialog }}" bind:close="closeAddDialog" round position="bottom" custom-style="padding: 30rpx;">
+  <view class="popup-header">
+    <text class="popup-title">记录{{currentExercise.name}}</text>
+  </view>
+  <view class="popup-content">
+    <view class="input-group">
+      <input class="duration-input" type="number" placeholder="输入时长" value="{{durationInput}}" bindinput="onDurationInput" auto-focus />
+      <text class="unit-text">分钟</text>
+    </view>
+    <view class="estimate-info" wx:if="{{caloriesEstimate > 0}}">
+      <text>预计消耗: {{caloriesEstimate}} 千卡</text>
+    </view>
+    <button class="confirm-btn" bindtap="saveRecord">保存记录</button>
+  </view>
+</van-popup>
+
+<!-- AI 文本输入弹窗 -->
+<van-popup show="{{ showTextInput }}" bind:close="closeTextInput" round>
+  <view class="ai-popup">
+    <view class="ai-header">一句话记运动</view>
+    <textarea 
+      class="ai-textarea" 
+      placeholder="例如：刚才慢跑了30分钟" 
+      value="{{exerciseText}}" 
+      bindinput="onExerciseTextInput"
+    ></textarea>
+    <button class="ai-submit-btn" bindtap="submitTextAnalysis">智能识别</button>
+  </view>
+</van-popup>
+
+<!-- AI 识别结果弹窗 -->
+<van-popup show="{{ showResultPopup }}" bind:close="closeResultPopup" round custom-style="width: 80%;">
+  <view class="result-popup">
+    <view class="result-header">识别结果</view>
+    <view class="result-content" wx:if="{{recognitionResult}}">
+      <view class="result-item">
+        <text class="label">运动项目</text>
+        <text class="value">{{recognitionResult.exercise_name}}</text>
+      </view>
+      <view class="result-item">
+        <text class="label">时长</text>
+        <text class="value">{{recognitionResult.duration_minutes}} 分钟</text>
+      </view>
+      <view class="result-item">
+        <text class="label">预估消耗</text>
+        <text class="value">{{recognitionResult.calories}} 千卡</text>
+      </view>
+      <view class="result-item" wx:if="{{recognitionResult.notes}}">
+        <text class="label">建议</text>
+        <text class="value">{{recognitionResult.notes}}</text>
+      </view>
+    </view>
+    <button class="confirm-btn" bindtap="confirmAIRecord">确认保存</button>
+  </view>
+</van-popup>
+
+

@@ -28,6 +28,8 @@ const API = {
   FOOD_RECOGNIZE_TEXT: '/api/v1/food/recognize-text',
   FOOD_QUICK_ADD: '/api/v1/food/quick-add',
   FOOD_ANALYZE: '/api/v1/food/analyze',
+  // 运动相关
+  EXERCISE_RECOGNIZE_TEXT: '/api/v1/exercise/recognize-text',
   // 帖子相关
   POST_CREATE: '/api/v1/post/create',
   POST_LIST: '/api/v1/post/list',

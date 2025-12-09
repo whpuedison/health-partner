@@ -26,7 +26,7 @@ Page({
     },
     quickActions: [
       { id: 'diet', icon: '🍎', title: '饮食计划', color: '#FFB6C1', url: '/pages/diet-record/diet-record' }, // 浅粉色
-      { id: 'exercise', icon: '🏃', title: '运动计划', color: '#87CEEB', url: '/pages/exercise/exercise' }, // 天蓝色
+      { id: 'exercise', icon: '🏃', title: '运动计划', color: '#87CEEB', url: '/pages/exercise-record/exercise-record' }, // 天蓝色
       { id: 'health', icon: '📊', title: '健康数据', color: '#98D8C8', tab: true }, // 薄荷绿
       { id: 'goal', icon: '🎯', title: '目标设置', color: '#D4A5FF', url: '/pages/goal/goal' }, // 淡紫色
     ],
@@ -224,7 +224,7 @@ Page({
     // 运动：跳转到运动计划页面
     if (type === 'exercise') {
       wx.navigateTo({
-        url: '/pages/exercise/exercise'
+        url: '/pages/exercise-record/exercise-record'
       });
       return;
     }
@@ -240,7 +240,7 @@ Page({
     // 今日已消耗热量：跳转到运动计划页面
     if (type === 'burned') {
       wx.navigateTo({
-        url: '/pages/exercise/exercise'
+        url: '/pages/exercise-record/exercise-record'
       });
       return;
     }
