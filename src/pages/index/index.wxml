@@ -1,137 +1,256 @@
 <!--pages/index/index.wxml-->
 <view class="index-page">
-  <!-- 用户信息卡片 -->
-  <view wx:if="{{false}}" class="user-card">
-    <view class="user-info">
-      <block wx:if="{{hasUserInfo}}">
-        <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
-        <view class="user-text">
-          <text class="greeting">{{userInfo.nickName}}</text>
-          <text class="status-text">欢迎使用</text>
+  
+  <!-- 1. 体重进度卡片 (核心) -->
+  <view class="dashboard-card weight-card">
+    <view class="card-header">
+      <view class="weight-col">
+        <text class="label">初始</text>
+        <text class="value">{{weightData.initial}}</text>
+        <text class="sub-value bmi" bindtap="showBMIInfo">BMI{{weightData.initialBMI}}</text>
+      </view>
+      <view class="weight-divider"></view>
+      <view class="weight-col current" bindtap="navigateTo" data-url="/pages/weight/weight">  
+        <text class="label">当前 / 已减</text>
+        <view class="value-row">
+          <text class="value">{{weightData.current}}</text>
+          <text class="diff-tag {{weightData.diff < 0 ? 'down' : 'up'}}">{{weightData.diff > 0 ? '+' : ''}}{{weightData.diff}}</text>
         </view>
-      </block>
-      <block wx:else>
-        <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-          <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="avatar-placeholder" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
-          <view wx:else class="avatar-placeholder">👤</view>
-        </button>
-        <input 
-          class="nickname-input" 
-          type="nickname" 
-          placeholder="点击设置昵称"
-          bindinput="onNicknameInput"
-          bindblur="onNicknameInput"
-          value="{{nickname || (userInfo && userInfo.nickName) || ''}}"
-        />
-      </block>
+        <text class="sub-value bmi active" catchtap="showBMIInfo">BMI{{weightData.currentBMI}}</text>
+      </view>
+      <view class="weight-divider"></view>
+      <view class="weight-col">
+        <text class="label">目标</text>
+        <text class="value">{{weightData.target}}</text>
+        <text class="sub-value bmi" bindtap="showBMIInfo">BMI{{weightData.targetBMI}}</text>
+      </view>
     </view>
     
-    <!-- 健康数据概览 -->
-    <view class="health-overview" wx:if="{{healthData.weight > 0}}">
-      <view class="health-item">
-        <text class="health-value">{{healthData.bmi}}</text>
-        <text class="health-label">BMI</text>
+    <view class="progress-section">
+      <view class="progress-bar-container">
+        <view class="progress-track"></view>
+        <view class="progress-fill" style="width: {{weightData.progress}}%">
+          <view class="progress-knob"></view>
+        </view>
+        <text class="progress-percent">{{weightData.progress}}%</text>
       </view>
-      <view class="health-divider"></view>
-      <view class="health-item">
-        <text class="health-value">{{healthData.weight}}</text>
-        <text class="health-label">体重(kg)</text>
+      <view class="progress-info">
+        <text>已减{{weightData.diff < 0 ? -weightData.diff : 0}}kg / 目标减{{weightData.initial - weightData.target < 0 ? weightData.target - weightData.initial : weightData.initial - weightData.target}}kg</text>
+        <text>• 还需减{{weightData.remain}}kg</text>
       </view>
     </view>
   </view>
 
-  <!-- 今日数据 -->
-  <view wx-if="{{false}}" class="today-section">
-    <view class="section-header">
-      <text class="section-title">今日目标</text>
+  <!-- 2. 热量平衡卡片 -->
+  <view class="dashboard-card calorie-card">
+    <view class="grid-3-col">
+      <view class="grid-item" bindtap="navigateTo" data-url="/pages/diet-record/diet-record">
+        <text class="label">摄入</text>
+        <text class="value">{{calorieData.intake}}</text>
+        <text class="unit">kcal</text>
+      </view>
+      <view class="vertical-divider"></view>
+      <view class="grid-item" bindtap="navigateTo" data-url="/pages/exercise-record/exercise-record">
+        <text class="label">消耗</text>
+        <text class="value">{{calorieData.burned}}</text>
+        <text class="unit">kcal</text>
+      </view>
+      <view class="vertical-divider"></view>
+      <view class="grid-item">
+        <text class="label">差值</text>
+        <text class="value {{calorieData.diff > 0 ? 'bad' : 'good'}}">{{calorieData.diff > 0 ? '+' : ''}}{{calorieData.diff}}</text>
+        <text class="unit">kcal</text>
+      </view>
+    </view>
+    <view class="card-footer-info">
+      <text class="info-tag">热量缺口：{{calorieData.diff > 0 ? 0 : -calorieData.diff}}kcal ({{calorieData.gapStatus}})</text>
+      <text class="info-highlight">🔥 预计日减重：{{calorieData.projectedLoss}}kg</text>
+    </view>
+  </view>
+
+  <!-- 3. 营养构成卡片 -->
+  <view class="dashboard-card nutrition-card">
+    <view class="grid-4-col">
+      <view class="grid-item">
+        <text class="label">碳水</text>
+        <text class="value">{{nutritionData.carbs.current}}g</text>
+        <text class="percent">({{nutritionData.carbs.percent}}%)</text>
+      </view>
+      <view class="grid-item">
+        <text class="label">蛋白</text>
+        <text class="value">{{nutritionData.protein.current}}g</text>
+        <text class="percent">({{nutritionData.protein.percent}}%)</text>
+      </view>
+      <view class="grid-item">
+        <text class="label">脂肪</text>
+        <text class="value">{{nutritionData.fat.current}}g</text>
+        <text class="percent">({{nutritionData.fat.percent}}%)</text>
+      </view>
+      <view class="grid-item highlight">
+        <text class="label">总计</text>
+        <text class="value">{{nutritionData.totalCalories}}</text>
+        <text class="unit">kcal</text>
+      </view>
     </view>
     
-    <view class="stats-grid">
-      <!-- 运动 -->
-      <view 
-        class="stat-card checkin-card" 
-        data-type="exercise"
-        bindtap="onCheckIn"
-      >
-        <text class="stat-icon">💪</text>
-        <text class="stat-value">{{todayStats.exercise}}</text>
-        <text class="stat-label">/ {{todayStats.targetExercise}} 分钟</text>
-        <view class="progress-bar">
-          <view class="progress-fill" style="width: {{todayStats.targetExercise > 0 ? (todayStats.exercise / todayStats.targetExercise * 100 > 100 ? 100 : todayStats.exercise / todayStats.targetExercise * 100) : 0}}%"></view>
+    <view class="bars-container">
+      <view class="mini-bar-row">
+        <view class="mini-bar carbs">
+          <view class="fill" style="width: {{nutritionData.carbs.percent}}%"></view>
         </view>
-        <text class="checkin-hint">运动时间</text>
+        <text>达成{{nutritionData.carbs.percent}}%</text>
+      </view>
+      <view class="mini-bar-row">
+        <view class="mini-bar protein">
+          <view class="fill" style="width: {{nutritionData.protein.percent}}%"></view>
+        </view>
+        <text>达成{{nutritionData.protein.percent}}%</text>
+      </view>
+      <view class="mini-bar-row">
+        <view class="mini-bar fat">
+          <view class="fill" style="width: {{nutritionData.fat.percent}}%"></view>
+        </view>
+        <text>达成{{nutritionData.fat.percent}}%</text>
+      </view>
+    </view>
+    
+    <view class="advice-box">
+      <text>💡 建议：{{nutritionData.advice}}</text>
+    </view>
+  </view>
+
+  <!-- 4. 今日饮食记录 -->
+  <view class="dashboard-card list-card">
+    <view class="card-title-row" bindtap="navigateTo" data-url="/pages/diet-record/diet-record">
+      <text class="card-title">🍽️ 今日饮食</text>
+      <van-icon name="arrow" />
+    </view>
+    <view class="divider-line"></view>
+    
+    <view class="record-list" wx:if="{{dietRecords.hasRecords}}">
+      <!-- 早餐 -->
+      <view class="meal-section" wx:if="{{dietRecords.breakfast.list.length > 0}}">
+        <view class="section-head">
+          <text class="head-title">☀️ 早餐</text>
+          <text class="head-cal">{{dietRecords.breakfast.calories}}kcal</text>
+        </view>
+        <view class="food-item" wx:for="{{dietRecords.breakfast.list}}" wx:key="id">
+          <text class="food-name">• {{item.foodName}}</text>
+          <text class="food-cal">{{item.calories}}kcal</text>
+        </view>
       </view>
       
-      <!-- 今日已摄入热量 -->
-      <view 
-        class="stat-card checkin-card" 
-        data-type="intake"
-        bindtap="onCheckIn"
-      >
-        <text class="stat-icon">🍽️</text>
-        <text class="stat-value">{{todayStats.intakeCalories}}</text>
-        <text class="stat-label">/ {{todayStats.targetIntakeCalories}} 卡</text>
-        <view class="progress-bar">
-          <view class="progress-fill" style="width: {{todayStats.targetIntakeCalories > 0 ? (todayStats.intakeCalories / todayStats.targetIntakeCalories * 100 > 100 ? 100 : todayStats.intakeCalories / todayStats.targetIntakeCalories * 100) : 0}}%"></view>
+      <!-- 午餐 -->
+      <view class="meal-section" wx:if="{{dietRecords.lunch.list.length > 0}}">
+        <view class="section-head">
+          <text class="head-title">🌤️ 午餐</text>
+          <text class="head-cal">{{dietRecords.lunch.calories}}kcal</text>
         </view>
-        <text class="checkin-hint">摄入热量</text>
+        <view class="food-item" wx:for="{{dietRecords.lunch.list}}" wx:key="id">
+          <text class="food-name">• {{item.foodName}}</text>
+          <text class="food-cal">{{item.calories}}kcal</text>
+        </view>
       </view>
       
-      <!-- 今日运动消耗热量 -->
-      <view 
-        class="stat-card checkin-card" 
-        data-type="burned"
-        bindtap="onCheckIn"
-      >
-        <text class="stat-icon">🔥</text>
-        <text class="stat-value">{{todayStats.exerciseCalories}}</text>
-        <text class="stat-label">/ {{todayStats.targetExerciseCalories}} 卡</text>
-        <view class="progress-bar">
-          <view class="progress-fill" style="width: {{todayStats.targetExerciseCalories > 0 ? (todayStats.exerciseCalories / todayStats.targetExerciseCalories * 100 > 100 ? 100 : todayStats.exerciseCalories / todayStats.targetExerciseCalories * 100) : 0}}%"></view>
+      <!-- 晚餐 -->
+      <view class="meal-section" wx:if="{{dietRecords.dinner.list.length > 0}}">
+        <view class="section-head">
+          <text class="head-title">🌙 晚餐</text>
+          <text class="head-cal">{{dietRecords.dinner.calories}}kcal</text>
         </view>
-        <text class="checkin-hint">消耗热量</text>
+        <view class="food-item" wx:for="{{dietRecords.dinner.list}}" wx:key="id">
+          <text class="food-name">• {{item.foodName}}</text>
+          <text class="food-cal">{{item.calories}}kcal</text>
+        </view>
+      </view>
+
+      <!-- 加餐 -->
+      <view class="meal-section" wx:if="{{dietRecords.snack.list.length > 0}}">
+        <view class="section-head">
+          <text class="head-title">🍪 加餐</text>
+          <text class="head-cal">{{dietRecords.snack.calories}}kcal</text>
+        </view>
+        <view class="food-item" wx:for="{{dietRecords.snack.list}}" wx:key="id">
+          <text class="food-name">• {{item.foodName}}</text>
+          <text class="food-cal">{{item.calories}}kcal</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="empty-state" wx:else>
+      <text>今天还没有记录饮食哦~</text>
+    </view>
+
+    <!-- 底部快捷入口 -->
+    <view class="quick-entry-row">
+      <view class="ai-btn" bindtap="navigateTo" data-url="/pages/diet-record/diet-record?mode=text">
+        <text>✨ 一句话记饮食</text>
+      </view>
+      <view class="ai-btn camera" bindtap="navigateTo" data-url="/pages/diet-record/diet-record?mode=camera">
+        <text>📷 拍照识别</text>
       </view>
     </view>
   </view>
 
-  <!-- 快捷功能 -->
-  <view wx-if="{{false}}" class="quick-actions">
-    <view class="section-header">
-      <text class="section-title">快捷功能</text>
+  <!-- 5. 今日运动记录 -->
+  <view class="dashboard-card list-card">
+    <view class="card-title-row" bindtap="navigateTo" data-url="/pages/exercise-record/exercise-record">
+      <text class="card-title">🏃 今日运动</text>
+      <van-icon name="arrow" />
     </view>
-    
-    <view class="actions-grid">
-      <view 
-        class="action-item" 
-        wx:for="{{quickActions}}" 
-        wx:key="id"
-        style="background: linear-gradient(135deg, {{item.color}}25, {{item.color}}45); box-shadow: 0 8rpx 20rpx {{item.color}}40; border-color: {{item.color}}60;"
-        data-url="{{item.url}}"
-        data-tab="{{item.tab}}"
-        bindtap="onActionTap"
-      >
-        <text class="action-icon">{{item.icon}}</text>
-        <text class="action-title">{{item.title}}</text>
+    <view class="divider-line"></view>
+
+    <view class="record-list" wx:if="{{exerciseRecords.hasRecords}}">
+      <!-- 日常 -->
+      <view class="meal-section" wx:if="{{exerciseRecords.daily.list.length > 0}}">
+        <view class="section-head">
+          <text class="head-title">🧘 日常活动：{{exerciseRecords.daily.duration}}分钟</text>
+        </view>
+        <view class="food-item" wx:for="{{exerciseRecords.daily.list}}" wx:key="id">
+          <text class="food-name">• {{item.exerciseType}}</text>
+          <text class="food-cal">{{item.calories}}kcal</text>
+        </view>
+      </view>
+      
+      <!-- 有氧 -->
+      <view class="meal-section" wx:if="{{exerciseRecords.cardio.list.length > 0}}">
+        <view class="section-head">
+          <text class="head-title">🔥 有氧燃脂：{{exerciseRecords.cardio.duration}}分钟</text>
+        </view>
+        <view class="food-item" wx:for="{{exerciseRecords.cardio.list}}" wx:key="id">
+          <text class="food-name">• {{item.exerciseType}} {{item.duration}}min</text>
+          <text class="food-cal">{{item.calories}}kcal</text>
+        </view>
+      </view>
+
+      <!-- 力量 -->
+      <view class="meal-section" wx:if="{{exerciseRecords.strength.list.length > 0}}">
+        <view class="section-head">
+          <text class="head-title">💪 力量塑型：{{exerciseRecords.strength.duration}}分钟</text>
+        </view>
+        <view class="food-item" wx:for="{{exerciseRecords.strength.list}}" wx:key="id">
+          <text class="food-name">• {{item.exerciseType}}</text>
+          <text class="food-cal">{{item.calories}}kcal</text>
+        </view>
+      </view>
+      
+      <view class="total-summary">
+        <text>🎯 总计：{{exerciseRecords.totalDuration}}分钟 • {{exerciseRecords.totalCalories}}kcal</text>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:else>
+      <text>今天还没有运动哦，动起来吧！</text>
+    </view>
+
+    <view class="quick-entry-row">
+      <view class="ai-btn full" bindtap="navigateTo" data-url="/pages/exercise-record/exercise-record?mode=text">
+        <text>✨ 一句话记运动</text>
       </view>
     </view>
   </view>
 
-  <!-- 健康小贴士 -->
-  <view class="tips-section">
-    <view class="section-header">
-      <!-- <text class="section-title">健康小贴士</text> -->
-    </view>
-    
-    <view class="tip-card">
-      <text class="tip-text">{{healthTips[currentTip]}}</text>
-      <view class="tip-dots">
-        <view 
-          class="dot {{index === currentTip ? 'active' : ''}}" 
-          wx:for="{{healthTips}}" 
-          wx:key="index"
-        ></view>
-      </view>
-    </view>
-  </view>
+  <!-- 底部占位 -->
+  <view style="height: 120rpx;"></view>
 </view>
 

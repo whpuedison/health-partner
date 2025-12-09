@@ -1,5 +1,6 @@
 // pages/index/index.js
-const { calculateBMI, getHealthStatus } = require('../../services/user.service');
+const { calculateBMI, getBMIStatus, calculateDailyCalories, calculateNutrientGrams } = require('../../utils/health-calculator');
+const { exerciseCategories } = require('../../utils/exercise-data');
 const { Http } = require('../../utils/http');
 const { API } = require('../../config/api');
 
@@ -10,26 +11,64 @@ Page({
     userInfo: null,
     hasUserInfo: false,
     nickname: '',
-    healthData: {
-      bmi: 0,
-      weight: 0,
-      height: 0,
-      status: '未评估',
+    
+    // 1. 体重进度
+    weightData: {
+      initial: 0,
+      current: 0,
+      target: 0,
+      diff: 0, // 较初始
+      remain: 0, // 距目标
+      currentBMI: 0,
+      initialBMI: 0,
+      targetBMI: 0,
+      progress: 0, // 进度百分比
     },
-    todayStats: {
-      exercise: 0,
-      targetExercise: 30,
-      intakeCalories: 0, // 今日已摄入热量
-      targetIntakeCalories: 0, // 目标摄入热量（目标运动卡路里 + 基础代谢）
-      exerciseCalories: 0, // 运动消耗的卡路里
-      targetExerciseCalories: 0, // 目标运动消耗的卡路里
+
+    // 2. 热量平衡
+    calorieData: {
+      intake: 0,
+      burned: 0, // 运动消耗 + 基础代谢
+      bmr: 0,
+      activeBurn: 0,
+      diff: 0, // 摄入 - 消耗
+      projectedLoss: 0, // 预计日减重 (kg)
+      gapStatus: '', // 燃脂区间/过量等
     },
-    quickActions: [
-      { id: 'diet', icon: '🍎', title: '饮食计划', color: '#FFB6C1', url: '/pages/diet-record/diet-record' }, // 浅粉色
-      { id: 'exercise', icon: '🏃', title: '运动计划', color: '#87CEEB', url: '/pages/exercise-record/exercise-record' }, // 天蓝色
-      { id: 'health', icon: '📊', title: '健康数据', color: '#98D8C8', tab: true }, // 薄荷绿
-      { id: 'goal', icon: '🎯', title: '目标设置', color: '#D4A5FF', url: '/pages/goal/goal' }, // 淡紫色
-    ],
+
+    // 3. 营养构成
+    nutritionData: {
+      carbs: { current: 0, target: 0, percent: 0 },
+      protein: { current: 0, target: 0, percent: 0 },
+      fat: { current: 0, target: 0, percent: 0 },
+      totalCalories: 0,
+      advice: '' // 智能建议
+    },
+
+    // 4. 饮食记录 (按餐次分组)
+    dietRecords: {
+      breakfast: { list: [], calories: 0 },
+      lunch: { list: [], calories: 0 },
+      dinner: { list: [], calories: 0 },
+      snack: { list: [], calories: 0 },
+      hasRecords: false
+    },
+
+    // 5. 运动记录 (按分类分组)
+    exerciseRecords: {
+      daily: { list: [], duration: 0, calories: 0 },
+      cardio: { list: [], duration: 0, calories: 0 },
+      strength: { list: [], duration: 0, calories: 0 },
+      totalDuration: 0,
+      totalCalories: 0,
+      hasRecords: false
+    },
+
+    // UI控制
+    showBMIModal: false,
+    bmiModalData: null,
+    
+    // 健康小贴士
     healthTips: [
       '💧 每天喝足8杯水，促进新陈代谢',
       '😴 保持7-8小时优质睡眠',
@@ -40,45 +79,30 @@ Page({
   },
 
   onLoad() {
-    // 重置重试计数器
-    this._userDataRetryCount = 0;
-    // 加载用户数据（会自动重试直到获取到数据）
-    this.loadUserData();
-    
-    this.loadHealthData();
-    this.loadTodayProgress();
     this.startTipRotation();
+    // 初始加载
+    this.initData();
   },
-
 
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ active: 0 });
     }
-    // 每次显示时都重新加载用户数据，确保显示最新信息
-    // 重置重试计数器，允许重新尝试
-    this._userDataRetryCount = 0;
-    this.loadUserData();
-    this.loadHealthData();
-    // 刷新今日进度（从其他页面返回时可能需要更新）
-    this.loadTodayProgress();
+    // 每次显示刷新数据
+    this.initData();
   },
 
   onUnload() {
-    if (this.tipTimer) {
-      clearInterval(this.tipTimer);
-    }
-    // 清除用户数据加载定时器
-    if (this._userDataTimer) {
-      clearTimeout(this._userDataTimer);
-      this._userDataTimer = null;
-    }
-    // 重置重试计数器
-    this._userDataRetryCount = 0;
+    if (this.tipTimer) clearInterval(this.tipTimer);
+    if (this._userDataTimer) clearTimeout(this._userDataTimer);
+  },
+
+  initData() {
+    this.loadUserData();
+    this.loadTodayData();
   },
 
   loadUserData() {
-    // 从全局数据或本地存储加载用户信息
     const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo');
     if (userInfo && (userInfo.nickName || userInfo.avatarUrl)) {
       this.setData({
@@ -86,213 +110,264 @@ Page({
         nickname: userInfo.nickName || '',
         hasUserInfo: !!(userInfo.avatarUrl && userInfo.nickName)
       });
-      // 如果已经有数据，清除轮询定时器
-      if (this._userDataTimer) {
-        clearTimeout(this._userDataTimer);
-        this._userDataTimer = null;
-      }
-    } else {
-      // 如果没有数据，延迟再试（最多尝试3次，每次间隔500ms）
-      if (!this._userDataRetryCount) {
-        this._userDataRetryCount = 0;
-      }
-      if (this._userDataRetryCount < 3) {
-        this._userDataRetryCount++;
-        this._userDataTimer = setTimeout(() => {
-          this.loadUserData();
-        }, 500);
-      } else {
-        // 重置计数器，以便下次可以重试
-        this._userDataRetryCount = 0;
-      }
     }
   },
 
-
-  loadHealthData() {
-    // 从全局数据或本地存储获取健康档案数据（登录时已获取）
-    const profile = app.globalData.profile || wx.getStorageSync('profile');
-    
-    if (profile && (profile.height || profile.weight)) {
-      const bmi = calculateBMI(profile.height, profile.weight);
-      const status = getHealthStatus(bmi);
-    
-    this.setData({
-      healthData: {
-          bmi: bmi > 0 ? parseFloat(bmi.toFixed(1)) : 0,
-        weight: profile.weight || 0,
-        height: profile.height || 0,
-          status: status.bmiStatus || '未评估',
-        },
-      });
-    } else {
-      // 如果没有健康档案数据，显示默认值
-      this.setData({
-        healthData: {
-          bmi: 0,
-          weight: 0,
-          height: 0,
-          status: '未评估',
-        },
-      });
-    }
-  },
-
-  // 加载今日完成情况
-  loadTodayProgress() {
-    // 防止重复调用
-    if (this._loadingTodayProgress) {
-      return;
-    }
-    
+  // 核心数据加载
+  loadTodayData() {
     const openId = app.globalData.openId || wx.getStorageSync('openId');
-    if (!openId) {
-      setTimeout(() => {
-        this.loadTodayProgress();
-      }, 500);
-      return;
-    }
+    if (!openId) return;
 
-    this._loadingTodayProgress = true;
+    // 获取今日日期 YYYY-MM-DD
+    const today = new Date();
+    const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
-    // 并行请求今日进度、运动统计（消耗热量）、饮食统计（摄入热量）、用户档案（用于计算基础代谢）
     Promise.all([
-      Http.get(API.USER_TODAY_PROGRESS, { openId }),
-      Http.get(API.USER_EXERCISE_STATS, { openId }),
-      Http.get(API.USER_DIET_STATS, { openId }),
-      Http.get(API.USER_GOALS, { openId }),
-      Http.get(API.USER_PROFILE, { openId })
-    ]).then(([progressResult, exerciseStatsResult, dietStatsResult, goalsResult, profileResult]) => {
-      this._loadingTodayProgress = false;
-      
-      const progress = progressResult.data || {};
-      const exerciseStats = exerciseStatsResult.data || {};
-      const dietStats = dietStatsResult.data || {};
-      const goals = goalsResult.data || {};
-      const profile = profileResult.data || {};
-      
-      const intakeCalories = Math.round(dietStats.totalCalories || 0);
-      const exerciseCalories = Math.round(exerciseStats.totalCalories || 0); // 运动消耗的卡路里
-      const targetExercise = progress.exercise?.target || goals.targetExercise || 30;
-      const todayExercise = progress.exercise?.completed || 0; // 今日已运动时间
-      
-      // 计算基础代谢率 (BMR) - 使用 Mifflin-St Jeor 公式
-      let bmr = 0;
-      if (profile.height && profile.weight && profile.age && profile.gender) {
-        if (profile.gender === '男') {
-          bmr = 10 * profile.weight + 6.25 * profile.height - 5 * profile.age + 5;
-        } else {
-          bmr = 10 * profile.weight + 6.25 * profile.height - 5 * profile.age - 161;
-        }
-        bmr = Math.round(bmr);
-      }
-      
-      // 计算目标运动时长对应的卡路里（使用跑步类型，约11卡/分钟）
-      const caloriesPerMinute = 11; // 跑步的卡路里消耗
-      const targetExerciseCalories = Math.round(targetExercise * caloriesPerMinute);
-      
-      // 目标摄入热量：如果今日已运动时间 > 0，则用运动日摄入目标，否则用非运动日摄入目标
-      let targetIntakeCalories = 0;
-      if (todayExercise > 0) {
-        // 今日已运动，使用运动日摄入目标
-        targetIntakeCalories = goals.targetCaloriesExerciseDay || (targetExerciseCalories + bmr);
-      } else {
-        // 今日未运动，使用非运动日摄入目标
-        targetIntakeCalories = goals.targetCaloriesRestDay || bmr;
+      Http.get(API.USER_PROFILE, { openId }),            // 档案 (基础代谢计算)
+      Http.get(API.USER_GOALS, { openId }),              // 目标
+      Http.get(API.USER_DIET_RECORDS, { openId, startDate: dateStr, endDate: dateStr }),     // 饮食记录明细
+      Http.get(API.USER_EXERCISE_RECORDS, { openId, startDate: dateStr, endDate: dateStr }), // 运动记录明细
+      Http.get(API.USER_DIET_STATS, { openId }),         // 饮食统计 (虽然有记录明细，但统计接口可能有汇总值，这里主要用明细聚合)
+    ]).then(([profileRes, goalsRes, dietRes, exerciseRes]) => {
+      const profile = profileRes.data || {};
+      const goals = goalsRes.data || {};
+      const dietList = dietRes.data || [];
+      const exerciseList = exerciseRes.data || [];
+
+      // 1. 处理体重数据
+      this.processWeightData(profile, goals);
+
+      // 2. 处理热量与营养数据 (依赖饮食记录)
+      this.processDietAndNutrition(dietList, profile, goals);
+
+      // 3. 处理运动数据 (依赖运动记录)
+      this.processExerciseData(exerciseList);
+
+      // 4. 汇总热量平衡 (依赖上述计算结果)
+      this.calculateCalorieBalance(profile);
+
+    }).catch(err => {
+      console.error('首页数据加载失败', err);
+    });
+  },
+
+  // 处理体重进度
+  processWeightData(profile, goals) {
+    const currentWeight = profile.weight || 0;
+    const height = profile.height || 0;
+    const targetWeight = goals.targetWeight || 0;
+    
+    // 假设初始体重也是 profile 的一部分字段，如果没有则用当前代替 (需后端支持记录初始体重，这里暂时模拟)
+    // 实际项目中应该从历史记录最早的一条获取，或者 profile 中增加 initialWeight 字段
+    const initialWeight = profile.initialWeight || (currentWeight + 2); // 模拟值
+
+    if (height > 0 && currentWeight > 0) {
+      const currentBMI = calculateBMI(currentWeight, height);
+      const initialBMI = calculateBMI(initialWeight, height);
+      const targetBMI = calculateBMI(targetWeight, height);
+
+      // 计算进度 (初始 -> 目标)
+      // 总减重任务 = 初始 - 目标 (假设是减重)
+      // 已完成 = 初始 - 当前
+      const totalTask = Math.abs(initialWeight - targetWeight);
+      const done = Math.abs(initialWeight - currentWeight);
+      let progress = 0;
+      if (totalTask > 0) {
+        progress = (done / totalTask) * 100;
+        if (progress > 100) progress = 100;
+        if (progress < 0) progress = 0;
       }
       
       this.setData({
-        todayStats: {
-          exercise: progress.exercise?.completed || 0,
-          targetExercise: targetExercise,
-          intakeCalories: intakeCalories, // 今日已摄入热量
-          targetIntakeCalories: targetIntakeCalories, // 目标摄入热量（目标运动卡路里 + 基础代谢）
-          exerciseCalories: exerciseCalories, // 运动消耗的卡路里
-          targetExerciseCalories: targetExerciseCalories, // 目标运动消耗的卡路里
+        weightData: {
+          initial: initialWeight,
+          current: currentWeight,
+          target: targetWeight,
+          diff: (currentWeight - initialWeight).toFixed(1), // 负数代表已减
+          remain: Math.abs(currentWeight - targetWeight).toFixed(1),
+          currentBMI,
+          initialBMI,
+          targetBMI,
+          progress: progress.toFixed(0)
         }
       });
-    }).catch((error) => {
-      this._loadingTodayProgress = false;
-      console.error('获取今日完成情况失败', error);
-    });
+    }
   },
 
-  // 快速打卡/跳转
-  onCheckIn(e) {
-    const type = e.currentTarget.dataset.type;
-    
-    // 运动：跳转到运动计划页面
-    if (type === 'exercise') {
-      wx.navigateTo({
-        url: '/pages/exercise-record/exercise-record'
-      });
-      return;
-    }
-    
-    // 今日已摄入热量：跳转到饮食计划页面
-    if (type === 'intake') {
-      wx.navigateTo({
-        url: '/pages/diet-record/diet-record'
-      });
-      return;
-    }
-    
-    // 今日已消耗热量：跳转到运动计划页面
-    if (type === 'burned') {
-      wx.navigateTo({
-        url: '/pages/exercise-record/exercise-record'
-      });
-      return;
-    }
-    
-    // 其他类型
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
-    });
-  },
+  // 处理饮食与营养
+  processDietAndNutrition(dietList, profile, goals) {
+    const dietRecords = {
+      breakfast: { list: [], calories: 0 },
+      lunch: { list: [], calories: 0 },
+      dinner: { list: [], calories: 0 },
+      snack: { list: [], calories: 0 },
+      hasRecords: dietList.length > 0
+    };
 
-  // 执行打卡
-  doCheckIn(type, value) {
-    const openId = app.globalData.openId || wx.getStorageSync('openId');
-    if (!openId) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none',
-      });
-      return;
-    }
-    
-    wx.showLoading({
-      title: '打卡中...',
-      mask: true
+    let totalCarbs = 0;
+    let totalProtein = 0;
+    let totalFat = 0;
+    let totalIntake = 0;
+
+    // 映射餐次
+    const mealMap = { 'breakfast': '早餐', 'lunch': '午餐', 'dinner': '晚餐', 'snack': '加餐' };
+    // 反向映射用于分组
+    const typeMap = { '早餐': 'breakfast', '午餐': 'lunch', '晚餐': 'dinner', '加餐': 'snack' };
+
+    dietList.forEach(item => {
+      const typeKey = typeMap[item.mealType] || 'snack';
+      dietRecords[typeKey].list.push(item);
+      dietRecords[typeKey].calories += item.calories;
+
+      totalIntake += item.calories;
+      totalCarbs += item.carbs || 0;
+      totalProtein += item.protein || 0;
+      totalFat += item.fat || 0;
     });
-    
-    Http.post(API.USER_CHECK_IN, {
-      openId: openId,
-      type: type,
-      value: value
-    }).then((result) => {
-      wx.hideLoading();
-      if (result.data) {
-        // 更新今日完成情况
-        const progress = result.data;
-        // 重新加载完整数据（包括卡路里）
-        this.loadTodayProgress();
-        
-        wx.showToast({
-          title: '打卡成功',
-          icon: 'success',
-        });
+
+    this.setData({
+      dietRecords,
+      calorieData: {
+        ...this.data.calorieData,
+        intake: Math.round(totalIntake)
       }
-    }).catch((error) => {
-      wx.hideLoading();
-      console.error('打卡失败', error);
-      wx.showToast({
-        title: '打卡失败，请重试',
-        icon: 'none',
-      });
     });
+
+    // 计算营养和建议
+    // 计算目标摄入 (基于BMR * 1.2 或 goals)
+    // 这里简单使用 calculateDailyCalories 或者 goals 中的值
+    const dailyTarget = goals.targetCaloriesRestDay || 1800;
+    
+    // 假设宏量营养素比例 45:30:25 (或者从 profile/goals 获取)
+    const nutrientTargets = calculateNutrientGrams(dailyTarget, { protein: 30, fat: 25, carbs: 45 });
+    
+    // 生成建议
+    let advice = '营养均衡，继续保持！';
+    if (totalProtein < nutrientTargets.proteinGrams * 0.8) advice = '蛋白质摄入不足，建议增加肉蛋奶摄入。';
+    else if (totalCarbs > nutrientTargets.carbsGrams * 1.2) advice = '碳水摄入偏高，建议晚餐减少主食。';
+    else if (totalFat > nutrientTargets.fatGrams * 1.2) advice = '脂肪摄入偏高，注意控制油脂。';
+
+    this.setData({
+      nutritionData: {
+        totalCalories: Math.round(totalIntake),
+        carbs: { 
+          current: Math.round(totalCarbs), 
+          target: Math.round(nutrientTargets.carbsGrams), 
+          percent: Math.min(100, (totalCarbs / nutrientTargets.carbsGrams) * 100).toFixed(0) 
+        },
+        protein: { 
+          current: Math.round(totalProtein), 
+          target: Math.round(nutrientTargets.proteinGrams), 
+          percent: Math.min(100, (totalProtein / nutrientTargets.proteinGrams) * 100).toFixed(0) 
+        },
+        fat: { 
+          current: Math.round(totalFat), 
+          target: Math.round(nutrientTargets.fatGrams), 
+          percent: Math.min(100, (totalFat / nutrientTargets.fatGrams) * 100).toFixed(0) 
+        },
+        advice
+      }
+    });
+  },
+
+  // 处理运动数据
+  processExerciseData(exerciseList) {
+    const exerciseRecords = {
+      daily: { list: [], duration: 0, calories: 0 },
+      cardio: { list: [], duration: 0, calories: 0 },
+      strength: { list: [], duration: 0, calories: 0 },
+      totalDuration: 0,
+      totalCalories: 0,
+      hasRecords: exerciseList.length > 0
+    };
+
+    // 需要将 exerciseType 映射到 categories (daily, cardio, strength)
+    // 这需要遍历 exerciseCategories
+    const getCategory = (name) => {
+        for (const cat of exerciseCategories) {
+            if (cat.exercises.find(e => e.name === name)) return cat.id; // 'daily', 'cardio', 'strength'
+        }
+        return 'daily'; // 默认
+    };
+
+    exerciseList.forEach(item => {
+      const catId = getCategory(item.exerciseType);
+      
+      exerciseRecords[catId].list.push(item);
+      exerciseRecords[catId].duration += item.duration;
+      exerciseRecords[catId].calories += item.calories;
+
+      exerciseRecords.totalDuration += item.duration;
+      exerciseRecords.totalCalories += item.calories;
+    });
+
+    this.setData({
+        exerciseRecords,
+        calorieData: {
+            ...this.data.calorieData,
+            activeBurn: Math.round(exerciseRecords.totalCalories)
+        }
+    });
+  },
+
+  // 计算热量平衡
+  calculateCalorieBalance(profile) {
+    // 基础代谢 BMR
+    let bmr = 0;
+    if (profile.height && profile.weight && profile.age && profile.gender) {
+      if (profile.gender === '男') {
+        bmr = 10 * profile.weight + 6.25 * profile.height - 5 * profile.age + 5;
+      } else {
+        bmr = 10 * profile.weight + 6.25 * profile.height - 5 * profile.age - 161;
+      }
+      bmr = Math.round(bmr);
+    } else {
+        bmr = 1400; // 默认值
+    }
+
+    const intake = this.data.calorieData.intake;
+    const activeBurn = this.data.calorieData.activeBurn;
+    const totalBurned = bmr + activeBurn;
+    const diff = intake - totalBurned;
+    
+    // 预计日减重 (每7700kcal约1kg脂肪)
+    // 只有当有缺口(diff < 0)时才计算减重
+    const projectedLoss = diff < 0 ? (Math.abs(diff) / 7700).toFixed(2) : 0;
+    
+    let gapStatus = '';
+    if (diff < -300 && diff > -800) gapStatus = '🔥 燃脂区间';
+    else if (diff <= -800) gapStatus = '⚠️ 缺口过大';
+    else if (diff > 300) gapStatus = '📈 热量盈余';
+    else gapStatus = '⚖️ 热量平衡';
+
+    this.setData({
+        calorieData: {
+            intake,
+            activeBurn,
+            bmr,
+            burned: totalBurned,
+            diff: diff, // 显示如 -500
+            projectedLoss,
+            gapStatus
+        }
+    });
+  },
+
+  // 交互：显示BMI详情
+  showBMIInfo() {
+      const { status, suggestions } = getBMIStatus(this.data.weightData.currentBMI);
+      wx.showModal({
+          title: `BMI ${this.data.weightData.currentBMI} - ${status}`,
+          content: suggestions.join('\n'),
+          showCancel: false,
+          confirmText: '知道了'
+      });
+  },
+  
+  // 交互：跳转页面
+  navigateTo(e) {
+      const url = e.currentTarget.dataset.url;
+      if (url) wx.navigateTo({ url });
   },
 
   startTipRotation() {
@@ -300,125 +375,6 @@ Page({
       const next = (this.data.currentTip + 1) % this.data.healthTips.length;
       this.setData({ currentTip: next });
     }, 5000);
-  },
-
-  // 选择头像
-  onChooseAvatar(e) {
-    const { avatarUrl } = e.detail;
-    const userInfo = this.data.userInfo || {};
-    
-    // 先显示临时头像（tmp路径）
-    userInfo.avatarUrl = avatarUrl;
-    this.setData({
-      userInfo: userInfo,
-    }, () => {
-      this.checkUserInfoComplete();
-    });
-
-    // 上传头像到服务器
-    wx.showLoading({
-      title: '上传中...',
-      mask: true
-    });
-    
-    Http.uploadFile(avatarUrl).then((result) => {
-      wx.hideLoading();
-      if (result.data && result.data.avatarUrl) {
-        // 使用服务器返回的永久URL
-        const serverAvatarUrl = result.data.avatarUrl;
-        userInfo.avatarUrl = serverAvatarUrl;
-        this.setData({
-          userInfo: userInfo,
-        });
-        
-        // 更新后端用户信息
-        this.updateUserInfo({
-          avatarUrl: serverAvatarUrl,
-        });
-      }
-    }).catch((error) => {
-      wx.hideLoading();
-      console.error('头像上传失败', error);
-        wx.showToast({
-        title: '头像上传失败，请重试',
-          icon: 'none',
-        });
-    });
-  },
-
-  // 输入昵称
-  onNicknameInput(e) {
-    const nickname = e.detail.value || '';
-    const userInfo = this.data.userInfo || {};
-    userInfo.nickName = nickname;
-    
-    this.setData({
-      nickname: nickname,
-      userInfo: userInfo,
-    }, () => {
-      this.checkUserInfoComplete();
-    });
-
-    // 更新后端用户信息（延迟执行，避免频繁请求）
-    clearTimeout(this.updateTimer);
-    this.updateTimer = setTimeout(() => {
-      this.updateUserInfo({
-        nickname: nickname,
-      });
-    }, 500);
-  },
-
-  // 更新后端用户信息
-  updateUserInfo(userInfo) {
-    const openId = app.globalData.openId || wx.getStorageSync('openId');
-    if (!openId) {
-      console.warn('openId 不存在，无法更新用户信息');
-      return;
-    }
-
-    Http.post(API.USER_UPDATE, {
-      openId: openId,
-      nickname: userInfo.nickname,
-      avatarUrl: userInfo.avatarUrl,
-    }).then((result) => {
-      // 更新成功后，同步更新本地存储和全局数据
-      if (result.data) {
-        const updatedUserInfo = {
-          nickName: result.data.nickname || '',
-          avatarUrl: result.data.avatarUrl || ''
-        };
-        app.globalData.userInfo = updatedUserInfo;
-        wx.setStorageSync('userInfo', updatedUserInfo);
-      }
-    }).catch((error) => {
-      console.error('更新用户信息失败', error);
-    });
-  },
-
-  // 检查用户信息是否完整
-  checkUserInfoComplete() {
-    // 使用 setTimeout 确保数据更新完成
-    setTimeout(() => {
-      const { userInfo, nickname } = this.data;
-      
-      // 如果头像和昵称都有，则显示完整信息
-      if (userInfo && userInfo.avatarUrl && (userInfo.nickName || nickname)) {
-        this.setData({
-          hasUserInfo: true,
-          nickname: userInfo.nickName || nickname,
-        });
-      }
-    }, 100);
-  },
-
-  onActionTap(e) {
-    const { url, tab } = e.currentTarget.dataset;
-    if (tab) {
-      // 健康数据页面不再是 tab 页面，使用 navigateTo 跳转
-      wx.navigateTo({ url: '/pages/health/health' });
-    } else if (url) {
-      wx.navigateTo({ url });
-    }
   },
 
   onShareAppMessage() {
