@@ -10,7 +10,8 @@
     "pages/weight/weight",
     "pages/diet-record/diet-record",
     "pages/exercise-record/exercise-record",
-    "pages/post/post"
+    "pages/post/post",
+    "pages/measure/measure"
   ],
   "window": {
     "backgroundTextStyle": "light",

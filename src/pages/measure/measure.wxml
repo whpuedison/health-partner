@@ -1,0 +1,159 @@
+<view class="container">
+  <!-- 顶部日历区域 -->
+  <view class="calendar-section">
+    <view class="week-calendar">
+      <view class="calendar-arrow left" bindtap="changeWeek" data-type="prev">
+        <text class="arrow-icon">◀</text>
+      </view>
+      <view class="week-days">
+        <view 
+          class="day-item {{item.isToday ? 'today' : ''}} {{selectedDate === item.date ? 'active' : ''}}" 
+          wx:for="{{weekDays}}" 
+          wx:key="date"
+          bindtap="selectDate"
+          data-date="{{item.date}}"
+        >
+          <text class="week-day-text">{{item.weekDay}}</text>
+          <text class="day-text">{{item.day}}</text>
+        </view>
+      </view>
+      <view class="calendar-arrow right" bindtap="changeWeek" data-type="next">
+        <text class="arrow-icon">▶</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日数据展示 -->
+  <view class="stats-grid">
+    <view class="stat-card">
+      <text class="stat-label">胸围</text>
+      <view class="stat-value-box">
+        <text class="stat-value">{{todayStats.bust || '--'}}</text>
+        <text class="stat-unit">cm</text>
+      </view>
+    </view>
+    <view class="stat-card">
+      <text class="stat-label">腰围</text>
+      <view class="stat-value-box">
+        <text class="stat-value">{{todayStats.waist || '--'}}</text>
+        <text class="stat-unit">cm</text>
+      </view>
+    </view>
+    <view class="stat-card">
+      <text class="stat-label">臀围</text>
+      <view class="stat-value-box">
+        <text class="stat-value">{{todayStats.hip || '--'}}</text>
+        <text class="stat-unit">cm</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- WXS 模块用于计算和格式化 -->
+  <wxs module="utils">
+    var calculateWHR = function(waist, hip) {
+      if (!waist || !hip) return '--';
+      var ratio = waist / hip;
+      return ratio.toFixed(2);
+    }
+    module.exports.calculateWHR = calculateWHR;
+  </wxs>
+
+  <!-- 腰臀比提示 (如果有数据) -->
+  <view class="whr-card" wx:if="{{todayStats.waist && todayStats.hip}}">
+    <view class="whr-info">
+      <text class="whr-label">腰臀比 (WHR)</text>
+      <text class="whr-value">{{utils.calculateWHR(todayStats.waist, todayStats.hip)}}</text>
+    </view>
+  </view>
+
+  <!-- 测量指南与录入入口 -->
+  <view class="instruction-list">
+    <view class="section-title">开始测量</view>
+    
+    <view class="instruction-card" bindtap="openMeasure" data-type="bust">
+      <view class="card-icon-box" style="background: #E0F2F1; color: #009688;">
+        <text class="card-icon">👕</text>
+      </view>
+      <view class="card-content">
+        <text class="card-title">测量胸围</text>
+        <text class="card-desc">沿胸部最高点水平测量一周，保持呼吸自然</text>
+      </view>
+      <view class="card-action">
+        <text class="action-text">记录</text>
+        <van-icon name="arrow" />
+      </view>
+    </view>
+
+    <view class="instruction-card" bindtap="openMeasure" data-type="waist">
+      <view class="card-icon-box" style="background: #E8F5E9; color: #4CAF50;">
+        <text class="card-icon">🧵</text>
+      </view>
+      <view class="card-content">
+        <text class="card-title">测量腰围</text>
+        <text class="card-desc">沿腰部最细处（通常在肚脐上方）水平测量</text>
+      </view>
+      <view class="card-action">
+        <text class="action-text">记录</text>
+        <van-icon name="arrow" />
+      </view>
+    </view>
+
+    <view class="instruction-card" bindtap="openMeasure" data-type="hip">
+      <view class="card-icon-box" style="background: #E3F2FD; color: #2196F3;">
+        <text class="card-icon">👖</text>
+      </view>
+      <view class="card-content">
+        <text class="card-title">测量臀围</text>
+        <text class="card-desc">并拢双腿，沿臀部最宽处水平测量一周</text>
+      </view>
+      <view class="card-action">
+        <text class="action-text">记录</text>
+        <van-icon name="arrow" />
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 录入弹窗 -->
+<van-popup show="{{ showPicker }}" bind:close="closePicker" round position="bottom">
+  <view class="measure-input-popup">
+    <view class="popup-header">
+      <text class="popup-title">记录{{measureConfig[currentType].name}}</text>
+      <text class="popup-date">{{selectedDate}}</text>
+    </view>
+    
+    <view class="input-container">
+      <input
+        class="measure-input"
+        type="digit"
+        value="{{currentValue}}"
+        placeholder="请输入数值"
+        bindinput="onInput"
+        focus="{{showPicker}}"
+      />
+      <text class="input-unit">cm</text>
+    </view>
+
+    <view class="popup-actions">
+      <van-button 
+        wx:if="{{hasExistingValue}}"
+        custom-class="action-btn delete-btn" 
+        type="default" 
+        bindtap="deleteMeasurement"
+      >删除</van-button>
+      
+      <van-button 
+        wx:if="{{!hasExistingValue}}"
+        custom-class="action-btn cancel-btn" 
+        type="default" 
+        bindtap="closePicker"
+      >取消</van-button>
+      
+      <van-button 
+        custom-class="action-btn save-btn" 
+        type="primary" 
+        bindtap="saveMeasurement"
+      >保存</van-button>
+    </view>
+  </view>
+</van-popup>

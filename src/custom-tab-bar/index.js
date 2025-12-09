@@ -40,7 +40,7 @@ Component({
       {
         icon: '📏',
         text: '记体围',
-        pagePath: '/pages/health/health',
+        pagePath: '/pages/measure/measure',
       },
       {
         icon: '👕',

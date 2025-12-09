@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "围度记录",
+  "usingComponents": {
+    "van-popup": "@vant/weapp/popup/index",
+    "van-button": "@vant/weapp/button/index",
+    "van-icon": "@vant/weapp/icon/index",
+    "van-toast": "@vant/weapp/toast/index"
+  }
+}
