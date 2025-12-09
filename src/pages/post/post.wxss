@@ -12,6 +12,22 @@
   margin-bottom: 32rpx;
 }
 
+.tip {
+  display: flex;
+  flex-direction: column;
+  row-gap: 12rpx;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 20rpx auto;
+  background: #F7FAFC;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+.tip-title {
+  text-align: center;
+}
+
 /* 文字输入 */
 .content-input {
   width: 100%;

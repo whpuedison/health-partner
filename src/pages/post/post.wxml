@@ -6,7 +6,7 @@
       <view class="form-item">
         <textarea
           class="content-input"
-          placeholder="记录你的体型变化"
+          placeholder="记录蜕变💪"
           value="{{content}}"
           bindinput="onContentInput"
           maxlength="500"
@@ -14,8 +14,6 @@
         ></textarea>
         <view class="char-count">{{content.length}}/500</view>
       </view>
-
-
       <view class="form-item">
         <view class="images-section">
           <view class="images-grid">
@@ -41,10 +39,15 @@
               bindtap="chooseImages"
             >
               <text class="add-icon">📷</text>
-              <text class="add-text">添加图片</text>
+              <text class="add-text">形体照</text>
             </view>
           </view>
         </view>
+      </view>
+       <view class="tip">
+        <view class="tip-title">📸 拍照小贴士</view>
+        <view>🌱 为了更好地记录你的变化，建议拍摄正面、侧面和背面三个角度的照片</view>
+        <view>🔐 你上传的每一张照片都会进行加密存储，构成你专属的蜕变时间轴</view>
       </view>
     </view>
 
