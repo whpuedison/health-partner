@@ -1,7 +1,7 @@
 /* pages/index/index.wxss */
 .index-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #E0F7FA 0%, #E8F5E9 100%);
+  background: #fff;
   padding: 24rpx 24rpx 60rpx;
   box-sizing: border-box;
 }
@@ -9,24 +9,29 @@
 /* 通用卡片样式 - Glassmorphism */
 .dashboard-card {
   background: rgba(255, 255, 255, 0.7);
+  border: 2rpx solid #B8E6C8;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 32rpx;
   padding: 32rpx;
   margin-bottom: 32rpx;
   box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.05);
-  border: 1rpx solid rgba(255, 255, 255, 0.8);
+  /* border: 1rpx solid rgba(255, 255, 255, 0.8); */
 }
 
 /* 1. 体重进度卡片 */
 .weight-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding-top: 0;
 }
 
 .card-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  justify-content: center;
+  column-gap:40rpx;
+  align-items: flex-end;
   margin-bottom: 40rpx;
 }
 
@@ -34,12 +39,30 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
 }
 
 .weight-col.current {
-  flex: 1.2; 
-  transform: scale(1.05);
+    width: 320rpx;
+    height: 320rpx;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #e0f7fa 0%, #e8f5e9 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* 外部装饰圆 - 保持原有 */
+.weight-col.current::before {
+  content: "";
+  position: absolute;
+  width: 340rpx;
+  height: 340rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(168, 224, 218, 0.1), rgba(18, 212, 95, 0.1));
+  border: 1rpx solid #e8f5e9;
+  z-index: -1;
 }
 
 .weight-divider {
@@ -63,7 +86,7 @@
 }
 
 .weight-col.current .value {
-  font-size: 44rpx;
+  font-size: 64rpx;
   color: #009688;
 }
 
@@ -74,7 +97,7 @@
 }
 
 .diff-tag {
-  font-size: 20rpx;
+  font-size: 30rpx;
   padding: 2rpx 8rpx;
   border-radius: 8rpx;
   font-weight: bold;
@@ -91,7 +114,7 @@
 }
 
 .sub-value.bmi {
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: #95a5a6;
   margin-top: 8rpx;
   background: rgba(0, 0, 0, 0.05);
@@ -105,6 +128,8 @@
 }
 
 .progress-section {
+  width: 100%;
+  margin:64rpx auto 0;
   display: flex;
   flex-direction: column;
   gap: 16rpx;
@@ -153,8 +178,8 @@
 .progress-percent {
   position: absolute;
   right: 0;
-  top: -30rpx;
-  font-size: 20rpx;
+  top: -42rpx;
+  font-size: 24rpx;
   color: #009688;
   font-weight: bold;
 }
@@ -162,7 +187,7 @@
 .progress-info {
   display: flex;
   justify-content: space-between;
-  font-size: 22rpx;
+  font-size: 24rpx;
   color: #7f8c8d;
 }
 
