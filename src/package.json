@@ -16,7 +16,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@vant/weapp": "^1.11.6"
+    "@vant/weapp": "^1.11.6",
+    "echarts": "^6.0.0",
+    "echarts-for-weixin": "^1.0.2"
   },
   "devDependencies": {
     "eslint": "^8.45.0",

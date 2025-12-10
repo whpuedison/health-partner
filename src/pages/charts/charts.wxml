@@ -1,0 +1,53 @@
+<!--pages/charts/charts.wxml-->
+<view class="charts-page">
+  <!-- 头部：标题 + 时间选择器 -->
+  <view class="header-section">
+    <view class="title-row">
+      <text class="page-title">数据分析</text>
+      <view class="date-picker-btn" bindtap="showDatePicker">
+        <text>{{startDate}} 至 {{endDate}}</text>
+        <van-icon name="arrow-down" />
+      </view>
+    </view>
+    <view class="subtitle">最近 {{dayCount}} 天趋势</view>
+  </view>
+
+  <!-- 1. 体重趋势图 -->
+  <view class="chart-container">
+    <view class="chart-title">
+      <view class="title-left">
+        <text class="emoji">⚖️</text>
+        <text>体重变化 (kg)</text>
+      </view>
+    </view>
+    <view class="chart-box">
+      <ec-canvas id="weight-chart" canvas-id="weight-chart" ec="{{ ec }}" echarts="{{ echarts }}"></ec-canvas>
+    </view>
+  </view>
+
+  <!-- 2. 围度变化图 -->
+  <view class="chart-container">
+    <view class="chart-title">
+      <view class="title-left">
+        <text class="emoji">📏</text>
+        <text>围度追踪 (cm)</text>
+      </view>
+    </view>
+    <view class="chart-legend">
+        <!-- Legend logic can be handled by echarts itself, or custom if needed -->
+    </view>
+    <view class="chart-box">
+      <ec-canvas id="measure-chart" canvas-id="measure-chart" ec="{{ ec }}" echarts="{{ echarts }}"></ec-canvas>
+    </view>
+  </view>
+  
+  <!-- 时间选择器弹窗 -->
+  <van-popup show="{{ showDatePopup }}" position="bottom" bind:close="onCloseDatePopup">
+    <van-datetime-picker
+      type="date"
+      value="{{ currentDate }}"
+      bind:confirm="onConfirmDate"
+      bind:cancel="onCloseDatePopup"
+    />
+  </van-popup>
+</view>
