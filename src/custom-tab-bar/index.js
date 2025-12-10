@@ -8,7 +8,7 @@ Component({
       {
         pagePath: '/pages/index/index',
         text: '记录',
-        icon: '🎬',
+        icon: '📊',
       },
       {
         pagePath: '',

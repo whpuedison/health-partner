@@ -18,9 +18,8 @@ Page({
     },
     // 功能菜单
     menuItems: [
-      { id: 'charts', icon: '📉', title: '瘦身历程', arrow: true },
-      { id: 'timeline', icon: '📸', title: '体型记录', arrow: true },
       { id: 'goal', icon: '👤', title: '个人信息', arrow: true },
+      { id: 'timeline', icon: '📸', title: '体态记录', arrow: true },
       { id: 'about', icon: 'ℹ️', title: '关于我们', arrow: true },
     ],
   },
@@ -262,15 +261,6 @@ Page({
     console.log('点击菜单项:', id);
     
     switch (id) {
-      case 'charts':
-        wx.navigateTo({
-          url: '/pages/charts/charts',
-          fail: (err) => {
-             console.error('跳转失败:', err);
-             wx.showToast({ title: '页面不存在', icon: 'none' });
-          }
-        });
-        break;
       case 'history':
         wx.showToast({
           title: '功能开发中',
