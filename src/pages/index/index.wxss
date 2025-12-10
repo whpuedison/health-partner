@@ -24,6 +24,7 @@
   background: none;
   border: none;
   box-shadow: none;
+  padding-top: 28rpx;
 }
 
 .card-header {
