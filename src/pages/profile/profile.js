@@ -18,7 +18,7 @@ Page({
     },
     // 功能菜单
     menuItems: [
-      { id: 'charts', icon: '📉', title: '瘦身历程', arrow: true },
+      // { id: 'charts', icon: '📉', title: '瘦身历程', arrow: true },
       { id: 'timeline', icon: '📸', title: '体型记录', arrow: true },
       { id: 'goal', icon: '👤', title: '个人信息', arrow: true },
       { id: 'about', icon: 'ℹ️', title: '关于我们', arrow: true },
