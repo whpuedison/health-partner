@@ -3,17 +3,22 @@
   
   <!-- 1. 体重进度卡片 (核心) -->
   <view class="dashboard-card weight-card">
+    <view class="card-title-row" bindtap="navigateTo" data-url="/pages/weight/weight">
+      <text class="card-title">⚖️ 体重进度</text>
+      <van-icon name="arrow" />
+    </view>
+    <view class="divider-line"></view>
     <view class="card-header">
       <view class="weight-col">
         <text class="label">初始</text>
-        <text class="value">{{weightData.initial}}</text>
+        <text class="value">{{weightData.initial}}<text style="font-size: 22rpx; margin-left: 4rpx; font-weight: normal;">kg</text></text>
         <text class="sub-value bmi" bindtap="showBMIInfo">BMI{{weightData.initialBMI}}</text>
       </view>
       <view class="weight-divider"></view>
       <view class="weight-col current" bindtap="navigateTo" data-url="/pages/weight/weight">  
         <text class="label">当前 / 已减</text>
         <view class="value-row">
-          <text class="value">{{weightData.current}}</text>
+          <text class="value">{{weightData.current}}<text style="font-size: 24rpx; margin-left: 4rpx; font-weight: normal;">kg</text></text>
           <text class="diff-tag {{weightData.diff < 0 ? 'down' : 'up'}}">{{weightData.diff > 0 ? '+' : ''}}{{weightData.diff}}</text>
         </view>
         <text class="sub-value bmi active" catchtap="showBMIInfo">BMI{{weightData.currentBMI}}</text>
@@ -21,7 +26,7 @@
       <view class="weight-divider"></view>
       <view class="weight-col">
         <text class="label">目标</text>
-        <text class="value">{{weightData.target}}</text>
+        <text class="value">{{weightData.target}}<text style="font-size: 22rpx; margin-left: 4rpx; font-weight: normal;">kg</text></text>
         <text class="sub-value bmi" bindtap="showBMIInfo">BMI{{weightData.targetBMI}}</text>
       </view>
     </view>
@@ -43,6 +48,10 @@
 
   <!-- 2. 热量平衡卡片 -->
   <view class="dashboard-card calorie-card">
+    <view class="card-title-row">
+      <text class="card-title">🔥 热量平衡</text>
+    </view>
+    <view class="divider-line"></view>
     <view class="grid-3-col">
       <view class="grid-item" bindtap="navigateTo" data-url="/pages/diet-record/diet-record">
         <text class="label">摄入</text>
@@ -70,6 +79,11 @@
 
   <!-- 3. 营养构成卡片 -->
   <view class="dashboard-card nutrition-card">
+    <view class="card-title-row" bindtap="navigateTo" data-url="/pages/diet-record/diet-record">
+      <text class="card-title">🥗 营养构成</text>
+      <van-icon name="arrow" />
+    </view>
+    <view class="divider-line"></view>
     <view class="grid-4-col">
       <view class="grid-item">
         <text class="label">碳水</text>
