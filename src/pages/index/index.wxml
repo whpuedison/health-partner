@@ -35,7 +35,7 @@
         <text class="progress-percent">{{weightData.progress}}%</text>
       </view>
       <view class="progress-info">
-        <text>已减{{weightData.diff < 0 ? -weightData.diff : 0}}kg / 目标减{{weightData.initial - weightData.target < 0 ? weightData.target - weightData.initial : weightData.initial - weightData.target}}kg</text>
+        <text>已减{{weightData.diff < 0 ? -weightData.diff : 0}}kg / 目标减{{weightData.initial - weightData.target}}kg</text>
         <text>• 还需减{{weightData.remain}}kg</text>
       </view>
     </view>
@@ -187,7 +187,7 @@
         <text>✨ 一句话记饮食</text>
       </view>
       <view class="ai-btn camera" bindtap="navigateTo" data-url="/pages/diet-record/diet-record?mode=camera">
-        <text>📷 拍照识别</text>
+        <text>📷 拍照识别热量</text>
       </view>
     </view>
   </view>

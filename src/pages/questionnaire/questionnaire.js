@@ -494,15 +494,6 @@ Page({
         url: '/pages/plan/plan'
       })
      }, 500);
-
-      // 延迟跳转，让用户看到成功提示
-      // setTimeout(() => {
-      //   // 跳转到首页
-      //   wx.reLaunch({
-      //     url: '/pages/index/index',
-      //   });
-      // }, 2000);
-
     } catch (error) {
       wx.hideLoading();
       console.error('提交问卷失败:', error);

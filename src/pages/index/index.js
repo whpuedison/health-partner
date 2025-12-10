@@ -29,7 +29,6 @@ Page({
     calorieData: {
       intake: 0,
       burned: 0, // 运动消耗 + 基础代谢
-      bmr: 0,
       activeBurn: 0,
       diff: 0, // 摄入 - 消耗
       projectedLoss: 0, // 预计日减重 (kg)
@@ -184,7 +183,7 @@ Page({
           current: currentWeight,
           target: targetWeight,
           diff: (currentWeight - initialWeight).toFixed(1), // 负数代表已减
-          remain: Math.abs(currentWeight - targetWeight).toFixed(1),
+          remain: (currentWeight - targetWeight).toFixed(1),
           currentBMI,
           initialBMI,
           targetBMI,
@@ -234,7 +233,6 @@ Page({
     });
 
     // 计算营养和建议
-    // 计算目标摄入 (基于BMR * 1.2 或 goals)
     // 这里简单使用 calculateDailyCalories 或者 goals 中的值
     const dailyTarget = goals.targetCaloriesRestDay || 1800;
     
@@ -312,22 +310,11 @@ Page({
 
   // 计算热量平衡
   calculateCalorieBalance(profile) {
-    // 基础代谢 BMR
-    let bmr = 0;
-    if (profile.height && profile.weight && profile.age && profile.gender) {
-      if (profile.gender === '男') {
-        bmr = 10 * profile.weight + 6.25 * profile.height - 5 * profile.age + 5;
-      } else {
-        bmr = 10 * profile.weight + 6.25 * profile.height - 5 * profile.age - 161;
-      }
-      bmr = Math.round(bmr);
-    } else {
-        bmr = 1400; // 默认值
-    }
-
     const intake = this.data.calorieData.intake;
     const activeBurn = this.data.calorieData.activeBurn;
-    const totalBurned = bmr + activeBurn;
+    console.log('profile', profile)
+    console.log('cal', calculateDailyCalories(profile))
+    const totalBurned = calculateDailyCalories(profile) + activeBurn;
     const diff = intake - totalBurned;
     
     // 预计日减重 (每7700kcal约1kg脂肪)
@@ -344,7 +331,6 @@ Page({
         calorieData: {
             intake,
             activeBurn,
-            bmr,
             burned: totalBurned,
             diff: diff, // 显示如 -500
             projectedLoss,

@@ -1,6 +1,7 @@
 // pages/diet-record/diet-record.js
 const { Http } = require('../../utils/http');
 const { API } = require('../../config/api');
+const { calculateDailyCalories } = require('../../utils/health-calculator');
 const app = getApp();
 
 Page({
@@ -14,7 +15,7 @@ Page({
     todayIntake: 0,        // 今日摄入
     todayBurned: 0,        // 今日消耗
     todayRemaining: 0,     // 还可以吃
-    targetCalories: 2000,  // 目标卡路里
+    targetCalories: 0,  // 目标卡路里
     
     // 营养素数据
     protein: { current: 0, target: 60 },
@@ -160,11 +161,13 @@ Page({
     const openId = app.globalData.openId || wx.getStorageSync('openId');
     if (!openId) return;
 
+
     try {
+      const profileResult = await Http.get(API.USER_PROFILE, { openId }) || {};
       const result = await Http.get(API.USER_GOALS, { openId });
       if (result.data) {
         this.setData({
-          targetCalories: result.data.targetCalories || 2000
+          targetCalories: calculateDailyCalories(profileResult.data)
         });
       }
     } catch (error) {

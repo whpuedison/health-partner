@@ -127,11 +127,13 @@ function getDifficultyLevel(weightLossTotal, planDays) {
  * @returns {number} 每日所需卡路里
  */
 function calculateDailyCalories(params) {
-  const { currentWeight, height, age, gender, metabolismLevel = 'medium' } = params;
+  const { currentWeight: _currentWeight, weight, height, age, gender, metabolismLevel = 'medium' } = params;
+
+  const currentWeight = _currentWeight || weight;
   
   // 使用Mifflin-St Jeor公式计算基础代谢率(BMR)
   let bmr;
-  if (gender === 'male') {
+  if (['male', '男'].includes(gender)) {
     bmr = 10 * currentWeight + 6.25 * height - 5 * age + 5;
   } else {
     bmr = 10 * currentWeight + 6.25 * height - 5 * age - 161;
