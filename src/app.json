@@ -4,7 +4,6 @@
     "pages/index/index",
     "pages/timeline/timeline",
     "pages/profile/profile",
-    "pages/charts/charts",
     "pages/health/health",
     "pages/goal/goal",
     "pages/plan/plan",
