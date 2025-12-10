@@ -547,8 +547,17 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '我的健康数据 - 健康伙伴',
-      path: '/pages/health/health',
+      title: '拍照识热量，轻松控饮食',
+      path: '/pages/questionnaire/questionnaire',
+      imageUrl: 'https://whpuedison.online/images/kongka_share.jpg'
     };
   },
+
+  onShareTimeline() {
+    return {
+          title: '拍照识热量，轻松控饮食',
+          path: '/pages/questionnaire/questionnaire',
+          imageUrl: 'https://whpuedison.online/images/tomato.jpg'
+        };
+   }
 });

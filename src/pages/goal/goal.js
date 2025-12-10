@@ -260,8 +260,17 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '我的健康档案',
-      path: '/pages/goal/goal',
+      title: '拍照识热量，轻松控饮食',
+      path: '/pages/questionnaire/questionnaire',
+      imageUrl: 'https://whpuedison.online/images/kongka_share.jpg'
     };
   },
+
+  onShareTimeline() {
+    return {
+          title: '拍照识热量，轻松控饮食',
+          path: '/pages/questionnaire/questionnaire',
+          imageUrl: 'https://whpuedison.online/images/tomato.jpg'
+        };
+   }
 });

@@ -366,9 +366,18 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '你的专属健康管理助手',
-      path: '/pages/index/index',
+      title: '拍照识热量，轻松控饮食',
+      path: '/pages/questionnaire/questionnaire',
+      imageUrl: 'https://whpuedison.online/images/kongka_share.jpg'
     };
   },
+
+  onShareTimeline() {
+    return {
+          title: '拍照识热量，轻松控饮食',
+          path: '/pages/questionnaire/questionnaire',
+          imageUrl: 'https://whpuedison.online/images/tomato.jpg'
+        };
+   }
 });
 

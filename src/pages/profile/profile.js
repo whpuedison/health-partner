@@ -327,6 +327,15 @@ Page({
     return {
       title: '一款专门为减肥人群打造的健康管理小程序',
       path: '/pages/questionnaire/questionnaire',
+      imageUrl: 'https://whpuedison.online/images/kongka_share.jpg'
     };
   },
+
+  onShareTimeline() {
+    return {
+          title: '拍照识热量，轻松控饮食',
+          path: '/pages/questionnaire/questionnaire',
+          imageUrl: 'https://whpuedison.online/images/tomato.jpg'
+        };
+   }
 });

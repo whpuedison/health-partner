@@ -58,13 +58,21 @@ Page({
       // 页面显示时的逻辑
     },
   
-    onShareAppMessage: function() {
-      return {
-        title: '我的专属体重管理方案',
-        path: '/pages/plan/plan',
-        imageUrl: '/images/share-poster.jpg'
-      };
-    },
+  onShareAppMessage() {
+    return {
+      title: '拍照识热量，轻松控饮食',
+      path: '/pages/questionnaire/questionnaire',
+      imageUrl: 'https://whpuedison.online/images/kongka_share.jpg'
+    };
+  },
+
+  onShareTimeline() {
+    return {
+          title: '拍照识热量，轻松控饮食',
+          path: '/pages/questionnaire/questionnaire',
+          imageUrl: 'https://whpuedison.online/images/tomato.jpg'
+        };
+   },
   
     /**
      * 从app.globalData初始化数据
