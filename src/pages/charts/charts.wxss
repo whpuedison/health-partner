@@ -1,0 +1,51 @@
+/* pages/charts/charts.wxss */
+.charts-page {
+  padding: 24rpx;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* 头部样式 */
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32rpx;
+  padding: 0 16rpx;
+}
+
+.header .title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* 图表卡片 */
+.chart-card {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.06);
+}
+
+.chart-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 24rpx;
+  padding-left: 8rpx;
+  border-left: 8rpx solid #009688;
+  padding-left: 16rpx;
+}
+
+.chart-container {
+  width: 100%;
+  height: 500rpx;
+  position: relative;
+}
+
+.chart-canvas {
+  width: 100%;
+  height: 500rpx;
+}

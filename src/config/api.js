@@ -36,6 +36,7 @@ const API = {
   MEASUREMENT_DAILY: '/api/v1/measurement/daily',
   MEASUREMENT_LIST: '/api/v1/measurement/list',
   MEASUREMENT_DELETE: '/api/v1/measurement/delete',
+  MEASUREMENT_LATEST: '/api/v1/measurement/latest', // 新增：获取最近体围记录
   // 帖子相关
   POST_CREATE: '/api/v1/post/create',
   POST_LIST: '/api/v1/post/list',
@@ -50,6 +51,7 @@ const API = {
   WEIGHT_SAVE: '/api/v1/user/weight',
   WEIGHT_MONTH: '/api/v1/user/weight/month',
   WEIGHT_DELETE: '/api/v1/user/weight',
+  WEIGHT_LATEST: '/api/v1/user/weight/latest', // 新增：获取最近体重记录
 };
 
 module.exports = { API };

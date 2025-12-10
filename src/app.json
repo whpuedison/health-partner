@@ -11,6 +11,7 @@
     "pages/diet-record/diet-record",
     "pages/exercise-record/exercise-record",
     "pages/post/post",
+    "pages/charts/charts",
     "pages/measure/measure"
   ],
   "window": {

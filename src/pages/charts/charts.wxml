@@ -1,0 +1,53 @@
+<!-- pages/charts/charts.wxml -->
+<view class="charts-page">
+  <!-- 体重趋势图 -->
+  <view class="chart-card">
+    <view class="chart-title">体重趋势 (kg)</view>
+    <view class="chart-container">
+      <canvas canvas-id="weightChart" class="chart-canvas"></canvas>
+    </view>
+  </view>
+
+  <!-- 围度变化图 -->
+  <view class="chart-card">
+    <view class="chart-title">胸围变化 (cm)</view>
+    <view class="chart-container">
+      <canvas canvas-id="bustChart" class="chart-canvas"></canvas>
+    </view>
+  </view>
+
+  <view class="chart-card">
+    <view class="chart-title">腰围变化 (cm)</view>
+    <view class="chart-container">
+      <canvas canvas-id="waistChart" class="chart-canvas"></canvas>
+    </view>
+  </view>
+
+  <view class="chart-card">
+    <view class="chart-title">臀围变化 (cm)</view>
+    <view class="chart-container">
+      <canvas canvas-id="hipChart" class="chart-canvas"></canvas>
+    </view>
+  </view>
+
+  <view class="chart-card">
+    <view class="chart-title">上臂围变化 (cm)</view>
+    <view class="chart-container">
+      <canvas canvas-id="armChart" class="chart-canvas"></canvas>
+    </view>
+  </view>
+
+  <view class="chart-card">
+    <view class="chart-title">大腿围变化 (cm)</view>
+    <view class="chart-container">
+      <canvas canvas-id="thighChart" class="chart-canvas"></canvas>
+    </view>
+  </view>
+
+  <view class="chart-card">
+    <view class="chart-title">小腿围变化 (cm)</view>
+    <view class="chart-container">
+      <canvas canvas-id="calfChart" class="chart-canvas"></canvas>
+    </view>
+  </view>
+</view>
