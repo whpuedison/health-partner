@@ -5,7 +5,6 @@
   <view class="dashboard-card weight-card">
     <view class="card-title-row" bindtap="navigateTo" data-url="/pages/weight/weight">
       <text class="card-title">⚖️ 体重进度</text>
-      <van-icon name="arrow" />
     </view>
     <view class="divider-line"></view>
     <view class="card-header">
@@ -81,7 +80,6 @@
   <view class="dashboard-card nutrition-card">
     <view class="card-title-row" bindtap="navigateTo" data-url="/pages/diet-record/diet-record">
       <text class="card-title">🥗 营养构成</text>
-      <van-icon name="arrow" />
     </view>
     <view class="divider-line"></view>
     <view class="grid-4-col">
