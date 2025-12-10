@@ -1,7 +1,7 @@
 // pages/diet-record/diet-record.js
 const { Http } = require('../../utils/http');
 const { API } = require('../../config/api');
-const { calculateDailyCalories } = require('../../utils/health-calculator');
+const { calculateDailyCalories, calculateNutrientGrams } = require('../../utils/health-calculator');
 const app = getApp();
 
 Page({
@@ -68,7 +68,6 @@ Page({
 
   onLoad() {
     this.initWeekCalendar();
-    this.loadUserGoals();
     this.loadTodayData();
   },
 
@@ -152,27 +151,6 @@ Page({
     const { date } = e.currentTarget.dataset;
     this.setData({ selectedDate: date });
     this.loadDateData(date);
-  },
-
-  /**
-   * 加载用户目标
-   */
-  async loadUserGoals() {
-    const openId = app.globalData.openId || wx.getStorageSync('openId');
-    if (!openId) return;
-
-
-    try {
-      const profileResult = await Http.get(API.USER_PROFILE, { openId }) || {};
-      const result = await Http.get(API.USER_GOALS, { openId });
-      if (result.data) {
-        this.setData({
-          targetCalories: calculateDailyCalories(profileResult.data)
-        });
-      }
-    } catch (error) {
-      console.error('加载目标失败:', error);
-    }
   },
 
   /**
@@ -265,16 +243,21 @@ Page({
         };
       });
 
+      // 计算目标消耗卡路里
+      const profileResult = await Http.get(API.USER_PROFILE, { openId }) || {};
+      const targetCalories = calculateDailyCalories(profileResult.data);
+      const nutrientTargets = calculateNutrientGrams(targetCalories + totalBurned, { protein: 21, fat: 21, carbs: 58 });
+
       // 计算剩余
-      const remaining = this.data.targetCalories - totalCalories + totalBurned;
+      const remaining = targetCalories - totalCalories + totalBurned;
 
       this.setData({
         todayIntake: Math.round(totalCalories),
         todayBurned: Math.round(totalBurned),
         todayRemaining: Math.max(0, Math.round(remaining)),
-        protein: { ...this.data.protein, current: parseFloat(totalProtein.toFixed(1)) },
-        fat: { ...this.data.fat, current: parseFloat(totalFat.toFixed(1)) },
-        carbs: { ...this.data.carbs, current: parseFloat(totalCarbs.toFixed(1)) },
+        protein: { target: nutrientTargets.proteinGrams, current: parseFloat(totalProtein.toFixed(1)) },
+        fat: { target: nutrientTargets.fatGrams, current: parseFloat(totalFat.toFixed(1)) },
+        carbs: { target: nutrientTargets.carbsGrams, current: parseFloat(totalCarbs.toFixed(1)) },
         mealGroups: mealGroups,
         mealStats: mealStats,
         loading: false

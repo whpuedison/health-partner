@@ -234,10 +234,11 @@ Page({
 
     // 计算营养和建议
     // 这里简单使用 calculateDailyCalories 或者 goals 中的值
-    const dailyTarget = goals.targetCaloriesRestDay || 1800;
+    const activeBurn = this.data.calorieData.activeBurn;
+    const dailyTarget = calculateDailyCalories(profile) + activeBurn;
     
-    // 假设宏量营养素比例 45:30:25 (或者从 profile/goals 获取)
-    const nutrientTargets = calculateNutrientGrams(dailyTarget, { protein: 30, fat: 25, carbs: 45 });
+    // 假设宏量营养素比例 21:21:58 (或者从 profile/goals 获取)
+    const nutrientTargets = calculateNutrientGrams(dailyTarget, { protein: 21, fat: 21, carbs: 58 });
     
     // 生成建议
     let advice = '营养均衡，继续保持！';
@@ -247,7 +248,11 @@ Page({
 
     this.setData({
       nutritionData: {
-        totalCalories: Math.round(totalIntake),
+        totalCalories: {
+          current: Math.round(totalIntake),
+          target: Math.round(dailyTarget),
+          percent: Math.min(100, (totalIntake / dailyTarget) * 100).toFixed(0)
+        },
         carbs: { 
           current: Math.round(totalCarbs), 
           target: Math.round(nutrientTargets.carbsGrams), 
@@ -312,8 +317,6 @@ Page({
   calculateCalorieBalance(profile) {
     const intake = this.data.calorieData.intake;
     const activeBurn = this.data.calorieData.activeBurn;
-    console.log('profile', profile)
-    console.log('cal', calculateDailyCalories(profile))
     const totalBurned = calculateDailyCalories(profile) + activeBurn;
     const diff = intake - totalBurned;
     

@@ -267,6 +267,7 @@
 .mini-bar.carbs .fill { background: #FFCC80; }
 .mini-bar.protein .fill { background: #81C784; }
 .mini-bar.fat .fill { background: #90CAF9; }
+.mini-bar.total .fill { background: #FF7043; }
 
 .advice-box {
   background: #E8F5E9;

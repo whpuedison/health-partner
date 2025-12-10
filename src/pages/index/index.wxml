@@ -88,7 +88,7 @@
       </view>
       <view class="grid-item highlight">
         <text class="label">总计</text>
-        <text class="value">{{nutritionData.totalCalories}}</text>
+        <text class="value">{{nutritionData.totalCalories.current}}</text>
         <text class="unit">kcal</text>
       </view>
     </view>
@@ -111,6 +111,12 @@
           <view class="fill" style="width: {{nutritionData.fat.percent}}%"></view>
         </view>
         <text>达成{{nutritionData.fat.percent}}%</text>
+      </view>
+       <view class="mini-bar-row">
+        <view class="mini-bar total">
+          <view class="fill" style="width: {{nutritionData.totalCalories.percent}}%"></view>
+        </view>
+        <text>达成{{nutritionData.totalCalories.percent}}%</text>
       </view>
     </view>
     
