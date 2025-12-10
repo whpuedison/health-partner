@@ -1,5 +1,13 @@
 <!-- pages/charts/charts.wxml -->
 <view class="charts-page">
+  <!-- 趋势图说明提示 -->
+  <view class="chart-tips">
+    <view class="tips-content">
+      <text class="tips-title">📖 趋势图说明</text>
+      <text class="tips-text">本页面展示您最近10次记录的体重和体围变化趋势，帮助您了解健康数据的变化情况。</text>
+    </view>
+  </view>
+
   <!-- 体重趋势图 -->
   <view class="chart-card">
     <view class="chart-title">体重趋势 (kg)</view>
