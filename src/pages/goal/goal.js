@@ -11,6 +11,7 @@ Page({
     profile: {
       height: 0,
       weight: 0,
+      originalWeight: 0,
       age: 0,
       gender: '男'
     },
@@ -68,6 +69,7 @@ Page({
         profile: {
           height: profile.height || 0,
           weight: profile.weight || 0,
+          originalWeight: profile.originalWeight || 0,
           age: profile.age || 0,
           gender: profile.gender || '男'
         },
@@ -90,7 +92,7 @@ Page({
     const { field, title, unit } = e.currentTarget.dataset;
     let currentValue = '';
     
-    if (field === 'height' || field === 'weight' || field === 'age') {
+    if (field === 'height' || field === 'weight' || field === 'age' || field === 'originalWeight') {
       currentValue = this.data.profile[field];
     } else if (field === 'targetWeight') {
       currentValue = this.data.goals.targetWeight;
@@ -158,6 +160,9 @@ Page({
       case 'weight':
         this.saveWeight(value);
         break;
+      case 'originalWeight':
+        this.saveProfile({ weight: value });
+        break;  
       case 'height':
         this.saveProfile({ height: value });
         break;
@@ -206,7 +211,7 @@ Page({
     });
   },
 
-  // 2. 保存用户档案 (身高, 年龄, 性别)
+  // 2. 保存用户档案 (初始体重、身高, 年龄, 性别)
   saveProfile(data) {
     const openId = app.globalData.openId || wx.getStorageSync('openId');
     Http.post(API.USER_PROFILE, {
@@ -215,7 +220,18 @@ Page({
     }).then((res) => {
       if (res.success) {
         // 更新本地显示
-        const newProfile = { ...this.data.profile, ...data };
+        if (data.weight) {
+          this.setData({ 'profile.originalWeight': data.weight });
+        }
+        const tempData = data
+        if (data.weight) {
+          tempData.originalWeight = data.weight;
+          delete tempData.weight;
+        }
+        const newProfile = { 
+          ...this.data.profile,
+          ...tempData
+        };
         this.setData({ profile: newProfile });
         // 更新全局缓存
         if (app.globalData.profile) {

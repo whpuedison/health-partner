@@ -2,7 +2,7 @@
 .index-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #E0F7FA 0%, #E8F5E9 100%);
-  padding: 32rpx;
+  padding: 24rpx 24rpx 60rpx;
   box-sizing: border-box;
 }
 

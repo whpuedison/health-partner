@@ -366,7 +366,7 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '番茄控卡 - 你的专属健康管理助手',
+      title: '你的专属健康管理助手',
       path: '/pages/index/index',
     };
   },

@@ -18,7 +18,7 @@ Page({
     },
     // 功能菜单
     menuItems: [
-      { id: 'goal', icon: '👤', title: '我的档案', arrow: true },
+      { id: 'goal', icon: '👤', title: '个人信息', arrow: true },
       { id: 'timeline', icon: '📸', title: '体态记录', arrow: true },
       { id: 'about', icon: 'ℹ️', title: '关于我们', arrow: true },
     ],
@@ -315,7 +315,7 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '番茄控卡 - 一款专门为减肥人群打造的健康管理小程序',
+      title: '一款专门为减肥人群打造的健康管理小程序',
       path: '/pages/questionnaire/questionnaire',
     };
   },
