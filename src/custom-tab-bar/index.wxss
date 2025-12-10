@@ -71,7 +71,7 @@
   line-height: 100rpx;
   text-align: center;
   font-size: 48rpx;
-  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+  background: linear-gradient(135deg, #B8E994 0%, #78E08F 100%); 
   border-radius: 50%;
   color: white;
   box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.4);
@@ -199,15 +199,15 @@
   align-items: center;
   justify-content: center;
   gap: 6rpx;
-  background: white;
+  background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
   border-radius: 50%;
   box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
   transition: all 0.2s;
 }
 
 .sub-menu-item.active .sub-menu-content {
-  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
-  transform: scale(1.2);
+  background: linear-gradient(135deg, #A5D6A7 0%, #81C784 100%);
+  transform: scale(1.1);
   box-shadow: 0 12rpx 32rpx rgba(102, 126, 234, 0.4);
 }
 
@@ -230,5 +230,4 @@
 
 .sub-menu-item.active .sub-menu-text {
   color: white;
-  font-weight: 600;
 }
