@@ -156,9 +156,7 @@ Page({
     const height = profile.height || 0;
     const targetWeight = goals.targetWeight || 0;
     
-    // 假设初始体重也是 profile 的一部分字段，如果没有则用当前代替 (需后端支持记录初始体重，这里暂时模拟)
-    // 实际项目中应该从历史记录最早的一条获取，或者 profile 中增加 initialWeight 字段
-    const initialWeight = profile.initialWeight || (currentWeight + 2); // 模拟值
+    const initialWeight = profile.originalWeight;
 
     if (height > 0 && currentWeight > 0) {
       const currentBMI = calculateBMI(currentWeight, height);
