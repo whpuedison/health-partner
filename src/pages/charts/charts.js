@@ -57,59 +57,66 @@ Page({
 
   // 绘制体重变化图
   drawWeightChart(weightData) {
+    console.log('开始绘制体重图表，数据:', weightData);
+    
     if (!weightData || !Array.isArray(weightData) || weightData.length === 0) {
       console.warn('体重数据无效或为空:', weightData);
       return;
     }
     
-    // 提取日期和体重数据 - 适配实际数据结构
+    // 提取日期和体重数据
     const dates = weightData.map(item => {
-      // 处理日期格式，去掉时间部分
-      const dateStr = item.date.split('T')[0];
-      return dateStr;
+      if (!item.date) {
+        console.warn('体重记录缺少date字段:', item);
+        return '未知日期';
+      }
+      
+      // 使用Date对象正确解析时区
+      try {
+        const dateObj = new Date(item.date);
+        if (isNaN(dateObj.getTime())) {
+          console.warn('日期解析失败:', item.date);
+          return '未知日期';
+        }
+        
+        // 获取本地时区的年、月、日
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
+        
+        return dateStr;
+      } catch (error) {
+        console.warn('日期处理异常:', error, '原始值:', item.date);
+        return '未知日期';
+      }
     });
     
-    const weights = weightData.map(item => {
-      // 注意：实际数据中是weight字段，不是value字段
-      const val = parseFloat(item.weight || item.value);
-      return isNaN(val) ? null : val;
-    });
+    const weights = weightData.map(item => item.weight || 0);
     
-    // 过滤掉无效数据点
-    const validIndices = weights.map((val, index) => val !== null ? index : -1).filter(i => i !== -1);
-    if (validIndices.length === 0) {
-      console.warn('没有有效的体重数据');
-      return;
-    }
+    // 过滤无效数据
+    const validIndices = dates.map((date, index) => 
+      date !== '未知日期' && weights[index] > 0
+    );
+    const validDates = dates.filter((_, index) => validIndices[index]);
+    const validWeights = weights.filter((_, index) => validIndices[index]);
     
-    // 只保留有效数据
-    const validDates = validIndices.map(i => dates[i]);
-    const validWeights = validIndices.map(i => weights[i]);
+    console.log('有效的日期:', validDates);
+    console.log('有效的体重:', validWeights);
     
-    // 绘制体重图表
+    // 创建图表实例 - 参考官方案例
     this.data.charts.weight = new wxCharts({
       canvasId: 'weightChart',
       type: 'line',
-      categories: validDates,
-      animation: true,
-      background: '#ffffff',
+      categories: validDates,  // 关键：必须正确设置
       series: [{
         name: '体重',
         data: validWeights,
         format: function (val) {
-          return val ? val.toFixed(1) + 'kg' : '-';
+          return val ? val.toFixed(1) : '-';
         },
         color: '#FF6B6B'
       }],
-      xAxis: {
-        disableGrid: false,
-        fontColor: '#7f8c8d',
-        axisLineColor: '#d5d8dc',
-        title: '测量日期',
-        titleFontColor: '#95a5a6',
-        labelCount: validDates.length > 10 ? 10 : validDates.length,
-        rotateLabel: validDates.length > 8 ? 45 : 0
-      },
       yAxis: {
         title: '体重 (kg)',
         format: function (val) {
@@ -122,7 +129,7 @@ Page({
         titleFontColor: '#95a5a6'
       },
       width: wx.getSystemInfoSync().windowWidth - 96,
-      height: 400,
+      height: 250,
       dataLabel: true,
       dataPointShape: true,
       legend: false,
@@ -130,11 +137,42 @@ Page({
         lineStyle: 'curve'
       }
     });
+    
+    console.log('体重图表创建完成，categories数量:', validDates.length);
   },
 
   // 绘制体围变化图
   drawMeasurementCharts(measurementsData) {
     if (!measurementsData || Object.keys(measurementsData).length === 0) return;
+    
+    // 日期格式化函数（与体重图表保持一致）
+    // 日期格式化函数（正确处理时区）
+    const formatDate = (dateStr) => {
+      if (!dateStr) {
+        console.warn('体围记录缺少date字段');
+        return '未知日期';
+      }
+      
+      // 使用Date对象正确解析时区
+      try {
+        const dateObj = new Date(dateStr);
+        if (isNaN(dateObj.getTime())) {
+          console.warn('日期解析失败:', dateStr);
+          return '未知日期';
+        }
+        
+        // 获取本地时区的年、月、日
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const formatted = `${year}-${month}-${day}`;
+        
+        return formatted;
+      } catch (error) {
+        console.warn('日期处理异常:', error, '原始值:', dateStr);
+        return '未知日期';
+      }
+    };
     
     // 体围类型配置
     const measurementTypes = [
@@ -151,7 +189,10 @@ Page({
     measurementTypes.forEach(type => {
       if (measurementsData[type.key] && measurementsData[type.key].length > 0) {
         measurementsData[type.key].forEach(item => {
-          allDatesSet.add(item.date);
+          const formattedDate = formatDate(item.date);
+          if (formattedDate !== '未知日期') {
+            allDatesSet.add(formattedDate);
+          }
         });
       }
     });
@@ -166,7 +207,7 @@ Page({
       // 提取该类型的体围数据
       const typeData = [];
       allDates.forEach(date => {
-        const item = typeRecords.find(m => m.date === date);
+        const item = typeRecords.find(m => formatDate(m.date) === date);
         typeData.push(item ? parseFloat(item.value) : null);
       });
       
@@ -185,15 +226,10 @@ Page({
           name: type.name,
           data: typeData,
           format: function (val) {
-            return val ? val.toFixed(1) + 'cm' : '-';
+            return val ? val.toFixed(1) : '-';
           },
           color: type.color
         }],
-        xAxis: {
-          disableGrid: false,
-          fontColor: '#7f8c8d',
-          axisLineColor: '#d5d8dc'
-        },
         yAxis: {
           title: `${type.name} (cm)`,
           format: function (val) {
@@ -206,7 +242,7 @@ Page({
           titleFontColor: '#95a5a6'
         },
         width: wx.getSystemInfoSync().windowWidth - 96,
-        height: 400,
+        height: 250,
         dataLabel: true,
         dataPointShape: true,
         legend: false,
