@@ -200,7 +200,7 @@
     </view>
     <view class="empty-state" wx:if="{{!loading && posts.length === 0}}">
       <text class="empty-icon">📭</text>
-      <text class="empty-text">还没有形体照记录，快去记录第一条吧~</text>
+      <text class="empty-text">快去记录第一条吧~</text>
     </view>
   </view>
 </view>

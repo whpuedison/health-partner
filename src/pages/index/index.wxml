@@ -112,6 +112,21 @@
     </view>
   </view>
 
+  <!-- Share Card -->
+  <view class="share-card">
+    <button class="share-btn-overlay"></button>
+    <view class="bubble-tip">微信分享至好友/群聊/朋友圈</view>
+    <view class="content-row">
+      <view class="text-group">
+        <text class="text-white">免费解锁</text>
+        <text class="text-orange">AI识热量</text>
+      </view>
+      <button class="action-btn" open-type="share">
+        去领取 <text class="arrow">→</text>
+      </button>
+    </view>
+  </view>
+
   <!-- 3. 热量平衡卡片 -->
   <view class="dashboard-card calorie-card">
     <view class="card-title-row">

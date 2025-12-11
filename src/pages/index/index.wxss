@@ -388,7 +388,147 @@
   box-shadow: 0 4rpx 12rpx rgba(25, 118, 210, 0.1);
 }
 
+
 .ai-btn.full {
   width: 100%;
 }
+
+/* Share Card */
+.share-card {
+  position: relative;
+  background: linear-gradient(-45deg, rgb(194, 241, 90), rgb(238, 253, 166));
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin-bottom: 32rpx;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: 0 4rpx 16rpx rgba(139, 195, 74, 0.2);
+}
+
+/* Invisible button that covers the whole card or just the button? 
+   Requirement says "Click the card's button to share". 
+   Let's make the "action-btn" the visual trigger, but maybe overlap a button?
+   Actually, usually better to wrap the visual button in a real button, 
+   or place a transparent button over the whole card if the whole card is clickable.
+   The WXML I wrote has a .share-btn-overlay covering the WHOLE card.
+*/
+.share-btn-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 10;
+}
+
+.bubble-tip {
+  display: inline-block;
+  background: #fff;
+  color: #000;
+  font-size: 26rpx;
+  font-weight: bold;
+  padding: 12rpx 24rpx;
+  border-radius: 40rpx; /* more rounded */
+  border: 2rpx solid #000;
+  position: relative;
+  /* slight tilt */
+  transform: rotate(-2deg);
+  box-shadow: 2rpx 2rpx 0rpx #000;
+  margin-bottom: 16rpx;
+  z-index: 2; /* above particles */
+}
+
+/* Triangle for speech bubble */
+.bubble-tip::after {
+  content: '';
+  position: absolute;
+  bottom: -10rpx;
+  left: 40rpx;
+  width: 0;
+  height: 0;
+  border-left: 10rpx solid transparent;
+  border-right: 10rpx solid transparent;
+  border-top: 12rpx solid #fff;
+  /* Border trickery for outlined triangle is hard with CSS alone, 
+     often simplified or requires SVG/complex pseudo elements. 
+     Keeping simple for now. */
+}
+
+.content-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10rpx;
+  z-index: 2;
+  position: relative;
+}
+
+.text-group {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  /* slight tilt up */
+  transform: rotate(-3deg); 
+}
+
+.text-white {
+  font-size: 48rpx;
+  color: #fff;
+  font-weight: 900;
+  /* Text stroke effect */
+  text-shadow: 
+    2rpx 2rpx 0 #000,
+    -1rpx -1rpx 0 #000,  
+    1rpx -1rpx 0 #000,
+    -1rpx 1rpx 0 #000,
+    1rpx 1rpx 0 #000;
+  font-style: italic;
+}
+
+.text-orange {
+  font-size: 56rpx;
+  color: #FF6D00;
+  font-weight: 900;
+  text-shadow: 
+    2rpx 2rpx 0 #fff,
+    -2rpx -2rpx 0 #fff,  
+    2rpx -2rpx 0 #fff,
+    -2rpx 2rpx 0 #fff;
+  font-style: italic;
+}
+
+.action-btn {
+  width: fit-content !important;
+  background: linear-gradient(180deg, rgb(238,124,64), #ff9800);
+  color: #fff;
+  padding: 16rpx 32rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 8rpx rgba(213, 113, 13, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  
+  /* Reset button styles */
+  margin: 0;
+  line-height: normal;
+}
+.action-btn::after {
+  display: none;
+}
+
+.arrow {
+  font-family: monospace;
+}
+
+.s1 { top: 20%; left: 10%; opacity: 0.8; transform: scale(0.8); }
+.s2 { bottom: 20%; right: 10%; opacity: 0.6; animation-delay: 1s; }
+
+@keyframes twinkle {
+  0%, 100% { transform: scale(0.8); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
 
