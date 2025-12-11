@@ -98,7 +98,7 @@
     <view class="locked-overlay" wx:if="{{isLocked}}">
         <view class="lock-content">
             <view class="lock-icon">🔒</view>
-            <text>分享后解锁 AI 饮食记录</text>
+            <text>分享后解锁AI识别热量</text>
             <button class="unlock-btn" open-type="share" bindtap="onShareClick">去解锁</button>
         </view>
     </view>
