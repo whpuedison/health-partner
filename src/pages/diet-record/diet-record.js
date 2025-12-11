@@ -66,9 +66,21 @@ Page({
     loading: false
   },
 
-  onLoad() {
+  onLoad(options) {
     this.initWeekCalendar();
     this.loadTodayData();
+
+    // 自动触发功能
+    if (options && options.mode) {
+      setTimeout(() => {
+        if (options.mode === 'text') {
+          this.showTextInputDialog();
+        } else if (options.mode === 'camera') {
+          // 拍照模式：直接调用拍照，或者显示提示
+          this.showPhotoTipDialog();
+        }
+      }, 500);
+    }
   },
 
   /**

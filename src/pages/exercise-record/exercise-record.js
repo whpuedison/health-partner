@@ -40,9 +40,16 @@ Page({
     todayListExpanded: false
   },
 
-  onLoad() {
+  onLoad(options) {
     this.initCalendar();
     this.loadData();
+
+    // 自动触发功能
+    if (options && options.mode === 'text') {
+      setTimeout(() => {
+        this.showTextInputDialog();
+      }, 500);
+    }
   },
   
   onShow() {

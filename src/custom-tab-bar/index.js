@@ -7,8 +7,8 @@ Component({
     list: [
       {
         pagePath: '/pages/index/index',
-        text: '记录',
-        icon: '🎬',
+        text: '首页',
+        icon: '🏠',
       },
       {
         pagePath: '',
