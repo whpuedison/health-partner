@@ -323,19 +323,43 @@ Page({
     }
   },
 
-  onShareAppMessage() {
-    return {
-      title: '一款专门为减肥人群打造的健康管理小程序',
-      path: '/pages/questionnaire/questionnaire',
-      imageUrl: 'https://whpuedison.online/images/kongka_share.jpg'
-    };
-  },
-
-  onShareTimeline() {
-    return {
-          title: '拍照识热量，轻松控饮食',
-          path: '/pages/questionnaire/questionnaire',
-          imageUrl: 'https://whpuedison.online/images/tomato.jpg'
-        };
-   }
+    recordShareAction(scene) {
+        const openId = app.globalData.openId || wx.getStorageSync('openId');
+        if (!openId) return;
+        
+        const recordUrl = '/api/v1/user/share';
+        Http.post(recordUrl, {
+            openId,
+            scene: scene, 
+            page: 'pages/profile/profile' // 记录来源页面
+        }).then(res => {
+            if (res.success) {
+                this.setData({ isLocked: false });
+                wx.showToast({
+                    title: '解锁成功',
+                    icon: 'success'
+                });
+            }
+        });
+      },
+  
+    onShareAppMessage() {
+      this.recordShareAction(1);
+      const openId = app.globalData.openId || wx.getStorageSync('openId');
+      return {
+        title: '拍照识热量，轻松控饮食',
+        path: `/pages/questionnaire/questionnaire?referrerId=${openId}`,
+        imageUrl: 'https://whpuedison.online/images/kongka_share.jpg'
+      };
+    },
+    
+    onShareTimeline() {
+      this.recordShareAction(2);
+      const openId = app.globalData.openId || wx.getStorageSync('openId');
+      return {
+            title: '拍照识热量，轻松控饮食',
+            query: `referrerId=${openId}`,
+            imageUrl: 'https://whpuedison.online/images/tomato.jpg'
+          };
+     }
 });

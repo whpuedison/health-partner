@@ -240,5 +240,46 @@ Page({
      if (ratio < 0.8) return '梨型身材';
      if (ratio > 0.85) return '苹果型身材';
      return '标准身材';
-  }
+  },
+
+   recordShareAction(scene) {
+        const openId = app.globalData.openId || wx.getStorageSync('openId');
+        if (!openId) return;
+        
+        const recordUrl = '/api/v1/user/share';
+        Http.post(recordUrl, {
+            openId,
+            scene: scene, 
+            page: 'pages/measure/measure' // 记录来源页面
+        }).then(res => {
+            if (res.success) {
+                this.setData({ isLocked: false });
+                wx.showToast({
+                    title: '解锁成功',
+                    icon: 'success'
+                });
+            }
+        });
+      },
+  
+    onShareAppMessage() {
+      this.recordShareAction(1);
+      const openId = app.globalData.openId || wx.getStorageSync('openId');
+      return {
+        title: '拍照识热量，轻松控饮食',
+        path: `/pages/questionnaire/questionnaire?referrerId=${openId}`,
+        imageUrl: 'https://whpuedison.online/images/kongka_share.jpg'
+      };
+    },
+    
+    onShareTimeline() {
+      this.recordShareAction(2);
+      const openId = app.globalData.openId || wx.getStorageSync('openId');
+      return {
+            title: '拍照识热量，轻松控饮食',
+            query: `referrerId=${openId}`,
+            imageUrl: 'https://whpuedison.online/images/tomato.jpg'
+          };
+     }
+
 });
