@@ -1,7 +1,7 @@
 <!--pages/timeline/timeline.wxml-->
 <view class="timeline-page">
   <!-- 发布按钮 -->
-  <view class="create-btn" bindtap="goToCreate">
+  <view wx:if="{{false}}" class="create-btn" bindtap="goToCreate">
     <text class="create-icon">✏️</text>
     <text class="create-text">发布</text>
   </view>
@@ -200,7 +200,7 @@
     </view>
     <view class="empty-state" wx:if="{{!loading && posts.length === 0}}">
       <text class="empty-icon">📭</text>
-      <text class="empty-text">还没有发布过帖子，快来发布第一条吧~</text>
+      <text class="empty-text">还没有形体照记录，快去记录第一条吧~</text>
     </view>
   </view>
 </view>
