@@ -70,11 +70,22 @@ Page({
       age: null,
       bmi: null,
       target_weight: null,
+      target_weight: null,
       target_date: null
-    }
+    },
+    // 推荐人ID
+    referrerId: null
   },
 
-  onLoad() {
+  onLoad(options) {
+    // 获取推荐人ID
+    if (options && options.referrerId) {
+      this.setData({
+        referrerId: options.referrerId
+      });
+      console.log('Referrer ID:', options.referrerId);
+    }
+
     // 设置 tabBar 隐藏（如果存在）
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ active: -1 });
@@ -421,7 +432,7 @@ Page({
   // 提交问卷
   async submitQuestionnaire() {
     const openId = app.globalData.openId || wx.getStorageSync('openId');
-    const { selectedGender, selectedHeight, selectedWeight, age, targetWeight, targetDate } = this.data;
+    const { selectedGender, selectedHeight, selectedWeight, age, targetWeight, targetDate, referrerId } = this.data;
 
     // 显示加载提示
     wx.showLoading({
@@ -436,7 +447,8 @@ Page({
         height: selectedHeight,
         weight: selectedWeight,
         age: age,
-        gender: selectedGender === 'male' ? '男' : '女'
+        gender: selectedGender === 'male' ? '男' : '女',
+        referrerId // 传入推荐人ID
       };
 
       const profileResult = await Http.post(API.USER_PROFILE, profileData);

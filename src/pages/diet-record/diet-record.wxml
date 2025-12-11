@@ -74,21 +74,33 @@
     </view>
   </view>
 
-  <!-- 拍照识别按钮 -->
-  <view class="photo-btn" bindtap="showPhotoTipDialog">
-    <text class="photo-icon">📷</text>
-    <view class="photo-text">
-      <text class="photo-title">拍照识别菜品</text>
-      <text class="photo-desc">AI智能识别，秒算卡路里</text>
+  <!-- 核心功能区 (包裹拍照和文字记录) -->
+  <view class="core-functions-container" style="position: relative;">
+    <!-- 拍照识别按钮 -->
+    <view class="photo-btn" bindtap="showPhotoTipDialog">
+        <text class="photo-icon">📷</text>
+        <view class="photo-text">
+        <text class="photo-title">拍照识别菜品</text>
+        <text class="photo-desc">AI智能识别，秒算卡路里</text>
+        </view>
     </view>
-  </view>
+    
+    <!-- 一句话记饮食按钮 -->
+    <view class="text-btn" bindtap="showTextInputDialog">
+        <text class="text-icon">✍️</text>
+        <view class="text-content">
+        <text class="text-title">一句话记饮食</text>
+        <text class="text-desc">描述吃了什么，AI帮你算</text>
+        </view>
+    </view>
 
-  <!-- 一句话记饮食按钮 -->
-  <view class="text-btn" bindtap="showTextInputDialog">
-    <text class="text-icon">✍️</text>
-    <view class="text-content">
-      <text class="text-title">一句话记饮食</text>
-      <text class="text-desc">描述吃了什么，AI帮你算</text>
+    <!-- Locked Overlay (covers both buttons) -->
+    <view class="locked-overlay" wx:if="{{isLocked}}">
+        <view class="lock-content">
+            <view class="lock-icon">🔒</view>
+            <text>分享后解锁 AI 饮食记录</text>
+            <button class="unlock-btn" open-type="share" bindtap="onShareClick">去解锁</button>
+        </view>
     </view>
   </view>
 

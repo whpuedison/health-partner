@@ -531,4 +531,32 @@
   50% { transform: scale(1.2); opacity: 1; }
 }
 
+/* Lock Overlay */
+.list-card {
+  position: relative; /* For overlay positioning */
+}
+
+.locked-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.4); /* Semi-transparent white */
+  backdrop-filter: blur(1px);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 32rpx; /* Match card radius */
+  color: #7f8c8d;
+  font-size: 28rpx;
+}
+
+.lock-icon {
+  font-size: 64rpx;
+  margin-bottom: 16rpx;
+}
+
 

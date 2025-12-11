@@ -75,6 +75,9 @@ Page({
       '🥗 多吃蔬菜水果，均衡营养',
     ],
     currentTip: 0,
+    
+    // 功能锁定
+    isLocked: true, // 默认锁定
   },
 
   onLoad() {
@@ -112,10 +115,86 @@ Page({
     }
   },
 
+  // 检查分享状态
+  checkShareStatus() {
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) return;
+
+    // 添加新的 API 常量到 api.js 或者直接在这里使用路径（建议统一管理，但这里先直接请求）
+    // 假设 API.USER_SHARE_STATUS = '/api/v1/user/share/status'
+    const statusUrl = '/api/v1/user/share/status'; 
+    
+    Http.get(statusUrl, { openId }).then(res => {
+      if (res.success) {
+        this.setData({
+          isLocked: !res.data.hasShared
+        });
+      }
+    }).catch(err => {
+        console.error('Check share status failed', err);
+    });
+  },
+
+  recordShareAction(scene) {
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) return;
+    
+    const recordUrl = '/api/v1/user/share';
+    Http.post(recordUrl, {
+        openId,
+        scene: scene, // 1: 好友, 2: 朋友圈
+        page: 'pages/index/index'
+    }).then(res => {
+        if (res.success) {
+            // 记录成功后，如果是首次分享，可能需要更新状态
+            // 但因为分享是异步的且用户可能取消，这里直接更新解锁状态也是一种策略（鼓励分享）
+            // 用户要求：分享好友/朋友圈都算。点击即算尝试分享。
+            this.setData({ isLocked: false });
+            wx.showToast({
+                title: '解锁成功',
+                icon: 'success'
+            });
+        }
+    });
+  },
+  
+  // 处理受限功能点击
+  onLockedFeatureTap() {
+    if (this.data.isLocked) {
+      wx.showToast({
+        title: '请先分享解锁功能',
+        icon: 'none'
+      });
+      return;
+    }
+    // 如果没锁，这种绑定如果是在容器上，内部按钮事件会冒泡，
+    // 需要在具体跳转逻辑里判断 isLocked。
+    // 但是更好的做法是用蒙层通过 catchtap 拦截点击。
+  },
+
+  navigateTo(e) {
+      // 检查是否受限链接
+      const url = e.currentTarget.dataset.url;
+      // 饮食记录和拍照记录页面受限
+      if (url && (url.includes('diet-record'))) {
+          if (this.data.isLocked) {
+               wx.showToast({
+                title: '请先分享解锁功能',
+                icon: 'none'
+              });
+              return;
+          }
+      }
+      if (url) wx.navigateTo({ url });
+  },
+
   // 核心数据加载
   loadTodayData() {
     const openId = app.globalData.openId || wx.getStorageSync('openId');
     if (!openId) return;
+    
+    // 检查分享状态
+    this.checkShareStatus();
 
     // 获取今日日期 YYYY-MM-DD
     const today = new Date();
@@ -365,17 +444,24 @@ Page({
   },
 
   onShareAppMessage() {
+    this.recordShareAction(1); 
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    
     return {
       title: '拍照识热量，轻松控饮食',
-      path: '/pages/questionnaire/questionnaire',
+      path: `/pages/questionnaire/questionnaire?referrerId=${openId}`, // 带上 openId
       imageUrl: 'https://whpuedison.online/images/kongka_share.jpg'
     };
   },
 
   onShareTimeline() {
+    // 朋友圈分享
+    this.recordShareAction(2);
+    
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
     return {
           title: '拍照识热量，轻松控饮食',
-          path: '/pages/questionnaire/questionnaire',
+          path: `/pages/questionnaire/questionnaire?referrerId=${openId}`, // 带上 openId
           imageUrl: 'https://whpuedison.online/images/tomato.jpg'
         };
    }

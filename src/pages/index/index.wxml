@@ -46,6 +46,12 @@
       <van-icon name="arrow" />
     </view>
     <view class="divider-line"></view>
+
+    <!-- Locked Overlay -->
+    <view class="locked-overlay" wx:if="{{isLocked}}" catchtap="onLockedFeatureTap">
+      <view class="lock-icon">🔒</view>
+      <text>分享后解锁该功能</text>
+    </view>
     
     <view class="record-list" wx:if="{{dietRecords.hasRecords}}">
       <!-- 早餐 -->
