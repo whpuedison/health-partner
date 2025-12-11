@@ -280,7 +280,7 @@
           
           <view class="food-actions" wx:if="{{editingFoodIndex !== idx}}">
             <text class="edit-icon" data-index="{{idx}}" bindtap="editFood">✎</text>
-            <text class="delete-food-icon" data-index="{{idx}}" bindtap="deleteFood">🗑️</text>
+            <text class="delete-food-icon" data-index="{{idx}}" bindtap="deleteFood">❌</text>
           </view>
         </view>
 
