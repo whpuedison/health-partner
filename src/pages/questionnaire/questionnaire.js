@@ -735,10 +735,10 @@ Page({
     }, 200); // 每200ms检查一次
 
     // 设置超时保护，避免无限loading
+    // 设置超时保护，避免无限loading (只取消loading显示，后台继续检查登录结果)
     setTimeout(() => {
-      if (this.loadingTimer) {
-        clearInterval(this.loadingTimer);
-        // 如果超时，默认显示问卷
+      // 超时后，先让用户能操作，不清除定时器，万一登录稍后成功了还能自动跳走
+      if (this.data.isLoading) {
         this.setData({
           isLoading: false
         });

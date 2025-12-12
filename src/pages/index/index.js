@@ -90,8 +90,7 @@ Page({
 
   onLoad() {
     this.startTipRotation();
-    // 初始加载
-    this.initData();
+    // 初始加载 - 由 onShow 接管，避免重复请求
   },
 
   onShow() {
