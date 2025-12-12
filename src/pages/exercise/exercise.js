@@ -337,7 +337,7 @@ Page({
       openId,
       exerciseType: exercise_name,
       duration: duration_minutes,
-      caloriesPerMinute: (calories / duration_minutes).toFixed(2),
+      caloriesPerMinute: (calories / duration_minutes).toFixed(4),
       recordDate: selectedDate
     }).then(() => {
       this.setData({ showResultPopup: false });
