@@ -8,11 +8,11 @@
 
 /* 统计卡片 */
 .stats-card {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  background: var(--gradient-tomato);
   border-radius: 24rpx;
   padding: 32rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 8rpx 24rpx rgba(17, 153, 142, 0.3);
+  box-shadow: 0 8rpx 24rpx rgba(233, 80, 63, 0.3);
 }
 
 .stats-title {
@@ -79,7 +79,7 @@
 
 .nav-icon {
   font-size: 24rpx;
-  color: #11998e;
+  color: var(--tomato-red);
 }
 
 .month-title {
@@ -90,12 +90,12 @@
 
 /* 星期标题 */
 .week-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
   margin-bottom: 16rpx;
 }
 
 .week-day {
-  flex: 1;
   text-align: center;
   font-size: 24rpx;
   color: #718096;
@@ -104,12 +104,14 @@
 
 /* 日历网格 */
 .calendar-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  /* gap: 8rpx; 如果需要间距可以用gap，但这里原有设计是紧凑的 */
 }
 
 .calendar-day {
-  width: calc(100% / 7);
+  width: 100%;
+  box-sizing: border-box;
   aspect-ratio: 1;
   display: flex;
   flex-direction: column;
@@ -127,11 +129,11 @@
 }
 
 .calendar-day.today {
-  background: linear-gradient(135deg, rgba(17, 153, 142, 0.1) 0%, rgba(56, 239, 125, 0.1) 100%);
+  background: var(--pale-orange); /* Theme variable */
 }
 
 .calendar-day.today .day-number {
-  color: #11998e;
+  color: var(--tomato-red);
   font-weight: 600;
 }
 
@@ -148,9 +150,9 @@
 
 .day-weight {
   font-size: 20rpx;
-  color: #11998e;
+  color: var(--tomato-deep);
   font-weight: 600;
-  background: rgba(17, 153, 142, 0.1);
+  background: rgba(233, 80, 63, 0.1);
   padding: 4rpx 8rpx;
   border-radius: 8rpx;
 }
@@ -233,7 +235,7 @@
 }
 
 .save-btn {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+  background: var(--gradient-tomato) !important;
   border: none !important;
   color: white !important;
   flex: 1 !important;

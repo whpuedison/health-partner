@@ -29,12 +29,12 @@
     <view class="stats-card compact">
       <view class="stat-row">
         <view class="stat-item">
-          <text class="stat-val">{{todayStats.duration}}</text>
+          <text class="stat-val red">{{todayStats.duration}}</text>
           <text class="stat-label">分钟</text>
         </view>
         <view class="stat-divider"></view>
         <view class="stat-item">
-          <text class="stat-val red">{{todayStats.calories}}</text>
+          <text class="stat-val">{{todayStats.calories}}</text>
           <text class="stat-label">千卡</text>
         </view>
       </view>

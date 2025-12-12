@@ -44,13 +44,13 @@
 }
 
 .day-item.today {
-  color: #98D8C8; /* Mint Green Text */
+  color: var(--tomato-red); /* Mint Green Text */
 }
 
 .day-item.active {
-  background: #98D8C8; /* Mint Green Background */
+  background: var(--tomato-red); /* Mint Green Background */
   color: #fff;
-  box-shadow: 0 4rpx 12rpx rgba(152, 216, 200, 0.4);
+  box-shadow: 0 4rpx 12rpx rgba(233, 80, 63, 0.4);
 }
 
 .week-day-text {
@@ -108,14 +108,14 @@
 
 /* WHR Card */
 .whr-card {
-  background: linear-gradient(135deg, #E0F2F1 0%, #B2DFDB 100%);
+  background: var(--pale-orange);
   border-radius: 20rpx;
   padding: 24rpx 30rpx;
   margin-bottom: 30rpx;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #00695C;
+  color: var(--tomato-deep);
 }
 
 .whr-info {
@@ -204,7 +204,7 @@
 .card-action {
   display: flex;
   align-items: center;
-  color: #98D8C8;
+  color: var(--tomato-red);
 }
 
 .action-text {
@@ -258,7 +258,7 @@
   height: 80rpx; /* Set fixed height */
   min-height: 80rpx;
   font-family: inherit;
-  caret-color: #98D8C8; /* Mint color cursor */
+  caret-color: var(--tomato-red); /* Mint color cursor */
 }
 
 .input-unit {
@@ -295,7 +295,7 @@
 }
 
 .save-btn {
-  background: linear-gradient(135deg, #98D8C8 0%, #38ef7d 100%) !important; /* Mint Gradient */
+  background: var(--gradient-tomato) !important; /* Mint Gradient */
   border: none !important;
   color: white !important;
   flex: 1 !important;

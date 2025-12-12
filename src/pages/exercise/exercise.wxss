@@ -42,13 +42,13 @@
 }
 
 .day-item.today {
-  color: #667EEA;
+  color: var(--tomato-red);
 }
 
 .day-item.active {
-  background: #667EEA;
+  background: var(--tomato-red);
   color: #fff;
-  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4rpx 12rpx rgba(239, 143, 65, 0.4);
 }
 
 .week-day-text {
@@ -106,8 +106,8 @@
 }
 
 /* Add color distinction */
-.stat-item:first-child .stat-val {
-  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+.stat-item .stat-val {
+  background: var(--gradient-tomato);
   -webkit-background-clip: text;
   color: transparent;
 }
@@ -164,7 +164,7 @@
   display: block;
   width: 8rpx;
   height: 32rpx;
-  background: #667EEA;
+  background: var(--tomato-red);
   border-radius: 4rpx;
   margin-right: 16rpx;
 }
@@ -207,12 +207,12 @@
 
 /* AI Button */
 .ai-record-section {
-  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+  background: var(--gradient-tomato);
   border-radius: 24rpx;
   padding: 24rpx 30rpx;
   margin-bottom: 30rpx;
   color: #fff;
-  box-shadow: 0 6rpx 16rpx rgba(102, 126, 234, 0.25);
+  box-shadow: 0 6rpx 16rpx rgba(239, 143, 65, 0.3);
 }
 
 .ai-btn {
@@ -355,13 +355,13 @@
 
 .estimate-info {
   text-align: center;
-  color: #667EEA;
+  color: var(--tomato-red);
   font-size: 26rpx;
   margin-bottom: 30rpx;
 }
 
 .confirm-btn {
-  background: #667EEA;
+  background: var(--gradient-tomato);
   color: #fff;
   border-radius: 44rpx;
   font-size: 32rpx;
@@ -398,7 +398,7 @@
 }
 
 .ai-submit-btn {
-  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+  background: var(--gradient-tomato);
   color: #fff;
   border-radius: 44rpx;
 }
@@ -467,7 +467,7 @@
   width: 60rpx;
   height: 60rpx;
   border: 4rpx solid #E2E8F0;
-  border-top-color: #667EEA;
+  border-top-color: var(--tomato-red);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 20rpx;

@@ -7,7 +7,7 @@ const exerciseCategories = [
   {
     id: 'daily',
     name: '日常活动',
-    icon: '�',
+    icon: '📅',
     exercises: [
       { id: 'walk', name: '走路', icon: '🚶', calories: 4, intensity: '低' },
       { id: 'stairs', name: '爬楼梯', icon: '🪜', calories: 9, intensity: '高' },
