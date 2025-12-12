@@ -6,11 +6,11 @@
 
 /* 用户信息卡片 */
 .user-card {
-  background: linear-gradient(135deg, #A8E6CF 0%, #4ECDC4 100%);
+  background: var(--gradient-tomato);
   border-radius: 24rpx;
   padding: 40rpx 32rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 8rpx 24rpx rgba(78, 205, 196, 0.25);
+  box-shadow: 0 8rpx 24rpx rgba(233, 80, 63, 0.25);
 }
 
 .user-header {
@@ -128,7 +128,7 @@
 .stat-value {
   font-size: 40rpx;
   font-weight: bold;
-  color: #4ECDC4;
+  color: var(--tomato-red);
 }
 
 .stat-label {
@@ -355,6 +355,6 @@
 }
 
 .dialog-btn.confirm {
-  background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+  background: var(--gradient-tomato);
   color: white;
 }

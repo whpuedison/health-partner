@@ -11,13 +11,13 @@
   bottom: 44rpx;
   width: 120rpx;
   height: 120rpx;
-  background: linear-gradient(135deg, #FFB6C1 0%, #D4A5FF 100%);
+  background: var(--gradient-tomato);
   border-radius: 60rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 20rpx rgba(212, 165, 255, 0.4);
+  box-shadow: 0 8rpx 20rpx rgba(233, 80, 63, 0.4);
   z-index: 100;
   transition: transform 0.2s;
 }
@@ -92,7 +92,7 @@
 
 .delete-btn {
   font-size: 24rpx;
-  color: #FF6B6B;
+  color: var(--tomato-red);
   padding: 8rpx 16rpx;
 }
 
@@ -283,7 +283,7 @@
 .comment-submit,
 .comment-cancel {
   font-size: 26rpx;
-  color: #667EEA;
+  color: var(--tomato-red);
   padding: 0 16rpx;
 }
 
@@ -351,7 +351,7 @@
 
 .comment-reply {
   font-size: 24rpx;
-  color: #667EEA;
+  color: var(--tomato-red);
   padding: 4rpx 0;
 }
 
@@ -420,7 +420,7 @@
 
 .reply-reply {
   font-size: 22rpx;
-  color: #667EEA;
+  color: var(--tomato-red);
   padding: 4rpx 0;
 }
 

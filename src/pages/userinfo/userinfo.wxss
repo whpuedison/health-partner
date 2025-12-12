@@ -117,7 +117,7 @@
 
 .save-btn {
   width: 340rpx !important; 
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+  background: var(--gradient-tomato) !important;
   border: none !important;
   color: white !important;
   border-radius: 16rpx !important;

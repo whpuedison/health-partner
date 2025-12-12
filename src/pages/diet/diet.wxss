@@ -229,12 +229,15 @@ page {
 .ai-btn {
     flex: 1;
     height: 80rpx;
-    border-radius: 40rpx;
+    background: var(--pale-orange);
+    border-radius: 36rpx;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12rpx;
-    transition: all 0.3s;
+    font-size: 26rpx;
+    color: var(--tomato-red);
+    font-weight: 600;
+    box-shadow: 0 2rpx 8rpx rgba(233, 80, 63, 0.1);
 }
 
 .ai-btn:active {
@@ -242,15 +245,13 @@ page {
 }
 
 .ai-btn.camera {
-    background: var(--gradient-tomato);
-    color: white;
-    box-shadow: 0 6rpx 16rpx rgba(233, 80, 63, 0.3);
+    background: var(--gradient-orange);
+    color: var(--white);
+    box-shadow: 0 4rpx 12rpx rgba(239, 143, 65, 0.25);
 }
 
 .ai-btn.text {
-    background: white;
-    border: 2rpx solid var(--tomato-red);
-    color: var(--tomato-red);
+    background: var(--pale-orange);
 }
 
 .ai-icon {

@@ -56,7 +56,6 @@
 }
 
 .tab-item.active .tab-text {
-  color: var(--tomato-red);
   font-weight: 600;
 }
 

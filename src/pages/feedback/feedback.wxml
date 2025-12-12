@@ -2,7 +2,7 @@
 <view class="container">
   <view class="feedback-card">
     <view class="form-item">
-      <view class="label">反馈内容 <text class="required">*</text></view>
+      <view class="label">反馈内容 <text class="required" /></view>
       <textarea 
         class="textarea" 
         placeholder="请描述您在小程序使用过程中的建议反馈" 
