@@ -1,5 +1,13 @@
 /* custom-tab-bar/index.wxss */
+@import "../app.wxss";
+
 .tab-bar {
+  /* Ensure variables are available in this isolated component scope */
+  --tomato-red: #E9503F;
+  --tomato-deep: #D92F20;
+  --gradient-tomato: linear-gradient(135deg, #E9503F 0%, #D92F20 100%);
+  --gradient-orange: linear-gradient(135deg, #EF8F41 0%, #E9503F 100%);
+  
   position: fixed;
   bottom: 0;
   left: 0;
@@ -48,7 +56,7 @@
 }
 
 .tab-item.active .tab-text {
-  color: #667EEA;
+  color: var(--tomato-red);
   font-weight: 600;
 }
 
@@ -68,13 +76,13 @@
 .tab-item.add-button .tab-icon {
   width: 100rpx;
   height: 100rpx;
-  line-height: 100rpx;
+  line-height: 90rpx; /* Slightly adjust for visual centering */
   text-align: center;
-  font-size: 48rpx;
-  background: linear-gradient(135deg, #B8E994 0%, #78E08F 100%); 
+  font-size: 70rpx; /* Larger font for the text '+' */
+  background: var(--gradient-tomato);
   border-radius: 50%;
   color: white;
-  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8rpx 24rpx rgba(233, 80, 63, 0.4);
   transform: translateY(-20rpx);
   transition: all 0.3s;
   position: relative;
@@ -207,9 +215,9 @@
 }
 
 .sub-menu-item.active .sub-menu-content {
-  background: linear-gradient(135deg, #A5D6A7 0%, #81C784 100%);
+  background: var(--gradient-orange);
   transform: scale(1.1);
-  box-shadow: 0 12rpx 32rpx rgba(102, 126, 234, 0.4);
+  box-shadow: 0 12rpx 32rpx rgba(233, 80, 63, 0.4);
 }
 
 .sub-menu-icon {

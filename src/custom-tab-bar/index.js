@@ -13,7 +13,7 @@ Component({
       {
         pagePath: '',
         text: '',
-        icon: '➕',
+        icon: '+',
         isAdd: true, // 标记为添加按钮
       },
       {

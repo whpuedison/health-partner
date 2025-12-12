@@ -63,6 +63,14 @@ Page({
       hasRecords: false
     },
 
+    // 6. UI控制
+    expandedMeal: {
+        breakfast: false,
+        lunch: false,
+        dinner: false,
+        snack: false
+    },
+
     // UI控制
     showBMIModal: false,
     bmiModalData: null,
@@ -434,6 +442,16 @@ Page({
   navigateTo(e) {
       const url = e.currentTarget.dataset.url;
       if (url) wx.navigateTo({ url });
+  },
+
+  // 交互：切换餐次折叠
+  toggleMealSection(e) {
+    const meal = e.currentTarget.dataset.meal;
+    if (meal) {
+        this.setData({
+            [`expandedMeal.${meal}`]: !this.data.expandedMeal[meal]
+        });
+    }
   },
 
   startTipRotation() {
