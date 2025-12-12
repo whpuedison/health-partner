@@ -9,8 +9,8 @@
     "pages/userinfo/userinfo",
     "pages/plan/plan",
     "pages/weight/weight",
-    "pages/diet-record/diet-record",
-    "pages/exercise-record/exercise-record",
+    "pages/diet/diet",
+    "pages/exercise/exercise",
     "pages/post/post",
     "pages/charts/charts",
     "pages/measure/measure"

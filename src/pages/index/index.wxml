@@ -46,13 +46,13 @@
         </view>
         <view class="divider-line"></view>
         <view class="grid-3-col">
-            <view class="grid-item" bindtap="navigateTo" data-url="/pages/diet-record/diet-record">
+            <view class="grid-item" bindtap="navigateTo" data-url="/pages/diet/diet">
                 <text class="label">摄入</text>
                 <text class="value">{{calorieData.intake}}</text>
                 <text class="unit">kcal</text>
             </view>
             <view class="vertical-divider"></view>
-            <view class="grid-item" bindtap="navigateTo" data-url="/pages/exercise-record/exercise-record">
+            <view class="grid-item" bindtap="navigateTo" data-url="/pages/exercise/exercise">
                 <text class="label">消耗</text>
                 <text class="value">{{calorieData.burned}}</text>
                 <text class="unit">kcal</text>
@@ -72,7 +72,7 @@
 
     <!-- 2. 今日饮食记录 (折叠收纳) -->
     <view class="dashboard-card list-card">
-        <view class="card-title-row" bindtap="navigateTo" data-url="/pages/diet-record/diet-record">
+        <view class="card-title-row" bindtap="navigateTo" data-url="/pages/diet/diet">
         <text class="card-title">🍽️ 今日饮食</text>
         <view class="title-right">
             <text class="total-cal">{{calorieData.intake}} kcal</text>
@@ -175,10 +175,10 @@
 
         <!-- 底部快捷入口 -->
         <view class="quick-entry-row">
-        <view class="ai-btn" bindtap="navigateTo" data-url="/pages/diet-record/diet-record?mode=text">
+        <view class="ai-btn" bindtap="navigateTo" data-url="/pages/diet/diet?mode=text">
             <text>✏️ 一句话记饮食</text>
         </view>
-        <view class="ai-btn camera" bindtap="navigateTo" data-url="/pages/diet-record/diet-record?mode=camera">
+        <view class="ai-btn camera" bindtap="navigateTo" data-url="/pages/diet/diet?mode=camera">
             <text>📷 拍照识别热量</text>
         </view>
         </view>
@@ -203,7 +203,7 @@
 
     <!-- 4. 营养构成卡片 -->
     <view class="dashboard-card nutrition-card">
-        <view class="card-title-row" bindtap="navigateTo" data-url="/pages/diet-record/diet-record">
+        <view class="card-title-row" bindtap="navigateTo" data-url="/pages/diet/diet">
             <text class="card-title">🥗 营养构成</text>
         </view>
         <view class="divider-line"></view>
@@ -264,7 +264,7 @@
 
     <!-- 5. 今日运动记录 -->
     <view class="dashboard-card list-card">
-        <view class="card-title-row" bindtap="navigateTo" data-url="/pages/exercise-record/exercise-record">
+        <view class="card-title-row" bindtap="navigateTo" data-url="/pages/exercise/exercise">
         <text class="card-title">🏃 今日运动</text>
         <view class="title-right">
             <text class="total-cal" wx:if="{{exerciseRecords.totalCalories > 0}}">{{exerciseRecords.totalCalories}} kcal</text>
@@ -294,7 +294,7 @@
         </view>
 
         <view class="quick-entry-row">
-        <view class="ai-btn sport full" bindtap="navigateTo" data-url="/pages/exercise-record/exercise-record?mode=text">
+        <view class="ai-btn sport full" bindtap="navigateTo" data-url="/pages/exercise/exercise?mode=text">
             <text>✨ 一句话记运动</text>
         </view>
         </view>

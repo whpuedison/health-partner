@@ -1,5 +1,4 @@
-/* pages/diet-record/diet-record.wxss */
-.diet-record-page {
+.diet-page {
   min-height: 100vh;
   background: #F7FAFC;
   padding: 20rpx 24rpx 120rpx;

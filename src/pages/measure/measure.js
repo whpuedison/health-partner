@@ -54,7 +54,7 @@ Page({
     }
   },
 
-  // 初始化日历 (复用 exercise-record 逻辑)
+  // 初始化日历 (复用 exercise 逻辑)
   initCalendar() {
     const today = new Date();
     this.updateWeekDays(new Date(today));

@@ -1,4 +1,3 @@
-// pages/diet-record/diet-record.js
 const { Http } = require('../../utils/http');
 const { API } = require('../../config/api');
 const { calculateDailyCalories, calculateNutrientGrams } = require('../../utils/health-calculator');
@@ -313,7 +312,7 @@ Page({
     Http.post(recordUrl, {
         openId,
         scene: scene, 
-        page: 'pages/diet-record/diet-record' // 记录来源页面
+        page: 'pages/diet/diet' // 记录来源页面
     }).then(res => {
         if (res.success) {
             this.setData({ isLocked: false });

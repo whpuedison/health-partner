@@ -32,12 +32,12 @@ Component({
       {
         icon: '🍎',
         text: '记饮食',
-        pagePath: '/pages/diet-record/diet-record',
+        pagePath: '/pages/diet/diet',
       },
       {
         icon: '🏃',
         text: '记运动',
-        pagePath: '/pages/exercise-record/exercise-record',
+        pagePath: '/pages/exercise/exercise',
       },
       {
         icon: '📏',

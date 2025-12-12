@@ -1,5 +1,4 @@
-<!--pages/diet-record/diet-record.wxml-->
-<view class="diet-record-page">
+<view class="diet-page">
   <!-- 周历 -->
   <view class="week-calendar">
     <view class="calendar-container">

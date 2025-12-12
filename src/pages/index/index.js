@@ -183,7 +183,7 @@ Page({
       // 检查是否受限链接
       const url = e.currentTarget.dataset.url;
       // 饮食记录和拍照记录页面受限
-      if (url && (url.includes('diet-record'))) {
+      if (url && (url.includes('diet'))) {
           if (this.data.isLocked) {
                wx.showToast({
                 title: '请先分享解锁功能',
