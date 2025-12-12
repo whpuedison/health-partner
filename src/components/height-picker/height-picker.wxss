@@ -23,7 +23,7 @@
 .mark-line {
   position: absolute;
   right: 0;
-  background: #A0D8B0;
+  background: var(--vibrant-orange);
 }
 
 .mark-short {
@@ -61,7 +61,7 @@
   width: 50rpx;
   height: 8rpx;
   border-radius: 12rpx;
-  background: #29ac57;
+  background: var(--tomato-red);
   position: relative;
   top: 2rpx;
 }

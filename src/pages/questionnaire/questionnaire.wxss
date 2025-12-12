@@ -22,7 +22,7 @@
   width: 60rpx;
   height: 60rpx;
   border: 6rpx solid #f0f0f0;
-  border-top: 6rpx solid #3cc51f;
+  border-top: 6rpx solid var(--tomato-red);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 24rpx;
@@ -40,7 +40,7 @@
 
 /* 问卷页面样式 */
 .questionnaire-page {
-  background: #F0F9F5;
+  background: var(--pale-orange);
   height: 100vh;
   padding: 24rpx 24rpx calc(24rpx + env(safe-area-inset-bottom)) 24rpx;
   overflow: hidden;
@@ -78,7 +78,7 @@
 .progress-bar {
   width: 100%;
   height: 8rpx;
-  background: #E8F5E8;
+  background: rgba(233, 80, 63, 0.1);
   border-radius: 4rpx;
   overflow: hidden;
   margin-bottom: 48rpx;
@@ -87,7 +87,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #B8E6C8 0%, #A0D8B0 100%);
+  background: var(--gradient-tomato);
   border-radius: 4rpx;
   transition: width 0.4s ease;
 }
@@ -177,8 +177,8 @@
 
 .option-item.selected .option-avatar {
   transform: scale(1.1);
-  box-shadow: 0 8rpx 24rpx rgba(184, 230, 200, 0.3);
-  background: linear-gradient(135deg, #B8E6C8 0%, #A0D8B0 100%);
+  box-shadow: 0 8rpx 24rpx rgba(233, 80, 63, 0.3);
+  background: var(--gradient-tomato);
 }
 
 .option-item.selected .avatar-icon {
@@ -221,8 +221,8 @@
 }
 
 .btn-primary {
-  background: #29ac57;
-  box-shadow: 0 4rpx 12rpx rgba(184, 230, 200, 0.2);
+  background: var(--tomato-red);
+  box-shadow: 0 4rpx 12rpx rgba(233, 80, 63, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -230,7 +230,7 @@
 
 .btn-primary:active {
   transform: scale(0.98);
-  box-shadow: 0 2rpx 8rpx rgba(184, 230, 200, 0.2);
+  box-shadow: 0 2rpx 8rpx rgba(233, 80, 63, 0.2);
 }
 
 .btn-secondary {
@@ -283,10 +283,10 @@
 /* BMI 卡片 */
 .bmi-card {
   background: white;
-  border: 2rpx solid #B8E6C8;
+  border: 2rpx solid rgba(233, 80, 63, 0.3);
   border-radius: 20rpx;
   padding: 24rpx;
-  box-shadow: 0 4rpx 16rpx rgba(184, 230, 200, 0.1);
+  box-shadow: 0 4rpx 16rpx rgba(233, 80, 63, 0.1);
 }
 
 .card-header {
@@ -305,7 +305,7 @@
 .card-value {
   font-size: 48rpx;
   font-weight: 600;
-  color: #3cc51f;
+  color: var(--tomato-red);
 }
 
 /* BMI 状态条 */
@@ -417,20 +417,20 @@
 }
 
 .date-display {
-  background: #ffffff; /* 纯白背景，更干净 */
-  border: 2rpx solid #B8E6C8; /* 改为虚线边框，更活泼 */
-  border-radius: 24rpx; /* 更大的圆角 */
+  background: #ffffff;
+  border: 2rpx solid rgba(233, 80, 63, 0.3);
+  border-radius: 24rpx;
   padding: 32rpx 36rpx;
   min-width: 280rpx;
   text-align: center;
   transition: all 0.3s ease;
-  color: #4a6b66; /* 沉稳的深青色 */
+  color: #4a6b66;
   font-weight: 400;
 }
 
 .date-display:active {
-  border-color: #9ad4cb;
-  box-shadow: 0 6rpx 20rpx rgba(154, 212, 203, 0.12);
+  border-color: var(--tomato-red);
+  box-shadow: 0 6rpx 20rpx rgba(233, 80, 63, 0.12);
   transform: translateY(-2rpx);
 }
 
@@ -457,11 +457,11 @@
 /* 年龄评估 box */
 .age-assessment {
   background: white;
-  border: 2rpx solid #B8E6C8;
+  border: 2rpx solid rgba(233, 80, 63, 0.3);
   border-radius: 20rpx;
   padding: 40rpx;
   margin: 40rpx 0;
-  box-shadow: 0 4rpx 16rpx rgba(184, 230, 200, 0.1);
+  box-shadow: 0 4rpx 16rpx rgba(233, 80, 63, 0.1);
 }
 
 .assessment-header {
@@ -471,7 +471,7 @@
 
 .assessment-value {
   font-size: 32rpx;
-  color: #3cc51f;
+  color: var(--tomato-red);
 }
 
 .assessment-content {
@@ -489,11 +489,11 @@
 /* 目标体重对比 box */
 .target-comparison {
   background: white;
-  border: 2rpx solid #B8E6C8;
+  border: 2rpx solid rgba(233, 80, 63, 0.3);
   border-radius: 20rpx;
   padding: 40rpx;
   margin: 40rpx 0;
-  box-shadow: 0 4rpx 16rpx rgba(184, 230, 200, 0.1);
+  box-shadow: 0 4rpx 16rpx rgba(233, 80, 63, 0.1);
 }
 
 .comparison-header {
@@ -503,7 +503,7 @@
 
 .comparison-value {
   font-size: 32rpx;
-  color: #3cc51f;
+  color: var(--tomato-red);
   padding: 16rpx 24rpx;
   border-radius: 16rpx;
   display: inline-block;
@@ -534,11 +534,11 @@
 /* 时间线规划 box */
 .timeline-planning {
   background: white;
-  border: 2rpx solid #B8E6C8;
+  border: 2rpx solid rgba(233, 80, 63, 0.3);
   border-radius: 20rpx;
   padding: 40rpx;
   margin: 40rpx 0;
-  box-shadow: 0 4rpx 16rpx rgba(184, 230, 200, 0.1);
+  box-shadow: 0 4rpx 16rpx rgba(233, 80, 63, 0.1);
 }
 
 .planning-header {
@@ -548,7 +548,7 @@
 
 .planning-value {
   font-size: 32rpx;
-  color: #3cc51f;
+  color: var(--tomato-red);
   padding: 16rpx 24rpx;
   border-radius: 16rpx;
   display: inline-block;
@@ -577,9 +577,9 @@
 /* 目标日期规划 box */
 .goal-planning {
   background: white;
-  border: 2rpx solid #B8E6C8;
+  border: 2rpx solid rgba(233, 80, 63, 0.3);
   border-radius: 20rpx;
   padding: 40rpx;
   margin: 40rpx 0;
-  box-shadow: 0 4rpx 16rpx rgba(184, 230, 200, 0.1);
+  box-shadow: 0 4rpx 16rpx rgba(233, 80, 63, 0.1);
 }
