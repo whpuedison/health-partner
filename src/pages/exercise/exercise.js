@@ -281,15 +281,38 @@ Page({
     
     this.closeTextInput();
     
-    // 使用标准Loading
+    // 提示语列表
+    const tips = [
+      'AI正在分析中',
+      '正在识别运动',
+      '分析运动强度中',
+      '计算卡路里中'
+    ];
+    
+    let currentTipIndex = 0;
+    
+    // 显示初始提示
     wx.showLoading({
-      title: 'AI分析中...',
+      title: tips[0],
       mask: true
     });
+
+    // 每10秒轮播一次提示，到最后一条就停止
+    const tipTimer = setInterval(() => {
+      if (currentTipIndex < tips.length - 1) {
+        currentTipIndex++;
+        wx.showLoading({ 
+          title: tips[currentTipIndex], 
+          mask: true 
+        });
+      }
+      // 到达最后一条后不再更新，保持显示"计算卡路里中..."
+    }, 10000);
     
     Http.post(API.EXERCISE_RECOGNIZE_TEXT, {
       text: this.data.exerciseText
     }, null, true).then(res => { // 增加 true 参数以支持长超时
+      clearInterval(tipTimer); // 清除定时器
       wx.hideLoading();
       if (res.data) {
         this.setData({
@@ -298,6 +321,7 @@ Page({
         });
       }
     }).catch(err => {
+      clearInterval(tipTimer); // 清除定时器
       wx.hideLoading();
       console.error('AI识别错误详情:', err); // 增加日志以便调试
       wx.showToast({ title: '识别失败，请重试', icon: 'none' });

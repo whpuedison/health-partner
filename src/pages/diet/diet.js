@@ -381,6 +381,7 @@ Page({
     // 提示语列表
     const tips = [
       'AI正在分析中',
+      '大约需要30秒'
       '正在识别食物',
       '分析营养成分中',
       '计算卡路里中'
@@ -394,7 +395,7 @@ Page({
       mask: true 
     });
 
-    // 每5秒轮播一次提示，到最后一条就停止
+    // 每8秒轮播一次提示，到最后一条就停止
     const tipTimer = setInterval(() => {
       if (currentTipIndex < tips.length - 1) {
         currentTipIndex++;
@@ -404,7 +405,7 @@ Page({
         });
       }
       // 到达最后一条后不再更新，保持显示"计算卡路里中..."
-    }, 5000);
+    }, 8000);
 
     try {
       // 转换为base64
@@ -699,7 +700,7 @@ Page({
       mask: true 
     });
 
-    // 每5秒轮播一次提示，到最后一条就停止
+    // 每10秒轮播一次提示，到最后一条就停止
     const tipTimer = setInterval(() => {
       if (currentTipIndex < tips.length - 1) {
         currentTipIndex++;
@@ -708,7 +709,7 @@ Page({
           mask: true 
         });
       }
-    }, 5000);
+    }, 10000);
 
     try {
       // 调用文本识别API（复用食物识别的后端逻辑）
