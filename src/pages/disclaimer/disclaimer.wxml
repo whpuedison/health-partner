@@ -1,6 +1,6 @@
 
 <view class="container">
-  <view class="card">
+  <view class="title">免责声明</view>
     <view class="content">
       <view class="paragraph">
         1. 本小程序（以下简称“本平台”）致力于为用户提供健康管理辅助工具，包括但不限于体重记录、饮食记录、运动打卡等功能。本平台所提供的所有数据分析、健康建议、饮食方案等仅供参考，不构成专业的医疗诊断或治疗建议。
@@ -21,5 +21,4 @@
         6. 用户使用本平台即视为已阅读并同意本免责声明的所有条款。本平台保留在法律允许范围内对本声明的最终解释权。
       </view>
     </view>
-  </view>
 </view>

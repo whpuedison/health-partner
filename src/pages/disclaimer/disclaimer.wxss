@@ -1,22 +1,14 @@
-
 .container {
   padding: 30rpx;
-  background-color: #f7f8fa;
+  background-color: #fff;
   min-height: 100vh;
   box-sizing: border-box;
 }
 
-.card {
-  background: #fff;
-  border-radius: 20rpx;
-  padding: 40rpx 30rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
-}
-
 .title {
-  font-size: 36rpx;
+  font-size: 32rpx;
   font-weight: 600;
-  color: #333;
+  color: #444;
   text-align: center;
   margin-bottom: 40rpx;
 }
@@ -24,6 +16,7 @@
 .content {
   font-size: 28rpx;
   line-height: 1.8;
+  color: #444;
   text-align: justify;
 }
 
