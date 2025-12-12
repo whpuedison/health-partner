@@ -6,12 +6,6 @@
   padding-bottom: 120rpx;
 }
 
-/* Define Tomato Theme Variables */
-page {
-  --tomato-red: #E9503F; /* A strong tomato red */
-  --gradient-tomato: linear-gradient(135deg, #FF6B6B 0%, #E9503F 100%);
-}
-
 /* 1. 周历 */
 .week-calendar {
   background: white;
