@@ -1,0 +1,29 @@
+
+<view class="container">
+  <view class="feedback-card">
+    <view class="form-item">
+      <view class="label">反馈内容 <text class="required">*</text></view>
+      <textarea 
+        class="textarea" 
+        placeholder="请描述您在小程序使用过程中的建议反馈" 
+        maxlength="500" 
+        bindinput="onContentInput"
+        value="{{content}}"
+      ></textarea>
+      <view class="count">{{content.length}}/500</view>
+    </view>
+    
+    <view class="form-item">
+      <view class="label">联系方式</view>
+      <input 
+        class="input" 
+        placeholder="请输入您的联系方式（微信/邮箱/手机号）" 
+        maxlength="100" 
+        bindinput="onContactInput"
+        value="{{contact}}"
+      />
+    </view>
+  </view>
+
+  <view class="submit-btn {{!content ? 'disabled' : ''}}" bindtap="submitFeedback">提交反馈</view>
+</view>

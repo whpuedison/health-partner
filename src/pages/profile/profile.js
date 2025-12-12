@@ -4,6 +4,7 @@ const { Http } = require('../../utils/http');
 const { API } = require('../../config/api');
 
 const app = getApp();
+const connectEmail = 'whpuedison@163.com'
 
 Page({
   data: {
@@ -16,12 +17,17 @@ Page({
       age: 0,
       bmi: 0,
     },
-    // 功能菜单
-    menuItems: [
+    // 健康管理菜单
+    healthItems: [
       { id: 'goal', icon: '👤', title: '个人档案', arrow: true },
       { id: 'charts', icon: '📉', title: '瘦身历程', arrow: true },
       { id: 'timeline', icon: '💃', title: '体型变化', arrow: true },
-      { id: 'about', icon: 'ℹ️', title: '关于我们', arrow: true },
+    ],
+    // 服务支持菜单
+    serviceItems: [
+      { id: 'promotion', icon: '🤝', title: '推广合作', arrow: true },
+      { id: 'feedback', icon: '📝', title: '意见反馈', arrow: true },
+      { id: 'disclaimer', icon: '⚖️', title: '免责声明', arrow: true },
     ],
   },
 
@@ -271,12 +277,6 @@ Page({
           }
         });
         break;
-      case 'history':
-        wx.showToast({
-          title: '功能开发中',
-          icon: 'none',
-        });
-        break;
       case 'goal':
         console.log('跳转到目标页面');
          wx.navigateTo({
@@ -309,12 +309,43 @@ Page({
           }
         });
         break;
-      case 'about':
+      case 'promotion':
         wx.showModal({
-          title: '番茄控卡',
-          content: '一款专门为减肥人群打造的健康管理小程序',
-          showCancel: false,
-          confirmText: '知道了',
+          title: '推广合作',
+          content: `联系邮箱：${connectEmail}`,
+          confirmText: '复制',
+          cancelText: '取消',
+          success: (res) => {
+            if (res.confirm) {
+              wx.setClipboardData({
+                data: connectEmail,
+                success: () => {
+                  wx.showToast({
+                    title: '已复制',
+                    icon: 'success'
+                  });
+                }
+              });
+            }
+          }
+        });
+        break;
+      case 'feedback':
+        wx.navigateTo({
+          url: '/pages/feedback/feedback',
+          fail: (err) => {
+            console.error('跳转失败:', err);
+            wx.showToast({ title: '页面不存在', icon: 'none' });
+          }
+        });
+        break;
+      case 'disclaimer':
+        wx.navigateTo({
+          url: '/pages/disclaimer/disclaimer',
+          fail: (err) => {
+            console.error('跳转失败:', err);
+            wx.showToast({ title: '页面不存在', icon: 'none' });
+          }
         });
         break;
       default:

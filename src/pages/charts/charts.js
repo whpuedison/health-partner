@@ -155,7 +155,7 @@ Page({
         titleFontColor: '#95a5a6'
       },
       width: windowWidth - 32, // 增加宽度，减少挤压
-      height: 200,
+      height: 260,
       dataLabel: true,
       dataPointShape: true,
       legend: false,

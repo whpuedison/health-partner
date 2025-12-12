@@ -52,6 +52,8 @@ const API = {
   WEIGHT_MONTH: '/api/v1/user/weight/month',
   WEIGHT_DELETE: '/api/v1/user/weight',
   WEIGHT_LATEST: '/api/v1/user/weight/latest', // 新增：获取最近体重记录
+  // 反馈
+  FEEDBACK: '/api/v1/feedback',
 };
 
 module.exports = { API };

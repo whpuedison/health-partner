@@ -4,6 +4,8 @@
     "pages/index/index",
     "pages/timeline/timeline",
     "pages/profile/profile",
+    "pages/feedback/feedback",
+    "pages/disclaimer/disclaimer",
     "pages/goal/goal",
     "pages/plan/plan",
     "pages/weight/weight",
