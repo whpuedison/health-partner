@@ -332,11 +332,12 @@ Page({
   confirmAIRecord() {
     const { recognitionResult, selectedDate } = this.data;
     const openId = app.globalData.openId || wx.getStorageSync('openId');
+    const { exercise_name,  duration_minutes, calories } = recognitionResult || {}
     Http.post(API.USER_EXERCISE_RECORDS, {
       openId,
-      exerciseType: recognitionResult.exercise_name,
-      duration: recognitionResult.duration_minutes,
-      caloriesPerMinute: recognitionResult.calories,
+      exerciseType: exercise_name,
+      duration: duration_minutes,
+      caloriesPerMinute: (calories / duration_minutes).toFixed(2),
       recordDate: selectedDate
     }).then(() => {
       this.setData({ showResultPopup: false });
