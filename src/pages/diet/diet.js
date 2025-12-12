@@ -758,17 +758,25 @@ Page({
    * 计算总营养
    */
   calculateTotalNutrition(foods) {
-    return foods.reduce((total, food) => ({
-      totalCalories: total.totalCalories + (food.calorie || 0),
-      totalProtein: total.totalProtein + (food.protein || 0),
-      totalCarbs: total.totalCarbs + (food.carbs || 0),
-      totalFat: total.totalFat + (food.fat || 0)
+    const total = foods.reduce((acc, food) => ({
+      totalCalories: acc.totalCalories + (food.calorie || 0),
+      totalProtein: acc.totalProtein + (food.protein || 0),
+      totalCarbs: acc.totalCarbs + (food.carbs || 0),
+      totalFat: acc.totalFat + (food.fat || 0)
     }), {
       totalCalories: 0,
       totalProtein: 0,
       totalCarbs: 0,
       totalFat: 0
     });
+
+    // 保留两位小数,避免浮点数精度问题
+    return {
+      totalCalories: parseFloat(total.totalCalories.toFixed(2)),
+      totalProtein: parseFloat(total.totalProtein.toFixed(2)),
+      totalCarbs: parseFloat(total.totalCarbs.toFixed(2)),
+      totalFat: parseFloat(total.totalFat.toFixed(2))
+    };
   },
 
   /**
