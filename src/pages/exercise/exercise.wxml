@@ -55,7 +55,7 @@
             <text class="record-detail">{{item.duration}}分钟 · {{item.calories}}千卡</text>
           </view>
           <view class="delete-btn" catchtap="deleteRecord" data-id="{{item.id}}">
-            <van-icon name="cross" color="#CBD5E0" size="16px" />
+            <van-icon name="cross" color="var(--vibrant-orange)" size="16px" />
           </view>
         </view>
       </view>

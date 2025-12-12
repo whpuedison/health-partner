@@ -29,7 +29,7 @@ const API = {
   FOOD_QUICK_ADD: '/api/v1/food/quick-add',
   FOOD_ANALYZE: '/api/v1/food/analyze',
   // 运动识别
-  EXERCISE_RECOGNIZE_TEXT: '/exercise/recognize-text',
+  EXERCISE_RECOGNIZE_TEXT: '/api/v1/exercise/recognize-text',
   
   // 身体围度
   MEASUREMENT_SAVE: '/api/v1/measurement/save',

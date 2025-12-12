@@ -318,6 +318,7 @@
 }
 
 .delete-btn {
+  color: var(--vibrant-orange);
   padding: 10rpx;
 }
 
