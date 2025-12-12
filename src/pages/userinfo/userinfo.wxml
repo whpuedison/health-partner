@@ -1,4 +1,3 @@
-<!--pages/goal/goal.wxml-->
 <view class="goal-page">
   <!-- 列表卡片 -->
   <view class="list-card">

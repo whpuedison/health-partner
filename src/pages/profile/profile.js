@@ -19,7 +19,7 @@ Page({
     },
     // 健康管理菜单
     healthItems: [
-      { id: 'goal', icon: '👤', title: '个人档案', arrow: true },
+      { id: 'userinfo', icon: '👤', title: '个人档案', arrow: true },
       { id: 'charts', icon: '📉', title: '瘦身历程', arrow: true },
       { id: 'timeline', icon: '💃', title: '体型变化', arrow: true },
     ],
@@ -277,10 +277,10 @@ Page({
           }
         });
         break;
-      case 'goal':
+      case 'userinfo':
         console.log('跳转到目标页面');
          wx.navigateTo({
-          url: '/pages/goal/goal',
+          url: '/pages/userinfo/userinfo',
           success: () => {
             console.log('跳转成功');
           },

@@ -1,5 +1,5 @@
 
-// pages/goal/goal.js
+// pages/userinfo/userinfo.js
 const { Http } = require('../../utils/http');
 const { API } = require('../../config/api');
 const { calculateBMI } = require('../../utils/health-calculator');
