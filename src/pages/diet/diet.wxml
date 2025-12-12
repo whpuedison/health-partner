@@ -21,27 +21,43 @@
     </view>
   </view>
 
-  <!-- 营养数据卡片 -->
-  <view class="nutrition-overview">
+  <!-- 1. 今日概览卡片 -->
+  <view class="diet-card">
+    <view class="card-header">
+      <text class="card-title-icon">📊</text>
+      <text class="card-title-text">今日概览</text>
+    </view>
     <view class="overview-row">
       <view class="overview-item">
         <text class="item-label">饮食摄入</text>
-        <text class="item-value">{{todayIntake}} kcal</text>
+        <view class="value-row">
+            <text class="item-value">{{todayIntake}}</text>
+            <text class="unit">kcal</text>
+        </view>
       </view>
       <view class="overview-item center">
         <text class="item-label">还可以吃</text>
-        <text class="item-value">{{todayRemaining}}</text>
-        <text class="item-value">kcal</text>
+        <view class="value-row">
+            <text class="item-value">{{todayRemaining}}</text>
+            <text class="unit">kcal</text>
+        </view>
       </view>
       <view class="overview-item">
         <text class="item-label">运动消耗</text>
-        <text class="item-value">{{todayBurned}} kcal</text>
+        <view class="value-row">
+            <text class="item-value">{{todayBurned}}</text>
+            <text class="unit">kcal</text>
+        </view>
       </view>
     </view>
   </view>
 
-  <!-- 营养素统计 -->
-  <view class="nutrients-card">
+  <!-- 2. 营养分析卡片 -->
+  <view class="diet-card">
+    <view class="card-header">
+      <text class="card-title-icon">🥗</text>
+      <text class="card-title-text">营养分析</text>
+    </view>
     <view class="nutrient-item">
       <view class="nutrient-header">
         <text class="nutrient-name">蛋白质</text>
@@ -73,27 +89,28 @@
     </view>
   </view>
 
-  <!-- 核心功能区 (包裹拍照和文字记录) -->
-  <view class="core-functions-container" style="position: relative;">
-    <!-- 拍照识别按钮 -->
-    <view class="photo-btn" bindtap="showPhotoTipDialog">
-        <text class="photo-icon">📷</text>
-        <view class="photo-text">
-        <text class="photo-title">拍照识别菜品</text>
-        <text class="photo-desc">AI智能识别，秒算卡路里</text>
-        </view>
+  <!-- 3. AI 记录卡片 -->
+  <view class="diet-card" style="position: relative;">
+    <view class="card-header">
+      <text class="card-title-icon">🤖</text>
+      <text class="card-title-text">AI 记录</text>
     </view>
     
-    <!-- 一句话记饮食按钮 -->
-    <view class="text-btn" bindtap="showTextInputDialog">
-        <text class="text-icon">✍️</text>
-        <view class="text-content">
-        <text class="text-title">一句话记饮食</text>
-        <text class="text-desc">描述吃了什么，AI帮你算</text>
+    <view class="ai-button-group">
+        <!-- 拍照识别 -->
+        <view class="ai-btn camera" bindtap="showPhotoTipDialog">
+            <text class="ai-icon">📷</text>
+            <text class="ai-text">拍照识别</text>
+        </view>
+        
+        <!-- 一句话记录 -->
+        <view class="ai-btn text" bindtap="showTextInputDialog">
+            <text class="ai-icon">✍️</text>
+            <text class="ai-text">一句话记录</text>
         </view>
     </view>
 
-    <!-- Locked Overlay (covers both buttons) -->
+    <!-- Locked Overlay -->
     <view class="locked-overlay" wx:if="{{isLocked}}">
         <view class="lock-content">
             <view class="lock-icon">🔒</view>
@@ -103,12 +120,16 @@
     </view>
   </view>
 
-  <!-- 今日饮食记录 -->
-  <view class="records-section">
-    <text class="section-title">今日饮食</text>
+  <!-- 4. 饮食明细卡片 -->
+  <view class="diet-card records-card">
+    <view class="card-header">
+      <text class="card-title-icon">📝</text>
+      <text class="card-title-text">饮食明细</text>
+    </view>
     
     <!-- 早餐 -->
     <view class="meal-section" wx:if="{{mealGroups['早餐'].length > 0}}">
+      <!-- Header -->
       <view class="meal-header" bindtap="toggleMeal" data-meal="早餐">
         <text class="meal-icon">🌅</text>
         <text class="meal-title">早餐</text>
@@ -118,6 +139,7 @@
         </view>
         <text class="expand-icon {{expandedMeals['早餐'] ? 'expanded' : ''}}">▼</text>
       </view>
+      <!-- List -->
       <view class="records-list {{expandedMeals['早餐'] ? 'expanded' : 'collapsed'}}">
         <view class="record-item" wx:for="{{mealGroups['早餐']}}" wx:key="id">
           <view class="record-info">
@@ -279,7 +301,7 @@
           
           <view class="food-actions" wx:if="{{editingFoodIndex !== idx}}">
             <text class="edit-icon" data-index="{{idx}}" bindtap="editFood">✎</text>
-            <text class="delete-food-icon" data-index="{{idx}}" bindtap="deleteFood">❌</text>
+            <text class="delete-food-icon" data-index="{{idx}}" bindtap="deleteFood">x</text>
           </view>
         </view>
 
