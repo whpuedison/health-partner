@@ -48,7 +48,7 @@
         <view class="divider-line"></view>
         <view class="grid-3-col">
               <view class="grid-item">
-                <text class="label">还可吃<text class="unit">kcal</text></text>
+                <text class="label">还可吃<text class="unit">(kcal)</text></text>
                 <text class="value bold">{{calorieData.diff}}</text>
             </view>
             <text class="sign">=</text>
@@ -69,17 +69,17 @@
         </view>
         <view class="grid-4-col">
             <view class="grid-item">
-                <text class="label">碳水<text class="unit">g</text></text>
-                <text class="value">{{nutritionData.carbs.current}}<text class="percent">({{nutritionData.carbs.percent}}%)</text></text>
+                <text class="label">碳水</text>
+                <text class="value">{{nutritionData.carbs.current}}g<text class="percent">({{nutritionData.carbs.percent}}%)</text></text>
                 
             </view>
             <view class="grid-item">
-                <text class="label">蛋白质<text class="unit">g</text></text>
-                <text class="value">{{nutritionData.protein.current}}<text class="percent">({{nutritionData.protein.percent}}%)</text></text>
+                <text class="label">蛋白质</text>
+                <text class="value">{{nutritionData.protein.current}}g<text class="percent">({{nutritionData.protein.percent}}%)</text></text>
             </view>
             <view class="grid-item">
-                <text class="label">脂肪<text class="unit">g</text></text>
-                <text class="value">{{nutritionData.fat.current}}<text class="percent">({{nutritionData.fat.percent}}%)</text></text>
+                <text class="label">脂肪</text>
+                <text class="value">{{nutritionData.fat.current}}g<text class="percent">({{nutritionData.fat.percent}}%)</text></text>
             </view>
         </view>
     </view>
@@ -201,7 +201,6 @@
     <!-- Share Card -->
     <view class="share-card">
         <!-- Overlay ensuring clickability if needed, but inner button handles share -->
-        <button class="share-btn-overlay" open-type="share"></button>
         <view class="bubble-tip">微信分享至好友/群聊/朋友圈</view>
         <view class="content-row">
             <view class="text-group">

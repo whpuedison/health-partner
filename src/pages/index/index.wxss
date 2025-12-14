@@ -302,7 +302,7 @@
   position: relative;
   background: var(--gradient-tomato); 
   border-radius: 20rpx;
-  padding: 30rpx 40rpx; /* 增加一点内边距以容纳气泡 */
+  padding: 24rpx 40rpx; /* 增加一点内边距以容纳气泡 */
   margin-bottom: 24rpx;
   box-shadow: var(--shadow-md);
   overflow: visible; /* 允许气泡溢出(如果有) 或者保持 hidden */
@@ -330,7 +330,6 @@
   padding: 8rpx 20rpx;
   border-radius: 24rpx;
   position: relative;
-  margin-bottom: 16rpx;
   box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.1);
   transform: rotate(-1deg); /* 微微倾斜增加俏皮感 */
 }
@@ -362,7 +361,7 @@
 }
 
 .text-white {
-  font-size: 36rpx;
+  font-size: 32rpx;
   color: var(--white);
   font-weight: bold;
   font-style: italic;
@@ -370,7 +369,7 @@
 }
 
 .text-orange {
-  font-size: 44rpx;
+  font-size: 40rpx;
   color: #FFE0B2; /* 浅橙色，在红背景下对比度高 */
   font-weight: 900;
   font-style: italic;
