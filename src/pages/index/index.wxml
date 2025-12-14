@@ -193,7 +193,7 @@
             <text>✏️ AI文字识别</text>
         </view>
         <view class="ai-btn camera" bindtap="navigateTo" data-url="/pages/diet/diet?mode=camera">
-            <text>📷 AI拍照识图</text>
+            <text>📷 AI拍照识别</text>
         </view>
         </view>
     </view>
@@ -228,14 +228,22 @@
         <view class="record-list" wx:if="{{exerciseRecords.hasRecords}}">
         <!-- 简单的列表，运动通常不多，不需要折叠 -->
         <block wx:for="{{['daily', 'cardio', 'strength']}}" wx:key="*this" wx:for-item="cat">
-            <view class="meal-section" wx:if="{{exerciseRecords[cat].list.length > 0}}">
-                <view class="section-head">
-                <text class="head-title">{{cat === 'daily' ? '🧘 日常' : (cat === 'cardio' ? '🔥 有氧' : '💪 力量')}}</text>
-                <text class="head-cal">{{exerciseRecords[cat].calories}} kcal</text>
+            <view class="meal-accordion" wx:if="{{exerciseRecords[cat].list.length > 0}}">
+                <view class="accordion-head" bindtap="toggleExerciseSection" data-category="{{cat}}">
+                    <view class="head-left">
+                        <text class="meal-icon">{{cat === 'daily' ? '🧘' : (cat === 'cardio' ? '🔥' : '💪')}}</text>
+                        <text class="head-title">{{cat === 'daily' ? '日常' : (cat === 'cardio' ? '有氧' : '力量')}}</text>
+                    </view>
+                    <view class="head-right">
+                        <text class="head-cal">{{exerciseRecords[cat].calories}} kcal</text>
+                        <van-icon name="{{expandedExercise[cat] ? 'arrow-up' : 'arrow-down'}}" size="12px" color="#999" />
+                    </view>
                 </view>
-                <view class="food-item" wx:for="{{exerciseRecords[cat].list}}" wx:key="id">
-                <text class="food-name">{{item.exerciseType}} {{item.duration}}min</text>
-                <text class="food-cal">{{item.calories}}</text>
+                <view class="accordion-content {{expandedExercise[cat] ? 'expanded' : ''}}">
+                    <view class="food-item" wx:for="{{exerciseRecords[cat].list}}" wx:key="id">
+                        <text class="food-name">{{item.exerciseType}} {{item.duration}}min</text>
+                        <text class="food-cal">{{item.calories}}</text>
+                    </view>
                 </view>
             </view>
         </block>

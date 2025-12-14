@@ -99,13 +99,13 @@
     <view class="ai-button-group">
         <!-- 一句话记录 -->
         <view class="ai-btn text" bindtap="showTextInputDialog">
-            <text class="ai-icon">✍️</text>
-            <text class="ai-text">一句话记录</text>
+            <text class="ai-icon">✏️</text>
+            <text class="ai-text">AI文字识别</text>
         </view>
         <!-- 拍照识别 -->
         <view class="ai-btn camera" bindtap="showPhotoTipDialog">
             <text class="ai-icon">📷</text>
-            <text class="ai-text">拍照识别</text>
+            <text class="ai-text">AI拍照识别</text>
         </view>
     </view>
 

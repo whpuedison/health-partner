@@ -250,6 +250,7 @@
 
 .ai-icon {
     font-size: 32rpx;
+    margin-right: 8rpx;
 }
 
 .ai-text {

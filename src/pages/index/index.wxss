@@ -259,7 +259,7 @@
 }
 
 .diet-icon {
-  width: 420rpx !important;
+  width: 270rpx !important;
 }
 /* 快捷入口按钮 */
 .quick-entry-row {
@@ -538,8 +538,4 @@
   margin-bottom: 8rpx
 }
 
-.section-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+

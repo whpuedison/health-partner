@@ -70,6 +70,11 @@ Page({
         dinner: false,
         snack: false
     },
+    expandedExercise: {
+        daily: false,
+        cardio: false,
+        strength: false
+    },
 
     // UI控制
     showBMIModal: false,
@@ -451,6 +456,16 @@ Page({
     if (meal) {
         this.setData({
             [`expandedMeal.${meal}`]: !this.data.expandedMeal[meal]
+        });
+    }
+  },
+
+  // 交互：切换运动分类折叠
+  toggleExerciseSection(e) {
+    const category = e.currentTarget.dataset.category;
+    if (category) {
+        this.setData({
+            [`expandedExercise.${category}`]: !this.data.expandedExercise[category]
         });
     }
   },
