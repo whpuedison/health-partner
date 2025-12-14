@@ -62,7 +62,7 @@
                 <text class="value">{{calorieData.intake}}</text>
             </view>
             <text class="sign">+</text>
-             <view class="grid-item" bindtap="navigateTo" data-url="/pages/diet/diet">
+             <view class="grid-item" bindtap="navigateTo" data-url="/pages/exercise/exercise">
                 <text class="label">运动</text>
                 <text class="value">{{calorieData.activeBurn}}</text>
             </view>
@@ -255,7 +255,7 @@
 
         <view class="quick-entry-row">
         <view class="ai-btn sport full" bindtap="navigateTo" data-url="/pages/exercise/exercise?mode=text">
-            <text>✨ 一句话记运动</text>
+            <text>✨ AI识别运动消耗</text>
         </view>
         </view>
     </view>

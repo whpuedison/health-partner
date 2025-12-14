@@ -222,7 +222,7 @@
 
 .ai-icon {
   font-size: 36rpx;
-  margin-right: 16rpx;
+  margin-right: 8rpx;
 }
 
 .ai-text {
