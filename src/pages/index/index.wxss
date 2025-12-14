@@ -140,7 +140,7 @@
 
 /* ==================== 通用卡片样式 ==================== */
 .dashboard-card {
-  background: var(--white);
+  background: #FFFBF7;
   border-radius: 20rpx;
   padding: 24rpx;
   margin-bottom: 24rpx;
@@ -222,7 +222,7 @@
 
 .head-cal {
     font-size: 26rpx;
-    color: var(--gray-medium);
+    color: var(--vibrant-orange); /* Highlight data points */
 }
 
 .accordion-content {
@@ -249,22 +249,22 @@
 }
 
 .food-cal {
-  color: var(--vibrant-orange); /* Highlight data points */
-  font-weight: 500;
+  color: var(--gray-medium); /* Highlight data points */
 }
 
 .empty-state {
   text-align: center;
-  padding: 40rpx 0;
   color: var(--gray-light);
   font-size: 26rpx;
 }
 
+.diet-icon {
+  width: 420rpx !important;
+}
 /* 快捷入口按钮 */
 .quick-entry-row {
   display: flex;
   gap: 16rpx;
-  margin-top: 24rpx;
 }
 
 .ai-btn {
@@ -401,8 +401,11 @@
 .grid-3-col {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24rpx;
+  align-items: flex-end;
+  padding: 12rpx 24rpx;
+  margin-bottom: 12rpx;
+  background: rgba(233, 80, 63, 0.05); /* 淡淡的番茄色背景 */
+  border-radius: 12rpx;
 }
 
 .grid-item {
@@ -410,6 +413,11 @@
   flex-direction: column;
   align-items: center;
   flex: 1;
+}
+
+.bold {
+  font-weight: bold;
+  font-size: 32rpx;
 }
 
 .vertical-divider {
@@ -425,16 +433,10 @@
 }
 
 .grid-item .value {
-  font-size: 36rpx;
-  font-weight: bold;
   color: var(--gray-dark);
 }
 
-.grid-item .value.good { color: var(--tomato-red); } /* 缺口 -> 红 (燃烧) */
-.grid-item .value.bad { color: var(--warning); }
-
 .card-footer-info {
-  background: rgba(233, 80, 63, 0.05); /* 淡淡的番茄色背景 */
   padding: 16rpx;
   border-radius: 16rpx;
   display: flex;
@@ -454,11 +456,6 @@
 .grid-4-col {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 32rpx;
-}
-
-.grid-4-col .grid-item .value {
-  font-size: 32rpx;
 }
 
 .grid-4-col .grid-item.highlight .value {
@@ -524,7 +521,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.5); 
+  background: rgba(255, 255, 255, 0.1); 
   backdrop-filter: blur(1px);
   z-index: 100;
   display: flex;
@@ -532,12 +529,18 @@
   justify-content: center;
   align-items: center;
   border-radius: 20rpx;
-  color: var(--gray-medium);
+  color: var(--tomato-red);
+  font-weight: 600;
   font-size: 28rpx;
 }
 
 .lock-icon {
   font-size: 64rpx;
-  margin-bottom: 16rpx;
-  opacity: 0.5;
+  margin-bottom: 8rpx
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

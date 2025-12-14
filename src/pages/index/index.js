@@ -401,12 +401,13 @@ Page({
   calculateCalorieBalance(profile) {
     const intake = this.data.calorieData.intake;
     const activeBurn = this.data.calorieData.activeBurn;
-    const totalBurned = calculateDailyCalories(profile) + activeBurn;
-    const diff = intake - totalBurned;
+    const dailyTarget = calculateDailyCalories(profile);
+    const totalBurned = dailyTarget + activeBurn;
+    const diff = totalBurned - intake;
     
     // 预计日减重 (每7700kcal约1kg脂肪)
     // 只有当有缺口(diff < 0)时才计算减重
-    const projectedLoss = diff < 0 ? (Math.abs(diff) / 7700).toFixed(2) : 0;
+    const projectedLoss = diff > 0 ? (Math.abs(diff) / 7700).toFixed(2) : 0;
     
     let gapStatus = '';
     if (diff < -300 && diff > -800) gapStatus = '🔥 燃脂区间';
@@ -418,6 +419,7 @@ Page({
         calorieData: {
             intake,
             activeBurn,
+            dailyTarget,
             burned: totalBurned,
             diff: diff, // 显示如 -500
             projectedLoss,
