@@ -483,7 +483,7 @@ Page({
     
     return {
       title: '拍照识热量，轻松控饮食',
-      path: `/pages/questionnaire/questionnaire?referrerId=${openId}`, // 带上 openId
+      path: `/pages/questionnaire/questionnaire?referrerId=${openId}&channel=wechat`,
       imageUrl: 'https://whpuedison.online/images/kongka_share.jpg'
     };
   },
@@ -495,7 +495,7 @@ Page({
     const openId = app.globalData.openId || wx.getStorageSync('openId');
     return {
           title: '拍照识热量，轻松控饮食',
-          path: `/pages/questionnaire/questionnaire?referrerId=${openId}`, // 带上 openId
+          query: `referrerId=${openId}&channel=wechat`,
           imageUrl: 'https://whpuedison.online/images/tomato.jpg'
         };
    }

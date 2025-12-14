@@ -74,16 +74,24 @@ Page({
       target_date: null
     },
     // 推荐人ID
-    referrerId: null
+    referrerId: null,
+    // 渠道来源
+    channel: null
   },
 
   onLoad(options) {
-    // 获取推荐人ID
+    // 获取推荐人ID和渠道来源
     if (options && options.referrerId) {
       this.setData({
         referrerId: options.referrerId
       });
       console.log('Referrer ID:', options.referrerId);
+    }
+    if (options && options.channel) {
+      this.setData({
+        channel: options.channel
+      });
+      console.log('Channel:', options.channel);
     }
 
     // 设置 tabBar 隐藏（如果存在）
@@ -432,7 +440,7 @@ Page({
   // 提交问卷
   async submitQuestionnaire() {
     const openId = app.globalData.openId || wx.getStorageSync('openId');
-    const { selectedGender, selectedHeight, selectedWeight, age, targetWeight, targetDate, referrerId } = this.data;
+    const { selectedGender, selectedHeight, selectedWeight, age, targetWeight, targetDate, referrerId, channel } = this.data;
 
     // 显示加载提示
     wx.showLoading({
@@ -448,7 +456,8 @@ Page({
         weight: selectedWeight,
         age: age,
         gender: selectedGender === 'male' ? '男' : '女',
-        referrerId // 传入推荐人ID
+        referrerId, // 传入推荐人ID
+        channel // 传入渠道来源
       };
 
       const profileResult = await Http.post(API.USER_PROFILE, profileData);
@@ -784,7 +793,7 @@ Page({
       const openId = app.globalData.openId || wx.getStorageSync('openId');
       return {
         title: '拍照识热量，轻松控饮食',
-        path: `/pages/questionnaire/questionnaire?referrerId=${openId}`,
+        path: `/pages/questionnaire/questionnaire?referrerId=${openId}&channel=wechat`,
         imageUrl: 'https://whpuedison.online/images/kongka_share.jpg'
       };
     },
@@ -794,7 +803,7 @@ Page({
       const openId = app.globalData.openId || wx.getStorageSync('openId');
       return {
             title: '拍照识热量，轻松控饮食',
-            query: `referrerId=${openId}`,
+            query: `referrerId=${openId}&channel=wechat`,
             imageUrl: 'https://whpuedison.online/images/tomato.jpg'
           };
      }
