@@ -158,7 +158,6 @@ Page({
       Http.get(API.USER_GOALS, { openId }),              // 目标
       Http.get(API.USER_DIET_RECORDS, { openId, startDate: dateStr, endDate: dateStr }),     // 饮食记录明细
       Http.get(API.USER_EXERCISE_RECORDS, { openId, startDate: dateStr, endDate: dateStr }), // 运动记录明细
-      Http.get(API.USER_DIET_STATS, { openId }),         // 饮食统计 (虽然有记录明细，但统计接口可能有汇总值，这里主要用明细聚合)
     ]).then(([profileRes, goalsRes, dietRes, exerciseRes]) => {
       const profile = profileRes.data || {};
       const goals = goalsRes.data || {};
