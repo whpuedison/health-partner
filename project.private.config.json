@@ -5,5 +5,18 @@
         "compileHotReLoad": true,
         "urlCheck": false
     },
-    "libVersion": "3.11.0"
+    "libVersion": "3.11.0",
+    "condition": {
+        "miniprogram": {
+            "list": [
+                {
+                    "name": "小红书分享",
+                    "pathName": "pages/questionnaire/questionnaire",
+                    "query": "channel=xiaohongshu",
+                    "scene": null,
+                    "launchMode": "default"
+                }
+            ]
+        }
+    }
 }
