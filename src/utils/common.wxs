@@ -1,0 +1,9 @@
+var imgSrc = function(src) {
+  return 'https://whpuedison.online/images/' + src;
+}
+
+
+// 导出方法
+module.exports = {
+  imgSrc: imgSrc
+};

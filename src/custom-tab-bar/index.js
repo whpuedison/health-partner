@@ -70,12 +70,8 @@ Component({
       
       const updateShapeMenu = (enable) => {
         const subMenus = this.data.subMenus;
-        // 更新"记体型"菜单的跳转路径
-        const shapeMenuIndex = subMenus.findIndex(item => item.text === '记体型');
-        if (shapeMenuIndex !== -1) {
-          subMenus[shapeMenuIndex].pagePath = `/pages/post/post?powerEnable=${enable ? 1 : 0}`;
-          this.setData({ subMenus });
-        }
+        subMenus[4].pagePath = `/pages/post/post?powerEnable=${enable ? 1 : 0}`;
+        this.setData({ subMenus });
       };
 
       if (app.globalData && typeof app.globalData.powerEnable !== 'undefined') {
@@ -83,28 +79,39 @@ Component({
         updateShapeMenu(app.globalData.powerEnable);
       } else {
         // 请求接口
-        Http.get(API.POST_POWER_ENABLE).then(res => {
-          const powerEnable = res.data;
-          // 写入缓存
-          if (app.globalData) {
-            app.globalData.powerEnable = powerEnable;
-          }
-          updateShapeMenu(powerEnable);
-        }).catch(err => {
-          console.error('获取功能开关失败:', err);
-        });
+       setTimeout(() => {
+           Http.get(API.POST_POWER_ENABLE).then(res => {
+            const powerEnable = res.data;
+            // 写入缓存
+            if (app.globalData) {
+              app.globalData.powerEnable = powerEnable;
+            }
+            updateShapeMenu(powerEnable);
+          }).catch(err => {
+            console.error('获取功能开关失败:', err);
+          });
+       }, 1000)
       }
     },
   },
 
   methods: {
+    // 点击+按钮（切换显示/隐藏）
+    onAddButtonClick() {
+      this.setData({
+        showSubMenu: !this.data.showSubMenu,
+        activeSubMenu: -1,
+      });
+    },
+
     // 普通点击事件
-    onChange(event) {
+    onChangeTab(event) {
       const { index } = event.currentTarget.dataset;
       const item = this.data.list[index];
       
       // 如果是添加按钮，不处理点击（只处理长按）
       if (item.isAdd) {
+        this.onAddButtonClick()
         return;
       }
       
@@ -113,14 +120,6 @@ Component({
       });
       
       this.setData({ active: index });
-    },
-
-    // 点击+按钮（切换显示/隐藏）
-    onAddButtonClick() {
-      this.setData({
-        showSubMenu: !this.data.showSubMenu,
-        activeSubMenu: -1,
-      });
     },
 
     // 点击子菜单项
@@ -138,17 +137,6 @@ Component({
       wx.navigateTo({
         url: selectedMenu.pagePath,
       });
-    },
-
-    // 鼠标悬停高亮（可选，用于更好的视觉反馈）
-    onSubMenuHover(event) {
-      const { index } = event.currentTarget.dataset;
-      this.setData({ activeSubMenu: index });
-    },
-
-    // 鼠标离开取消高亮
-    onSubMenuLeave() {
-      this.setData({ activeSubMenu: -1 });
     },
 
     // 点击遮罩关闭

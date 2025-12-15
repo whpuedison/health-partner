@@ -5,12 +5,10 @@
     wx:for="{{list}}" 
     wx:key="text"
     data-index="{{index}}"
-    bindtap="{{item.isAdd ? '' : 'onChange'}}"
+    bindtap="onChangeTab"
   >
     <text 
       class="tab-icon {{showSubMenu && item.isAdd ? 'rotate' : ''}}"
-      bindtap="{{item.isAdd ? 'onAddButtonClick' : ''}}"
-      catchtap="{{item.isAdd ? 'onAddButtonClick' : ''}}"
     >{{item.icon}}</text>
     <text class="tab-text" wx:if="{{!item.isAdd}}">{{item.text}}</text>
   </view>
@@ -33,8 +31,6 @@
     wx:key="text"
     data-index="{{index}}"
     bindtap="onSubMenuClick"
-    bindtouchstart="onSubMenuHover"
-    bindtouchend="onSubMenuLeave"
   >
     <view class="sub-menu-content">
       <text class="sub-menu-icon">{{item.icon}}</text>

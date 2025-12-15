@@ -1,4 +1,5 @@
-<!--pages/questionnaire/questionnaire.wxml-->
+<wxs src="../../utils/common.wxs" module="utils" />
+
 <!-- Loading界面 -->
 <view class="loading-container" wx:if="{{isLoading}}">
   <view class="loading-spinner-section">
@@ -32,18 +33,18 @@
         <view 
           class="option-item {{selectedGender === 'male' ? 'selected' : ''}}"
           data-gender="male"
-          bindtap="selectGender"
+          bindtap="onSelectGender"
         >
-         <image class="option-avatar" src="https://whpuedison.online/images/male_avatar.png"></image>
+         <image class="option-avatar" src="{{utils.imgSrc('male_avatar.png')}}"></image>
           <text class="option-text">男性</text>
         </view>
         
         <view 
           class="option-item {{selectedGender === 'female' ? 'selected' : ''}}"
           data-gender="female"
-          bindtap="selectGender"
+          bindtap="onSelectGender"
         >
-          <image class="option-avatar" src="https://whpuedison.online/images/female_avatar.png"></image>
+          <image class="option-avatar" src="{{utils.imgSrc('female_avatar.png')}}"></image>
           <text class="option-text">女性</text>
         </view>
       </view>
@@ -217,7 +218,7 @@
           <text class="planning-value">{{targetDate}} ({{daysLeft}} 天后)</text>
         </view>
         <view class="planning-content">
-          <text class="planning-text">需要每周 {{weeklyChangeForDate}}kg {{weightChangeTypeForDate === 'lose' ? '减重' : weightChangeTypeForDate === 'gain' ? '增重' : '维持'}}，{{goalDateEncouragement}}</text>
+          <text class="planning-text">需要每周{{weeklyChangeForDate}}kg减重，{{goalDateEncouragement}}</text>
         </view>
       </view>
 
@@ -233,7 +234,7 @@
   <van-popup
     show="{{ showDatePicker }}"
     position="bottom"
-    bind:close="onPopupClose"
+    bind:close="onDateCancel"
   >
     <van-datetime-picker
       value="{{ currentDate }}"
@@ -241,7 +242,6 @@
       title="选择出生日期"
       min-date="{{ minDate }}"
       max-date="{{ maxDate }}"
-      bind:input="onInput"
       bind:confirm="onDateConfirm"
       bind:cancel="onDateCancel"
       formatter="{{ formatter }}"
@@ -252,10 +252,10 @@
   <van-popup
     show="{{ showTargetDatePicker }}"
     position="bottom"
-    bind:close="onTargetDatePopupClose"
+    bind:close="onTargetDateCancel"
   >
     <van-datetime-picker
-      value="{{ targetDateTimestamp || targetMinDate }}"
+      value="{{ targetDateTimestamp }}"
       type="date"
       title="选择目标完成日期"
       min-date="{{ targetMinDate }}"

@@ -83,6 +83,37 @@ function calculateIndicatorPosition(bmi) {
   }
 }
 
+// 计算年龄
+function calculateAge(birthDate) {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+
+    return age;
+  }
+
+// 获取年龄描述
+function getAgeDescription(age) {
+    if (age < 18) {
+      return '青少年时期，身体发育关键阶段。基础代谢水平较高，建议保持均衡营养摄入和适量运动，促进身体健康成长。';
+    } else if (age < 30) {
+      return '青年时期，新陈代谢旺盛，能量消耗较高。这是建立健康生活习惯的最好时机，坚持规律锻炼可以帮助维持体形。';
+    } else if (age < 45) {
+      return '中年初期，工作压力增大，基础代谢水平开始下降。建议注重饮食健康，规律运动，避免脂肪堆积。';
+    } else if (age < 60) {
+      return '中年后期，基础代谢水平进一步下降，身体各项机能需要保养。建议定期体检，注重骨骼健康和心血管保健。';
+    } else if (age < 75) {
+      return '老年初期，基础代谢水平明显下降，肌肉量减少。建议补充优质蛋白质，轻柔有氧运动，促进钙吸收。';
+    } else {
+      return '高龄阶段，需要特别关注营养均衡和身体机能保养。建议定期咨询医生，定制适合的养生方案。';
+    }
+  }
+
 /**
  * 获取代谢水平
  * @param {number} age - 年龄
@@ -116,6 +147,45 @@ function getDifficultyLevel(weightLossTotal, planDays) {
   }
 }
 
+ // 计算基于目标日期的每周变化量
+ function calculateWeeklyChangeForDate(weeks, selectedWeight, targetWeight) {
+    if (!weeks || weeks <= 0) return 0;
+    const totalChange = selectedWeight- targetWeight ;
+    return Math.round((totalChange / weeks) * 100) / 100; // 保留两位小数
+  }
+
+    // 获取目标日期的鼓励文字
+  function getGoalDateEncouragement(weeklyChange, changeType) {
+    const absWeeklyChange = Math.abs(weeklyChange);
+     if (absWeeklyChange <= 0.3) {
+        return '🌿 健康减重第一步！温和调整饮食习惯，你会发现身体发生的惊喜变化！';
+      } else if (absWeeklyChange <= 0.7) {
+        return '🏃‍♀️ 专业减重方案！结合运动和饮食控制，让你拥有持久的减重效果！';
+      } else {
+        return '🔥 高效减重计划！在医生指导下科学控制，帮你快速实现目标身材！';
+    }
+  }
+
+   // 格式化日期为YYYY-MM-DD格式
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+    // 计算到目标日期的天数
+ function calculateDaysLeft(targetDate) {
+    const today = new Date();
+    const target = new Date(targetDate);
+    today.setHours(0, 0, 0, 0);
+    target.setHours(0, 0, 0, 0);
+
+    const diffTime = target.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return Math.max(1, diffDays); // 至少1天
+  }
+
 /**
  * 计算每日所需卡路里
  * @param {Object} params - 参数对象
@@ -123,11 +193,10 @@ function getDifficultyLevel(weightLossTotal, planDays) {
  * @param {number} params.height - 身高(cm)
  * @param {number} params.age - 年龄
  * @param {string} params.gender - 性别 ('male' | 'female')
- * @param {string} params.metabolismLevel - 代谢水平 ('high' | 'medium' | 'low')
  * @returns {number} 每日所需卡路里
  */
 function calculateDailyCalories(params) {
-  const { currentWeight: _currentWeight, weight, height, age, gender, metabolismLevel = 'medium' } = params;
+  const { currentWeight: _currentWeight, weight, height, age, gender} = params;
 
   const currentWeight = _currentWeight || weight;
   
@@ -145,10 +214,7 @@ function calculateDailyCalories(params) {
   // 维持当前体重的每日热量
   const maintenanceCalories = bmr * activityMultiplier;
   
-  // 减重热量缺口 (500卡路里缺口，约每周减重0.5kg)
-  const weightLossCalories = maintenanceCalories - 500;
-  
-  return Math.round(weightLossCalories);
+  return Math.round(maintenanceCalories);
 }
 
 /**
@@ -199,11 +265,17 @@ function calculateWeeklyLossRate(weightLossTotal, planDays) {
 module.exports = {
   calculateBMI,
   getBMIStatus,
+  calculateAge,
+  getAgeDescription,
   getMetabolismLevel,
   getDifficultyLevel,
   calculateDailyCalories,
   calculatePlanDays,
   calculateNutrientGrams,
   calculateWeeklyLossRate,
-  calculateIndicatorPosition
+  calculateIndicatorPosition,
+  calculateWeeklyChangeForDate,
+  getGoalDateEncouragement,
+  formatDate,
+  calculateDaysLeft
 };
