@@ -131,35 +131,7 @@ Page({
 
   // 加载数据
   loadData() {
-    this.loadStats();
     this.loadRecords();
-  },
-
-  // 加载统计
-  loadStats() {
-    // 实际上我们需要加载指定日期的统计，但接口只支持今日。
-    // 如果是选中的今日，调用今日接口，否则我们可能需要从记录列表中计算
-    if (this.data.selectedDate === this.formatDate(new Date())) {
-      const openId = app.globalData.openId || wx.getStorageSync('openId');
-      Http.get(API.USER_EXERCISE_STATS, { openId }).then(res => {
-        if (res.data) {
-          this.setData({
-            todayStats: {
-              duration: res.data.totalDuration || 0,
-              calories: res.data.totalCalories || 0
-            }
-          });
-        }
-      });
-    } else {
-      // 非今日，通过记录计算
-      const records = this.data.todayRecords || [];
-      const duration = records.reduce((sum, r) => sum + r.duration, 0);
-      const calories = records.reduce((sum, r) => sum + r.calories, 0);
-      this.setData({
-        todayStats: { duration, calories }
-      });
-    }
   },
 
   // 加载记录
@@ -170,33 +142,22 @@ Page({
       startDate: this.data.selectedDate,
       endDate: this.data.selectedDate
     }).then(res => {
-      if (res.data) {
-        // 处理记录显示，匹配图标等
-        const records = res.data.map(r => {
-          let icon = '🏃';
-          // 尝试匹配图标
-          for (const cat of this.data.exerciseCategories) {
-            const ex = cat.exercises.find(e => e.name === r.exerciseType);
-            if (ex) {
-              icon = ex.icon;
-              break;
-            }
+      if (res.data && res.data.list) {
+        // 后端现在返回 { list, totalDuration, totalCalories }
+        const { list, totalDuration, totalCalories } = res.data;
+        
+        this.setData({ 
+          todayRecords: list,
+          todayStats: {
+            duration: totalDuration,
+            calories: totalCalories
           }
-          return {
-            ...r,
-            icon,
-            time: new Date(r.createdAt || r.recordDate).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
-          };
         });
-        
-        this.setData({ todayRecords: records });
-        
-        // 如果不是今日，重新计算统计
-        if (this.data.selectedDate !== this.formatDate(new Date())) {
-          this.loadStats();
-        }
       } else {
-        this.setData({ todayRecords: [] });
+        this.setData({ 
+          todayRecords: [],
+          todayStats: { duration: 0, calories: 0 }
+        });
       }
     });
   },
@@ -248,6 +209,7 @@ Page({
       openId,
       exerciseType: currentExercise.name,
       exerciseId: currentExerciseId,
+      icon: currentExercise.icon,
       duration: parseInt(durationInput),
       caloriesPerMinute: currentExercise.calories,
       recordDate: selectedDate
@@ -355,6 +317,7 @@ Page({
       openId,
       exerciseId,
       exerciseType: exercise_name,
+      icon: recognitionResult.exercise_icon,
       duration: duration_minutes,
       calories: calories,
       recordDate: selectedDate

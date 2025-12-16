@@ -113,7 +113,7 @@
 }
 
 .stat-val.red {
-  background: linear-gradient(135deg, #FF9966 0%, #FF5E62 100%);
+  background: var(--vibrant-orange);
   -webkit-background-clip: text;
   color: transparent;
 }
