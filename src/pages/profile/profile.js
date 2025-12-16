@@ -104,47 +104,6 @@ Page({
     });
   },
 
-  // 后台刷新健康档案数据（不阻塞UI）
-  refreshProfile() {
-    // 防止重复调用
-    if (this._refreshingProfile) {
-      return;
-    }
-    this._refreshingProfile = true;
-    
-    const openId = app.globalData.openId || wx.getStorageSync('openId');
-    if (!openId) {
-      this._refreshingProfile = false;
-      return;
-    }
-    
-    Http.get(API.USER_PROFILE, {
-      openId: openId
-    }).then((result) => {
-      if (result.data) {
-        // 更新全局数据和本地存储
-        app.globalData.profile = result.data;
-        wx.setStorageSync('profile', result.data);
-        
-        // 重新计算并更新显示
-        const bmi = calculateBMI(result.data.height, result.data.weight);
-        this.setData({
-          profile: {
-            height: result.data.height || 0,
-            weight: result.data.weight || 0,
-            age: result.data.age || 0,
-            bmi: bmi > 0 ? parseFloat(bmi.toFixed(1)) : 0,
-          },
-        });
-      }
-      this._refreshingProfile = false;
-    }).catch((error) => {
-      // 静默失败，不影响UI
-      console.error('后台刷新健康档案失败', error);
-      this._refreshingProfile = false;
-    });
-  },
-
   // 选择头像
   onChooseAvatar(e) {
     const { avatarUrl } = e.detail;
