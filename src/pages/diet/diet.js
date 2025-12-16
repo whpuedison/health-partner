@@ -63,6 +63,10 @@ Page({
     // 加载状态
     loading: false,
     
+    // AI Loading Component
+    aiLoading: false,
+    loadingText: 'AI正在分析中...',
+    
     // 功能锁定
     isLocked: true
   },
@@ -369,34 +373,10 @@ Page({
    * 识别食物
    */
   async recognizeFood(imagePath) {
-    // 提示语列表
-    const tips = [
-      'AI正在分析中',
-      '大约需要30秒',
-      '正在识别食物',
-      '分析营养成分中',
-      '计算卡路里中'
-    ];
-    
-    let currentTipIndex = 0;
-    
-    // 显示初始提示
-    wx.showLoading({ 
-      title: tips[0], 
-      mask: true 
+    this.setData({
+        aiLoading: true,
+        loadingText: 'AI正在分析营养成分...'
     });
-
-    // 每8秒轮播一次提示，到最后一条就停止
-    const tipTimer = setInterval(() => {
-      if (currentTipIndex < tips.length - 1) {
-        currentTipIndex++;
-        wx.showLoading({ 
-          title: tips[currentTipIndex], 
-          mask: true 
-        });
-      }
-      // 到达最后一条后不再更新，保持显示"计算卡路里中..."
-    }, 8000);
 
     try {
       // 转换为base64
@@ -407,9 +387,7 @@ Page({
         imageBase64: base64
       }, null, true); // 启用长超时（5分钟）
 
-      // 清除定时器
-      clearInterval(tipTimer);
-      wx.hideLoading();
+      this.setData({ aiLoading: false });
       console.log(res);
       const { foods, totalNutrition } = res?.data || {}
       if (foods?.length > 0) {
@@ -424,9 +402,7 @@ Page({
         wx.showToast({ title: '未识别到食物', icon: 'none' });
       }
     } catch (error) {
-      // 清除定时器
-      clearInterval(tipTimer);
-      wx.hideLoading();
+      this.setData({ aiLoading: false });
       console.error('识别失败:', error);
       wx.showToast({ title: '识别失败，请重试', icon: 'none' });
     }
@@ -521,7 +497,10 @@ Page({
     }
 
     // 如果修改了名称，调用AI重新分析
-    wx.showLoading({ title: '分析中...' });
+    this.setData({
+        aiLoading: true,
+        loadingText: 'AI正在分析中...'
+    });
 
     try {
       const result = await Http.post(API.FOOD_ANALYZE, {
@@ -551,9 +530,9 @@ Page({
         });
       }
 
-      wx.hideLoading();
+      this.setData({ aiLoading: false });
     } catch (error) {
-      wx.hideLoading();
+      this.setData({ aiLoading: false });
       console.error('分析失败:', error);
       wx.showToast({ title: '分析失败', icon: 'none' });
     }
@@ -658,32 +637,10 @@ Page({
 
     this.closeTextInput();
     
-    // 提示语列表
-    const tips = [
-      'AI正在分析中',
-      '正在识别食物',
-      '分析营养成分中',
-      '计算卡路里中'
-    ];
-    
-    let currentTipIndex = 0;
-    
-    // 显示初始提示
-    wx.showLoading({ 
-      title: tips[0], 
-      mask: true 
+    this.setData({
+        aiLoading: true,
+        loadingText: 'AI分析文本中...'
     });
-
-    // 每10秒轮播一次提示，到最后一条就停止
-    const tipTimer = setInterval(() => {
-      if (currentTipIndex < tips.length - 1) {
-        currentTipIndex++;
-        wx.showLoading({ 
-          title: tips[currentTipIndex], 
-          mask: true 
-        });
-      }
-    }, 10000);
 
     try {
       // 调用文本识别API（复用食物识别的后端逻辑）
@@ -691,9 +648,7 @@ Page({
         text: dietText.trim()
       }, null, true);
 
-      // 清除定时器
-      clearInterval(tipTimer);
-      wx.hideLoading();
+      this.setData({ aiLoading: false });
 
       if (res?.data?.foods?.length > 0) {
         this.setData({
@@ -704,8 +659,7 @@ Page({
         wx.showToast({ title: '未识别到食物', icon: 'none' });
       }
     } catch (error) {
-      clearInterval(tipTimer);
-      wx.hideLoading();
+      this.setData({ aiLoading: false });
       console.error('识别失败:', error);
       wx.showToast({ title: '识别失败，请重试', icon: 'none' });
     }

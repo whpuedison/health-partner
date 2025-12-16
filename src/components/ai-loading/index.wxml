@@ -1,0 +1,30 @@
+<view class="ai-loading-container {{ show ? 'show' : '' }}" catchtouchmove="preventTouchMove">
+  <view class="mask"></view>
+  <view class="content-box">
+    <!-- 顶部动画区 -->
+    <view class="animation-area">
+      <view class="pulse-ring"></view>
+      <view class="pulse-ring delay-1"></view>
+      <view class="icon-wrapper">
+        <view class="food-icon">🥑</view>
+      </view>
+    </view>
+
+    <!-- 状态文本 -->
+    <view class="status-text">
+        <text>{{text}}</text>
+        <text class="dots">{{dots}}</text>
+    </view>
+
+    <!-- 进度条 -->
+    <view class="progress-bar-bg">
+      <view class="progress-bar-fill" style="width: {{progress}}%;"></view>
+    </view>
+
+    <!-- 知识卡片 -->
+    <view class="tip-card">
+      <view class="tip-title">你知道吗？</view>
+      <view class="tip-content">{{currentTip}}</view>
+    </view>
+  </view>
+</view>

@@ -31,7 +31,9 @@ Page({
     // AI文本识别
     showTextInput: false,
     exerciseText: '',
-    // 移除自定义loading状态
+    
+    // AI Loading
+    aiLoading: false,
     
     // AI识别结果弹窗
     showResultPopup: false,
@@ -260,40 +262,13 @@ Page({
     
     this.closeTextInput();
     
-    // 提示语列表
-    const tips = [
-      'AI正在分析中',
-      '正在识别运动',
-      '分析运动强度中',
-      '计算卡路里中'
-    ];
-    
-    let currentTipIndex = 0;
-    
-    // 显示初始提示
-    wx.showLoading({
-      title: tips[0],
-      mask: true
-    });
-
-    // 每10秒轮播一次提示，到最后一条就停止
-    const tipTimer = setInterval(() => {
-      if (currentTipIndex < tips.length - 1) {
-        currentTipIndex++;
-        wx.showLoading({ 
-          title: tips[currentTipIndex], 
-          mask: true 
-        });
-      }
-      // 到达最后一条后不再更新，保持显示"计算卡路里中..."
-    }, 10000);
+    this.setData({ aiLoading: true });
     
     Http.post(API.EXERCISE_RECOGNIZE_TEXT, {
       text: this.data.exerciseText,
       profile: this.data.profile
     }, null, true).then(res => { // 增加 true 参数以支持长超时
-      clearInterval(tipTimer); // 清除定时器
-      wx.hideLoading();
+      this.setData({ aiLoading: false });
       if (res.data) {
         this.setData({
           showResultPopup: true,
@@ -301,8 +276,7 @@ Page({
         });
       }
     }).catch(err => {
-      clearInterval(tipTimer); // 清除定时器
-      wx.hideLoading();
+      this.setData({ aiLoading: false });
       console.error('AI识别错误详情:', err); // 增加日志以便调试
       wx.showToast({ title: '识别失败，请重试', icon: 'none' });
     });
