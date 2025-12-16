@@ -39,27 +39,6 @@
         </view>
       </view>
     </view>
-
-    <!-- Today's Record List (Immediately below stats) -->
-    <view class="today-list" wx:if="{{todayRecords.length > 0}}">
-      <view class="list-header" bindtap="toggleTodayList">
-        <text class="list-title">今日已完成</text>
-        <van-icon name="{{todayListExpanded ? 'arrow-up' : 'arrow-down'}}" color="#A0AEC0" size="16px" />
-      </view>
-      
-      <view class="record-list-container" wx:if="{{todayListExpanded}}">
-        <view class="record-item compact" wx:for="{{todayRecords}}" wx:key="id">
-          <view class="record-icon">{{item.icon}}</view>
-          <view class="record-info">
-            <text class="record-name">{{item.exerciseType}}</text>
-            <text class="record-detail">{{item.duration}}分钟 · {{item.calories}}千卡</text>
-          </view>
-          <view class="delete-btn" catchtap="deleteRecord" data-id="{{item.id}}">
-            <van-icon name="cross" color="var(--vibrant-orange)" size="16px" />
-          </view>
-        </view>
-      </view>
-    </view>
   </view>
 
   <!-- AI 记运动 -->
@@ -104,6 +83,27 @@
       </view>
     </view>
   </view>
+
+   <!-- Today's Record List (Immediately below stats) -->
+    <view class="today-list" wx:if="{{todayRecords.length > 0}}">
+      <view class="list-header" bindtap="toggleTodayList">
+        <text class="list-title">🏃 运动明细</text>
+        <van-icon name="{{todayListExpanded ? 'arrow-up' : 'arrow-down'}}" color="#A0AEC0" size="16px" />
+      </view>
+      
+      <view class="record-list-container" wx:if="{{todayListExpanded}}">
+        <view class="record-item compact" wx:for="{{todayRecords}}" wx:key="id">
+          <view class="record-icon">{{item.icon}}</view>
+          <view class="record-info">
+            <text class="record-name">{{item.exerciseType}}</text>
+            <text class="record-detail">{{item.duration}}分钟 · {{item.calories}}千卡</text>
+          </view>
+          <view class="delete-btn" catchtap="deleteRecord" data-id="{{item.id}}">
+            <van-icon name="cross" color="var(--vibrant-orange)" size="16px" />
+          </view>
+        </view>
+      </view>
+    </view>
 
   <!-- 底部占位 -->
   <view style="height: 100rpx;"></view>

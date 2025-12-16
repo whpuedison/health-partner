@@ -159,16 +159,6 @@
   align-items: center;
 }
 
-.list-title::before {
-  content: '';
-  display: block;
-  width: 8rpx;
-  height: 32rpx;
-  background: var(--tomato-red);
-  border-radius: 4rpx;
-  margin-right: 16rpx;
-}
-
 .record-item.compact {
   display: flex;
   align-items: center;
