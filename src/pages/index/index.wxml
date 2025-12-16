@@ -166,7 +166,7 @@
         <view class="meal-accordion" wx:if="{{dietRecords.snack.list.length > 0}}">
             <view class="accordion-head" bindtap="toggleMealSection" data-meal="snack">
                 <view class="head-left">
-                    <text class="meal-icon">🍪</text>
+                    <text class="meal-icon">🍎</text>
                     <text class="head-title">加餐</text>
                 </view>
                 <view class="head-right">

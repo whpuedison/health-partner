@@ -12,29 +12,28 @@ Page({
     
     // 营养数据
     todayIntake: 0,        // 今日摄入
-    todayBurned: 0,        // 今日消耗
+    todayBurned: 0,        // 运动消耗
     todayRemaining: 0,     // 还可以吃
-    targetCalories: 0,  // 目标卡路里
     
     // 营养素数据
-    protein: { current: 0, target: 60 },
-    fat: { current: 0, target: 50 },
-    carbs: { current: 0, target: 200 },
+    protein: { current: 0, target: 0 },
+    fat: { current: 0, target: 0 },
+    carbs: { current: 0, target: 0 },
     
     // 饮食记录
     mealGroups: {
-      '早餐': [],
-      '午餐': [],
-      '晚餐': [],
-      '加餐': []
+      breakfast: [],
+      lunch: [],
+      dinner: [],
+      snack: []
     },
     
     // 折叠状态
     expandedMeals: {
-      '早餐': false,
-      '午餐': false,
-      '晚餐': false,
-      '加餐': true  // 加餐默认展开
+      breakfast: false,
+      lunch: false,
+      dinner: false,
+      snack: false  // 加餐默认展开
     },
     
     // 拍照相关
@@ -50,8 +49,8 @@ Page({
     showMealTypeSelector: false,
     selectedMealType: '',
     mealTypes: [
-      { value: '早餐', icon: '🌅' },
-      { value: '午餐', icon: '🌞' },
+      { value: '早餐', icon: '☀️' },
+      { value: '午餐', icon: '🌤️' },
       { value: '晚餐', icon: '🌙' },
       { value: '加餐', icon: '🍎' }
     ],
@@ -74,7 +73,6 @@ Page({
 
   onLoad(options) {
     this.initWeekCalendar();
-    this.loadTodayData();
 
     // 自动触发功能
     if (options && options.mode) {
@@ -123,12 +121,16 @@ Page({
         isToday
       });
     }
+
+    const selectedDate = this.formatDate(today)
     
     this.setData({
       weekDays,
-      selectedDate: this.formatDate(today),
+      selectedDate,
       currentWeekStart: monday
     });
+
+    this.loadDateData(selectedDate);
   },
 
   /**
@@ -172,13 +174,6 @@ Page({
   },
 
   /**
-   * 加载今日数据
-   */
-  async loadTodayData() {
-    await this.loadDateData(this.data.selectedDate);
-  },
-
-  /**
    * 加载指定日期数据
    */
   async loadDateData(date) {
@@ -209,11 +204,18 @@ Page({
       let totalCarbs = 0;
       
       // 按餐次分组
+      const mealKeyMap = {
+        '早餐': 'breakfast',
+        '午餐': 'lunch',
+        '晚餐': 'dinner',
+        '加餐': 'snack'
+      };
+
       const mealGroups = {
-        '早餐': [],
-        '午餐': [],
-        '晚餐': [],
-        '加餐': []
+        breakfast: [],
+        lunch: [],
+        dinner: [],
+        snack: []
       };
 
       if (dietResult.data) {
@@ -223,22 +225,16 @@ Page({
           totalFat += record.fat || 0;
           totalCarbs += record.carbs || 0;
           
-          const mealType = record.mealType || '加餐';
+          const mealType = record.mealType;
+          const groupKey = mealKeyMap[mealType];
+
           const recordData = {
             id: record.id,
             foodName: record.foodName,
             calories: record.calories,
-            time: new Date(record.createdAt).toLocaleTimeString('zh-CN', { 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })
           };
           
-          if (mealGroups[mealType]) {
-            mealGroups[mealType].push(recordData);
-          } else {
-            mealGroups['加餐'].push(recordData);
-          }
+          mealGroups[groupKey].push(recordData);
         });
       }
 
@@ -263,11 +259,11 @@ Page({
 
       // 计算目标消耗卡路里
       const profileResult = await Http.get(API.USER_PROFILE, { openId }) || {};
-      const targetCalories = calculateDailyCalories(profileResult.data);
-      const nutrientTargets = calculateNutrientGrams(targetCalories + totalBurned, { protein: 21, fat: 21, carbs: 58 });
+      const dailyTarget = calculateDailyCalories(profileResult.data);
+      const nutrientTargets = calculateNutrientGrams(dailyTarget + totalBurned, { protein: 21, fat: 21, carbs: 58 });
 
       // 计算剩余
-      const remaining = targetCalories - totalCalories + totalBurned;
+      const remaining = dailyTarget - totalCalories + totalBurned;
 
       this.setData({
         todayIntake: Math.round(totalCalories),
@@ -412,37 +408,23 @@ Page({
       const base64 = await this.imageToBase64(imagePath);
       
       // 调用识别API
-      const result = await Http.post(API.FOOD_RECOGNIZE, {
+      const res = await Http.post(API.FOOD_RECOGNIZE, {
         imageBase64: base64
       }, null, true); // 启用长超时（5分钟）
 
       // 清除定时器
       clearInterval(tipTimer);
       wx.hideLoading();
-
-      if (result.data && result.data.foods && result.data.foods.length > 0) {
-        // 格式化数据，保留1位小数
-        const formattedData = {
-          ...result.data,
-          foods: result.data.foods.map(food => ({
-            ...food,
-            calorie: parseFloat((food.calorie || 0).toFixed(1)),
-            protein: parseFloat((food.protein || 0).toFixed(1)),
-            carbs: parseFloat((food.carbs || 0).toFixed(1)),
-            fat: parseFloat((food.fat || 0).toFixed(1))
-          })),
-          totalNutrition: {
-            totalCalories: parseFloat((result.data.totalNutrition?.totalCalories || 0).toFixed(1)),
-            totalProtein: parseFloat((result.data.totalNutrition?.totalProtein || 0).toFixed(1)),
-            totalCarbs: parseFloat((result.data.totalNutrition?.totalCarbs || 0).toFixed(1)),
-            totalFat: parseFloat((result.data.totalNutrition?.totalFat || 0).toFixed(1))
-          }
-        };
-
+      console.log(res);
+      const { foods, totalNutrition } = res?.data || {}
+      if (foods?.length > 0) {
         this.setData({
           showRecognitionResult: true,
-          recognitionData: formattedData
-        });
+          recognitionData: { 
+            foods,
+            totalNutrition
+          },
+        })
       } else {
         wx.showToast({ title: '未识别到食物', icon: 'none' });
       }
@@ -713,7 +695,7 @@ Page({
 
     try {
       // 调用文本识别API（复用食物识别的后端逻辑）
-      const result = await Http.post(API.FOOD_RECOGNIZE_TEXT, {
+      const res = await Http.post(API.FOOD_RECOGNIZE_TEXT, {
         text: dietText.trim()
       }, null, true);
 
@@ -721,28 +703,10 @@ Page({
       clearInterval(tipTimer);
       wx.hideLoading();
 
-      if (result.data && result.data.foods && result.data.foods.length > 0) {
-        // 格式化数据
-        const formattedData = {
-          ...result.data,
-          foods: result.data.foods.map(food => ({
-            ...food,
-            calorie: parseFloat((food.calorie || 0).toFixed(1)),
-            protein: parseFloat((food.protein || 0).toFixed(1)),
-            carbs: parseFloat((food.carbs || 0).toFixed(1)),
-            fat: parseFloat((food.fat || 0).toFixed(1))
-          })),
-          totalNutrition: {
-            totalCalories: parseFloat((result.data.totalNutrition?.totalCalories || 0).toFixed(1)),
-            totalProtein: parseFloat((result.data.totalNutrition?.totalProtein || 0).toFixed(1)),
-            totalCarbs: parseFloat((result.data.totalNutrition?.totalCarbs || 0).toFixed(1)),
-            totalFat: parseFloat((result.data.totalNutrition?.totalFat || 0).toFixed(1))
-          }
-        };
-
+      if (res?.data?.foods?.length > 0) {
         this.setData({
           showRecognitionResult: true,
-          recognitionData: formattedData
+          recognitionData: res.data
         });
       } else {
         wx.showToast({ title: '未识别到食物', icon: 'none' });

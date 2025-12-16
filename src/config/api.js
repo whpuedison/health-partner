@@ -26,7 +26,6 @@ const API = {
   FOOD_CALCULATE: '/api/v1/food/calculate',
   FOOD_RECOGNIZE: '/api/v1/food/recognize',
   FOOD_RECOGNIZE_TEXT: '/api/v1/food/recognize-text',
-  FOOD_QUICK_ADD: '/api/v1/food/quick-add',
   FOOD_ANALYZE: '/api/v1/food/analyze',
   // 运动识别
   EXERCISE_RECOGNIZE_TEXT: '/api/v1/exercise/recognize-text',

@@ -127,20 +127,20 @@
     </view>
     
     <!-- 早餐 -->
-    <view class="meal-section" wx:if="{{mealGroups['早餐'].length > 0}}">
+    <view class="meal-section" wx:if="{{mealGroups.breakfast.length > 0}}">
       <!-- Header -->
-      <view class="meal-header" bindtap="toggleMeal" data-meal="早餐">
+      <view class="meal-header" bindtap="toggleMeal" data-meal="breakfast">
         <text class="meal-icon">🌅</text>
         <text class="meal-title">早餐</text>
         <view class="meal-summary">
-          <text class="meal-count">{{mealStats['早餐'].count}}项</text>
-          <text class="meal-calories">{{mealStats['早餐'].totalCalories}} kcal</text>
+          <text class="meal-count">{{mealStats.breakfast.count}}项</text>
+          <text class="meal-calories">{{mealStats.breakfast.totalCalories}} kcal</text>
         </view>
-        <text class="expand-icon {{expandedMeals['早餐'] ? 'expanded' : ''}}">▼</text>
+        <text class="expand-icon {{expandedMeals.breakfast ? 'expanded' : ''}}">▼</text>
       </view>
       <!-- List -->
-      <view class="records-list {{expandedMeals['早餐'] ? 'expanded' : 'collapsed'}}">
-        <view class="record-item" wx:for="{{mealGroups['早餐']}}" wx:key="id">
+      <view class="records-list {{expandedMeals.breakfast ? 'expanded' : 'collapsed'}}">
+        <view class="record-item" wx:for="{{mealGroups.breakfast}}" wx:key="id">
           <view class="record-info">
             <text class="food-name">{{item.foodName}}</text>
             <text class="record-time">{{item.time}}</text>
@@ -152,18 +152,18 @@
     </view>
 
     <!-- 午餐 -->
-    <view class="meal-section" wx:if="{{mealGroups['午餐'].length > 0}}">
-      <view class="meal-header" bindtap="toggleMeal" data-meal="午餐">
+    <view class="meal-section" wx:if="{{mealGroups.lunch.length > 0}}">
+      <view class="meal-header" bindtap="toggleMeal" data-meal="lunch">
         <text class="meal-icon">🌞</text>
         <text class="meal-title">午餐</text>
         <view class="meal-summary">
-          <text class="meal-count">{{mealStats['午餐'].count}}项</text>
-          <text class="meal-calories">{{mealStats['午餐'].totalCalories}} kcal</text>
+          <text class="meal-count">{{mealStats.lunch.count}}项</text>
+          <text class="meal-calories">{{mealStats.lunch.totalCalories}} kcal</text>
         </view>
-        <text class="expand-icon {{expandedMeals['午餐'] ? 'expanded' : ''}}">▼</text>
+        <text class="expand-icon {{expandedMeals.lunch ? 'expanded' : ''}}">▼</text>
       </view>
-      <view class="records-list {{expandedMeals['午餐'] ? 'expanded' : 'collapsed'}}">
-        <view class="record-item" wx:for="{{mealGroups['午餐']}}" wx:key="id">
+      <view class="records-list {{expandedMeals.lunch ? 'expanded' : 'collapsed'}}">
+        <view class="record-item" wx:for="{{mealGroups.lunch}}" wx:key="id">
           <view class="record-info">
             <text class="food-name">{{item.foodName}}</text>
             <text class="record-time">{{item.time}}</text>
@@ -175,18 +175,18 @@
     </view>
 
     <!-- 晚餐 -->
-    <view class="meal-section" wx:if="{{mealGroups['晚餐'].length > 0}}">
-      <view class="meal-header" bindtap="toggleMeal" data-meal="晚餐">
+    <view class="meal-section" wx:if="{{mealGroups.dinner.length > 0}}">
+      <view class="meal-header" bindtap="toggleMeal" data-meal="dinner">
         <text class="meal-icon">🌙</text>
         <text class="meal-title">晚餐</text>
         <view class="meal-summary">
-          <text class="meal-count">{{mealStats['晚餐'].count}}项</text>
-          <text class="meal-calories">{{mealStats['晚餐'].totalCalories}} kcal</text>
+          <text class="meal-count">{{mealStats.dinner.count}}项</text>
+          <text class="meal-calories">{{mealStats.dinner.totalCalories}} kcal</text>
         </view>
-        <text class="expand-icon {{expandedMeals['晚餐'] ? 'expanded' : ''}}">▼</text>
+        <text class="expand-icon {{expandedMeals.dinner ? 'expanded' : ''}}">▼</text>
       </view>
-      <view class="records-list {{expandedMeals['晚餐'] ? 'expanded' : 'collapsed'}}">
-        <view class="record-item" wx:for="{{mealGroups['晚餐']}}" wx:key="id">
+      <view class="records-list {{expandedMeals.dinner ? 'expanded' : 'collapsed'}}">
+        <view class="record-item" wx:for="{{mealGroups.dinner}}" wx:key="id">
           <view class="record-info">
             <text class="food-name">{{item.foodName}}</text>
             <text class="record-time">{{item.time}}</text>
@@ -198,18 +198,18 @@
     </view>
 
     <!-- 加餐 -->
-    <view class="meal-section" wx:if="{{mealGroups['加餐'].length > 0}}">
-      <view class="meal-header" bindtap="toggleMeal" data-meal="加餐">
+    <view class="meal-section" wx:if="{{mealGroups.snack.length > 0}}">
+      <view class="meal-header" bindtap="toggleMeal" data-meal="snack">
         <text class="meal-icon">🍎</text>
         <text class="meal-title">加餐</text>
         <view class="meal-summary">
-          <text class="meal-count">{{mealStats['加餐'].count}}项</text>
-          <text class="meal-calories">{{mealStats['加餐'].totalCalories}} kcal</text>
+          <text class="meal-count">{{mealStats.snack.count}}项</text>
+          <text class="meal-calories">{{mealStats.snack.totalCalories}} kcal</text>
         </view>
-        <text class="expand-icon {{expandedMeals['加餐'] ? 'expanded' : ''}}">▼</text>
+        <text class="expand-icon {{expandedMeals.snack ? 'expanded' : ''}}">▼</text>
       </view>
-      <view class="records-list {{expandedMeals['加餐'] ? 'expanded' : 'collapsed'}}">
-        <view class="record-item" wx:for="{{mealGroups['加餐']}}" wx:key="id">
+      <view class="records-list {{expandedMeals.snack ? 'expanded' : 'collapsed'}}">
+        <view class="record-item" wx:for="{{mealGroups.snack}}" wx:key="id">
           <view class="record-info">
             <text class="food-name">{{item.foodName}}</text>
             <text class="record-time">{{item.time}}</text>
@@ -221,7 +221,7 @@
     </view>
     
     <!-- 空状态 -->
-    <view class="empty-records" wx:if="{{mealGroups['早餐'].length === 0 && mealGroups['午餐'].length === 0 && mealGroups['晚餐'].length === 0 && mealGroups['加餐'].length === 0}}">
+    <view class="empty-records" wx:if="{{mealGroups.breakfast.length === 0 && mealGroups.lunch.length === 0 && mealGroups.dinner.length === 0 && mealGroups.snack.length === 0}}">
       <text class="empty-icon">🍽️</text>
       <text class="empty-text">今天还没有记录哦</text>
     </view>

@@ -43,13 +43,6 @@ function getDietRecords() {
 }
 
 /**
- * 添加饮食记录
- */
-function addDietRecord(record) {
-  return true;
-}
-
-/**
  * 获取推荐食谱
  */
 function getDietRecommendations() {
@@ -172,7 +165,6 @@ function getExerciseRecommendations() {
 module.exports = {
   getHealthSummary,
   getDietRecords,
-  addDietRecord,
   getDietRecommendations,
   getExerciseRecords,
   addExerciseRecord,
