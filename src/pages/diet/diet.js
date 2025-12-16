@@ -497,7 +497,7 @@ Page({
 
     // 如果只是修改克数，自己计算
     if (!nameChanged) {
-      const oldWeight = food.weight || 100;
+      const oldWeight = food.weight;
       const ratio = newWeight / oldWeight;
       
       const foods = [...recognitionData.foods];
@@ -540,10 +540,7 @@ Page({
           ...foods[editingFoodIndex],
           name: editFoodName,
           weight: newWeight,
-          calorie: parseFloat((result.data.calories || 0).toFixed(1)),
-          protein: parseFloat((result.data.protein || 0).toFixed(1)),
-          carbs: parseFloat((result.data.carbs || 0).toFixed(1)),
-          fat: parseFloat((result.data.fat || 0).toFixed(1))
+          ...result.data
         };
 
         // 重新计算总营养
@@ -771,7 +768,7 @@ Page({
   async saveRecognitionResults() {
     const { recognitionData, selectedMealType } = this.data;
     
-    if (!recognitionData || !recognitionData.foods) return;
+    if (!recognitionData?.foods?.length) return;
 
     const openId = app.globalData.openId || wx.getStorageSync('openId');
     if (!openId) {

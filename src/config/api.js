@@ -23,7 +23,6 @@ const API = {
   FOOD_FOODS: '/api/v1/food/foods',
   FOOD_SEARCH: '/api/v1/food/search',
   FOOD_UNITS: '/api/v1/food/units',
-  FOOD_CALCULATE: '/api/v1/food/calculate',
   FOOD_RECOGNIZE: '/api/v1/food/recognize',
   FOOD_RECOGNIZE_TEXT: '/api/v1/food/recognize-text',
   FOOD_ANALYZE: '/api/v1/food/analyze',
