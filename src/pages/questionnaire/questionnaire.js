@@ -69,6 +69,15 @@ Page({
       referrerId,
       channel
     });
+    
+    // 初始化年龄（基于默认日期）
+    const initialDate = new Date(this.data.currentDate);
+    const initialAge = healthCalculator.calculateAge(initialDate);
+    this.setData({
+      age: initialAge,
+      ageDescription: healthCalculator.getAgeDescription(initialAge)
+    });
+
     // 检查loading状态
     this.checkLoading();
   },
@@ -187,6 +196,7 @@ Page({
 
   // 下一步
   nextStep() {
+    console.log('age', this.data.age)
     const nextStepNum = this.data.currentStep + 1;
     this.setData({
       currentStep: nextStepNum

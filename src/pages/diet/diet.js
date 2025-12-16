@@ -239,12 +239,7 @@ Page({
       }
 
       // 处理运动数据
-      let totalBurned = 0;
-      if (exerciseResult.data) {
-        exerciseResult.data.forEach(record => {
-          totalBurned += record.calories || 0;
-        });
-      }
+      let totalBurned = exerciseResult?.data?.totalCalories || 0;
 
       // 计算每个餐次的统计信息
       const mealStats = {};

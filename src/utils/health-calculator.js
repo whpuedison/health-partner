@@ -209,7 +209,12 @@ function calculateDailyCalories(params) {
   }
   
   // 根据活动水平调整
-  let activityMultiplier = 1.375; // 默认轻度活动
+  //   sedentary: 1.2,   // 久坐
+  //   light: 1.375,     // 轻度活动（正常人）
+  //   moderate: 1.55,  // 中度活动
+  //   active: 1.725,   // 高度活动
+  //   veryActive: 1.9  // 极高活动
+  let activityMultiplier = 1.2; // 默认轻度活动
   
   // 维持当前体重的每日热量
   const maintenanceCalories = bmr * activityMultiplier;
