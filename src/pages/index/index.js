@@ -286,24 +286,23 @@ Page({
 
   // 处理运动数据
   processExerciseData(exerciseList) {
+    const { list, totalCalories } = exerciseList || {}
     const exerciseRecords = {
       daily: { list: [], calories: 0 },
       cardio: { list: [], calories: 0 },
       strength: { list: [], calories: 0 },
-      totalCalories: 0,
-      hasRecords: exerciseList.length > 0
+      hasRecords: list.length > 0
     };
 
-    exerciseList.forEach(item => {
+    list.forEach(item => {
       const catId = item.exerciseId || 'daily';
       exerciseRecords[catId].list.push(item);
       exerciseRecords[catId].calories += item.calories;
-      exerciseRecords.totalCalories += item.calories;
     });
 
     return { 
       exerciseRecords, 
-      activeBurn: Math.round(exerciseRecords.totalCalories) 
+      activeBurn: totalCalories
     }
   },
 
