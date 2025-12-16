@@ -294,17 +294,8 @@ Page({
       hasRecords: exerciseList.length > 0
     };
 
-    // 需要将 exerciseType 映射到 categories (daily, cardio, strength)
-    // 这需要遍历 exerciseCategories
-    const getCategory = (name) => {
-        for (const cat of exerciseCategories) {
-            if (cat.exercises.find(e => e.name === name)) return cat.id; // 'daily', 'cardio', 'strength'
-        }
-        return 'daily'; // 默认
-    };
-
     exerciseList.forEach(item => {
-      const catId = getCategory(item.exerciseType);
+      const catId = item.exerciseId || 'daily';
       exerciseRecords[catId].list.push(item);
       exerciseRecords[catId].calories += item.calories;
       exerciseRecords.totalCalories += item.calories;

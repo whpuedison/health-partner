@@ -90,9 +90,10 @@
           class="exercise-item" 
           wx:for="{{item.exercises}}" 
           wx:for-item="ex" 
-          wx:key="id"
+          wx:key="childId"
           bindtap="openAddDialog"
           data-exercise="{{ex}}"
+          data-exercise-id="{{item.id}}"
         >
           <view class="ex-icon-box">
             <text class="ex-icon">{{ex.icon}}</text>
@@ -155,10 +156,6 @@
       <view class="result-item">
         <text class="label">预估消耗</text>
         <text class="value">{{recognitionResult.calories}} 千卡</text>
-      </view>
-      <view class="result-item" wx:if="{{recognitionResult.notes}}">
-        <text class="label">建议</text>
-        <text class="value">{{recognitionResult.notes}}</text>
       </view>
     </view>
     <button class="confirm-btn" bindtap="confirmAIRecord">确认保存</button>

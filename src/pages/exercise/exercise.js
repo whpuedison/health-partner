@@ -5,6 +5,7 @@ const app = getApp();
 
 Page({
   data: {
+    profile: {},
     // 日历相关
     currentDate: new Date().getTime(),
     selectedDate: '',
@@ -23,6 +24,7 @@ Page({
     // 添加运动弹窗
     showAddDialog: false,
     currentExercise: null,
+    currentExerciseId: null,
     durationInput: '',
     caloriesEstimate: 0,
     
@@ -41,6 +43,7 @@ Page({
 
   onLoad(options) {
     this.initCalendar();
+    this.fetchProfile()
     this.loadData();
 
     // 自动触发功能
@@ -55,6 +58,18 @@ Page({
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ active: 1 }); // 记录页tab索引
     }
+  },
+
+  fetchProfile() {
+    const openId = app.globalData.openId || wx.getStorageSync('openId');
+    if (!openId) return;
+
+    Http.get(API.USER_PROFILE, { openId })
+    .then(res => {
+      this.setData({
+        profile: res.data
+      })
+    })
   },
 
   // 初始化日历
@@ -196,10 +211,11 @@ Page({
 
   // 打开添加弹窗
   openAddDialog(e) {
-    const exercise = e.currentTarget.dataset.exercise;
+    const { exercise, exerciseId } = e.currentTarget.dataset;
     this.setData({
       showAddDialog: true,
       currentExercise: exercise,
+      currentExerciseId: exerciseId,
       durationInput: '',
       caloriesEstimate: 0
     });
@@ -221,7 +237,7 @@ Page({
 
   // 保存记录
   saveRecord() {
-    const { currentExercise, durationInput, selectedDate } = this.data;
+    const { currentExercise, currentExerciseId, durationInput, selectedDate } = this.data;
     if (!durationInput) {
       wx.showToast({ title: '请输入时长', icon: 'none' });
       return;
@@ -231,6 +247,7 @@ Page({
     Http.post(API.USER_EXERCISE_RECORDS, {
       openId,
       exerciseType: currentExercise.name,
+      exerciseId: currentExerciseId,
       duration: parseInt(durationInput),
       caloriesPerMinute: currentExercise.calories,
       recordDate: selectedDate
@@ -310,7 +327,8 @@ Page({
     }, 10000);
     
     Http.post(API.EXERCISE_RECOGNIZE_TEXT, {
-      text: this.data.exerciseText
+      text: this.data.exerciseText,
+      profile: this.data.profile
     }, null, true).then(res => { // 增加 true 参数以支持长超时
       clearInterval(tipTimer); // 清除定时器
       wx.hideLoading();
@@ -332,12 +350,13 @@ Page({
   confirmAIRecord() {
     const { recognitionResult, selectedDate } = this.data;
     const openId = app.globalData.openId || wx.getStorageSync('openId');
-    const { exercise_name,  duration_minutes, calories } = recognitionResult || {}
+    const { exercise_name,  duration_minutes, calories, exerciseId } = recognitionResult || {}
     Http.post(API.USER_EXERCISE_RECORDS, {
       openId,
+      exerciseId,
       exerciseType: exercise_name,
       duration: duration_minutes,
-      caloriesPerMinute: (calories / duration_minutes).toFixed(4),
+      calories: calories,
       recordDate: selectedDate
     }).then(() => {
       this.setData({ showResultPopup: false });

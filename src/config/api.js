@@ -9,7 +9,6 @@ const API = {
   USER_TODAY_PROGRESS: '/api/v1/user/today-progress',
   USER_CHECK_IN: '/api/v1/user/check-in',
   USER_HEALTH_RECORDS: '/api/v1/user/health-records',
-  USER_GOAL_PAGE_DATA: '/api/v1/user/goal-page-data',
   USER_STATS: '/api/v1/user/stats',
   // 运动记录相关
   USER_EXERCISE_RECORDS: '/api/v1/user/exercise-records',

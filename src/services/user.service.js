@@ -159,24 +159,9 @@ function calculateBMR(weight, height, age, gender) {
   return Math.round(bmr);
 }
 
-/**
- * 计算每日热量需求 (TDEE)
- */
-function calculateTDEE(bmr, activityLevel = 1.375) {
-  // 活动系数：
-  // 1.2 久坐不动
-  // 1.375 轻度活动（每周1-3天）
-  // 1.55 中度活动（每周3-5天）
-  // 1.725 高度活动（每周6-7天）
-  // 1.9 专业运动员
-  
-  return Math.round(bmr * activityLevel);
-}
-
 module.exports = {
   calculateBMI,
   getHealthStatus,
   getIdealWeightRange,
   calculateBMR,
-  calculateTDEE,
 };
