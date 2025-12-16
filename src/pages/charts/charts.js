@@ -154,7 +154,7 @@ Page({
         gridColor: '#ecf0f1',
         titleFontColor: '#95a5a6'
       },
-      width: windowWidth - 32, // 增加宽度，减少挤压
+      width: windowWidth - 48, // 增加宽度，减少挤压
       height: 260,
       dataLabel: true,
       dataPointShape: true,
