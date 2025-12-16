@@ -162,6 +162,6 @@
   </view>
 </van-popup>
 
-<ai-loading show="{{aiLoading}}" text="AI正在分析运动消耗..." />
+<ai-loading show="{{aiLoading}}" text="AI正在分析运动消耗..." bind:cancel="onCancelAnalysis" />
 
 

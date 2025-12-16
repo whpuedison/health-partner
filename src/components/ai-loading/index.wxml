@@ -26,5 +26,8 @@
       <view class="tip-title">你知道吗？</view>
       <view class="tip-content">{{currentTip}}</view>
     </view>
+
+    <!-- 取消按钮 -->
+    <view class="cancel-btn" catchtap="onCancel">取消分析</view>
   </view>
 </view>

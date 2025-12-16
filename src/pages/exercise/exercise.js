@@ -34,6 +34,7 @@ Page({
     
     // AI Loading
     aiLoading: false,
+    _isCancelled: false,
     
     // AI识别结果弹窗
     showResultPopup: false,
@@ -262,13 +263,24 @@ Page({
     
     this.closeTextInput();
     
-    this.setData({ aiLoading: true });
+    this.closeTextInput();
+    
+    this.setData({
+        aiLoading: true,
+        _isCancelled: false
+    });
     
     Http.post(API.EXERCISE_RECOGNIZE_TEXT, {
       text: this.data.exerciseText,
       profile: this.data.profile
-    }, null, true).then(res => { // 增加 true 参数以支持长超时
+    }, null, true, {
+        onRequestTask: (task) => {
+            this.requestTask = task;
+        }
+    }).then(res => { // 增加 true 参数以支持长超时
       this.setData({ aiLoading: false });
+      if (this.data._isCancelled) return;
+
       if (res.data) {
         this.setData({
           showResultPopup: true,
@@ -300,6 +312,18 @@ Page({
       wx.showToast({ title: '保存成功' });
       this.loadData();
     });
+  },
+
+  onCancelAnalysis() {
+      if (this.requestTask) {
+          this.requestTask.abort();
+          this.requestTask = null;
+      }
+      this.setData({
+          aiLoading: false,
+          _isCancelled: true
+      });
+      wx.showToast({ title: '已取消', icon: 'none' });
   },
   
   closeResultPopup() {

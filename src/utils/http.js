@@ -34,7 +34,7 @@ class Http {
       // 判断是否为长时间请求（通过参数指定）
       const timeout = options.longTimeout ? LONG_TIMEOUT : TIMEOUT;
       
-      wx.request({
+      const requestTask = wx.request({
         url: url,
         method: method,
         data: (method === 'GET' || method === 'DELETE') ? {} : data,
@@ -57,13 +57,20 @@ class Http {
           }
         },
         fail: err => {
-          wx.showToast({
-            title: '网络请求失败',
-            icon: 'none',
-          });
+          if (!error?.errMsg?.includes('abort')) {
+             wx.showToast({
+                title: '网络请求失败',
+                icon: 'none',
+             });
+          }
           reject(err);
         },
       });
+
+      // 如果提供了回调，传回 requestTask
+      if (options.onRequestTask) {
+        options.onRequestTask(requestTask);
+      }
     });
   }
 
@@ -80,8 +87,9 @@ class Http {
    * @param {object} data - 请求数据
    * @param {object} queryParams - 查询参数（可选）
    * @param {boolean} longTimeout - 是否使用长超时（可选，默认false）
+   * @param {object} options - 额外选项，如 { onRequestTask: fn }
    */
-  static post(url, data, queryParams, longTimeout = false) {
+  static post(url, data, queryParams, longTimeout = false, options = {}) {
     let finalUrl = url;
     if (queryParams) {
       const queryString = Object.keys(queryParams)
@@ -95,7 +103,8 @@ class Http {
       url: finalUrl, 
       method: 'POST', 
       data: data || {},
-      longTimeout: longTimeout
+      longTimeout: longTimeout,
+      onRequestTask: options.onRequestTask
     });
   }
 

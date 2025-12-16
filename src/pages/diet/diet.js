@@ -66,6 +66,7 @@ Page({
     // AI Loading Component
     aiLoading: false,
     loadingText: 'AI正在分析中...',
+    _isCancelled: false,
     
     // 功能锁定
     isLocked: true
@@ -375,7 +376,8 @@ Page({
   async recognizeFood(imagePath) {
     this.setData({
         aiLoading: true,
-        loadingText: 'AI正在分析营养成分...'
+        loadingText: 'AI正在分析营养成分...',
+        _isCancelled: false
     });
 
     try {
@@ -383,11 +385,18 @@ Page({
       const base64 = await this.imageToBase64(imagePath);
       
       // 调用识别API
-      const res = await Http.post(API.FOOD_RECOGNIZE, {
+      const res = await Http.post(API.FOOD_RECOGNIZE_IMAGE, {
         imageBase64: base64
-      }, null, true); // 启用长超时（5分钟）
+      }, null, true, {
+          onRequestTask: (task) => {
+              this.requestTask = task;
+          }
+      }); // 启用长超时（5分钟）
 
       this.setData({ aiLoading: false });
+ 
+      if (this.data._isCancelled) return; 
+
       console.log(res);
       const { foods, totalNutrition } = res?.data || {}
       if (foods?.length > 0) {
@@ -404,6 +413,9 @@ Page({
     } catch (error) {
       this.setData({ aiLoading: false });
       console.error('识别失败:', error);
+      if (error?.errMsg?.includes('abort')) {
+        return;
+      }
       wx.showToast({ title: '识别失败，请重试', icon: 'none' });
     }
   },
@@ -499,14 +511,22 @@ Page({
     // 如果修改了名称，调用AI重新分析
     this.setData({
         aiLoading: true,
-        loadingText: 'AI正在分析中...'
+        loadingText: 'AI重新分析中...',
+        _isCancelled: false
     });
 
     try {
       const result = await Http.post(API.FOOD_ANALYZE, {
         foodName: editFoodName,
         weight: newWeight
-      }, null, true); // 启用长超时（5分钟）
+      }, null, true, {
+          onRequestTask: (task) => {
+              this.requestTask = task;
+          }
+      }); // 启用长超时（5分钟）
+
+      this.setData({ aiLoading: false });
+      if (this.data._isCancelled) return;
 
       if (result.data) {
         const foods = [...recognitionData.foods];
@@ -530,11 +550,13 @@ Page({
         });
       }
 
-      this.setData({ aiLoading: false });
     } catch (error) {
       this.setData({ aiLoading: false });
       console.error('分析失败:', error);
-      wx.showToast({ title: '分析失败', icon: 'none' });
+      if (error?.errMsg?.includes('abort')) {
+        return;
+      }
+      wx.showToast({ title: '分析失败，请重试', icon: 'none' });
     }
   },
 
@@ -639,16 +661,22 @@ Page({
     
     this.setData({
         aiLoading: true,
-        loadingText: 'AI分析文本中...'
+        loadingText: 'AI分析文本中...',
+        _isCancelled: false
     });
 
     try {
       // 调用文本识别API（复用食物识别的后端逻辑）
       const res = await Http.post(API.FOOD_RECOGNIZE_TEXT, {
         text: dietText.trim()
-      }, null, true);
+      }, null, true, {
+          onRequestTask: (task) => {
+              this.requestTask = task;
+          }
+      });
 
       this.setData({ aiLoading: false });
+      if (this.data._isCancelled) return;
 
       if (res?.data?.foods?.length > 0) {
         this.setData({
@@ -661,6 +689,9 @@ Page({
     } catch (error) {
       this.setData({ aiLoading: false });
       console.error('识别失败:', error);
+      if (error?.errMsg?.includes('abort')) {
+        return;
+      }
       wx.showToast({ title: '识别失败，请重试', icon: 'none' });
     }
   },
@@ -755,10 +786,24 @@ Page({
       
       this.loadDateData(this.data.selectedDate);
     } catch (error) {
-      wx.hideLoading();
-      console.error('保存失败:', error);
-      wx.showToast({ title: '保存失败', icon: 'none' });
+       wx.hideLoading();
+       console.error('保存失败:', error);
+       wx.showToast({ title: '保存失败', icon: 'none' }); 
     }
+  },
+
+  /**
+   * 取消分析
+   */
+  onCancelAnalysis() {
+      if (this.requestTask) {
+          this.requestTask.abort();
+          this.requestTask = null;
+      }
+      this.setData({
+          aiLoading: false,
+          _isCancelled: true
+      });
   },
 
   /**

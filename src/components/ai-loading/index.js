@@ -159,6 +159,10 @@ Component({
         currentTipIndex: nextIndex,
         currentTip: shuffledTips[nextIndex]
       });
+    },
+
+    onCancel() {
+        this.triggerEvent('cancel');
     }
   }
 });

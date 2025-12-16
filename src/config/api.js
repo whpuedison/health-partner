@@ -20,6 +20,7 @@ const API = {
   FOOD_SEARCH: '/api/v1/food/search',
   FOOD_UNITS: '/api/v1/food/units',
   FOOD_RECOGNIZE: '/api/v1/food/recognize',
+  FOOD_RECOGNIZE_IMAGE: '/api/v1/food/recognize', // Alias for clearer naming
   FOOD_RECOGNIZE_TEXT: '/api/v1/food/recognize-text',
   FOOD_ANALYZE: '/api/v1/food/analyze',
   // 运动识别

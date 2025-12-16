@@ -368,7 +368,7 @@
     </view>
   </van-popup>
 
-  <ai-loading show="{{aiLoading}}" text="{{loadingText}}" />
+  <ai-loading show="{{aiLoading}}" text="{{loadingText}}" bind:cancel="onCancelAnalysis" />
 
   <van-toast id="van-toast" />
 </view>

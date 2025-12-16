@@ -158,3 +158,19 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+.cancel-btn {
+  margin-top: 40rpx;
+  font-size: 28rpx;
+  color: #999;
+  padding: 16rpx 40rpx;
+  border: 1rpx solid #eee;
+  border-radius: 40rpx;
+  background: #f8f8f8;
+  transition: all 0.2s;
+}
+
+.cancel-btn:active {
+  background: #f0f0f0;
+  opacity: 0.8;
+}
