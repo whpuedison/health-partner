@@ -23,11 +23,6 @@ Page({
     showPicker: false,
     currentType: '', // 'bust', 'waist', 'hip'
     currentValue: 0,
-    pickerConfig: {
-      min: 0,
-      max: 200,
-      step: 1
-    },
 
     // 静态配置
     measureConfig: {
@@ -221,25 +216,6 @@ Page({
         }
       }
     });
-  },
-
-  // 计算腰臀比
-  get whr() {
-    const { waist, hip } = this.data.todayStats;
-    if (waist && hip) {
-      return (waist / hip).toFixed(2);
-    }
-    return '--';
-  },
-
-  get whrStatus() {
-     const { waist, hip } = this.data.todayStats;
-     if (!waist || !hip) return '';
-     const ratio = waist / hip;
-     // 简单评估 (女性)
-     if (ratio < 0.8) return '梨型身材';
-     if (ratio > 0.85) return '苹果型身材';
-     return '标准身材';
   },
 
    recordShareAction(scene) {
