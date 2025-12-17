@@ -88,10 +88,10 @@
     <view class="dashboard-card list-card">
         <view class="card-title-row" bindtap="navigateTo" data-url="/pages/diet/diet">
         <text class="card-title">🍽️ 今日饮食</text>
-        <view class="title-right">
+        <!-- <view class="title-right">
             <text class="total-cal">{{calorieData.intake}} kcal</text>
             <van-icon name="arrow" />
-        </view>
+        </view> -->
         </view>
         <view wx:if="{{dietRecords.breakfast.list.length > 0}}" class="divider-line"></view>
 
