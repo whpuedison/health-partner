@@ -57,7 +57,7 @@ class Http {
           }
         },
         fail: err => {
-          if (!error?.errMsg?.includes('abort')) {
+          if (!err?.errMsg?.includes('abort')) {
              wx.showToast({
                 title: '网络请求失败',
                 icon: 'none',
