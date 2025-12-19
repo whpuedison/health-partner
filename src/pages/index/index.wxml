@@ -86,6 +86,11 @@
 
     <!-- 2. 今日饮食记录 (折叠收纳) -->
     <view class="dashboard-card list-card">
+        <!-- Corner Cutout Entry -->
+        <view class="recipe-corner-entry" bindtap="navigateTo" data-url="/pages/recipe/recipe">
+            <text>减脂食谱</text>
+        </view>
+
         <view class="card-title-row" bindtap="navigateTo" data-url="/pages/diet/diet">
         <text class="card-title">🍽️ 今日饮食</text>
         <!-- <view class="title-right">

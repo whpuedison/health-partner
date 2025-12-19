@@ -161,6 +161,8 @@
   line-height: 1;
 }
 
+
+
 .title-right {
     display: flex;
     align-items: center;
@@ -184,6 +186,32 @@
 /* ==================== 2. 饮食列表 (折叠手风琴) ==================== */
 .list-card {
   position: relative;
+  /* Ensure overflow is visible if we want the tag to stick out slightly, 
+     or hidden if we want it strictly inside. 
+     User said "cutout style", often implies it looks like a bookmark or ear.
+     Let's put it absolutely in top right. */
+  overflow: hidden; 
+}
+
+.recipe-corner-entry {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--tomato-red);
+    color: #fff;
+    font-size: 28rpx;
+    padding: 0 48rpx;
+    height: 72rpx;
+    border-bottom-left-radius: 54rpx;
+    z-index: 5;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    box-shadow: -2rpx 2rpx 8rpx rgba(233, 80, 63, 0.2);
+}
+
+.recipe-corner-entry:active {
+  background: #d64434;
 }
 
 .meal-accordion {
