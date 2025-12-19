@@ -207,11 +207,16 @@
     font-weight: 600;
     display: flex;
     align-items: center;
-    box-shadow: -2rpx 2rpx 8rpx rgba(233, 80, 63, 0.2);
+    box-shadow: 1rpx 1rpx 4rpx rgba(233, 80, 63, 0.9), 
+                1rpx 1rpx 2rpx rgba(233, 80, 63, 0.9);
+    transition: all 0.3s ease;
 }
 
 .recipe-corner-entry:active {
   background: #d64434;
+  box-shadow: 1rpx 1rpx 2rpx rgba(233, 80, 63, 0.9), 
+              1rpx 1rpx 1rpx rgba(233, 80, 63, 0.9);
+  transform: scale(0.98);
 }
 
 .meal-accordion {
