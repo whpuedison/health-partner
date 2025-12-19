@@ -1,0 +1,58 @@
+<!--pages/recipe/recipe.wxml-->
+<view class="recipe-page">
+  <!-- 侧边分类栏 -->
+  <scroll-view scroll-y class="sidebar">
+    <view 
+      wx:for="{{groups}}" 
+      wx:key="groupId"
+      class="sidebar-item {{selectedGroupId === item.groupId ? 'active' : ''}}"
+      bindtap="selectGroup"
+      data-group-id="{{item.groupId}}"
+    >
+      <text class="sidebar-text">{{item.groupName}}</text>
+      <view wx:if="{{selectedGroupId === item.groupId}}" class="active-indicator"></view>
+    </view>
+  </scroll-view>
+
+  <!-- 右侧内容区 -->
+  <view class="content-area">
+    <!-- 食谱列表 -->
+    <scroll-view scroll-y class="recipe-list" wx:if="{{!loading && recipes.length > 0}}">
+      <view class="recipe-grid">
+        <view 
+          wx:for="{{recipes}}" 
+          wx:key="id"
+          class="recipe-card"
+          bindtap="goToDetail"
+          data-recipe-id="{{item.id}}"
+        >
+          <view class="card-inner">
+            <!-- <image class="recipe-image" src="{{item.picUrl}}" mode="aspectFill" /> -->
+            
+            <!-- 推荐标签 -->
+            <!-- <view wx:if="{{item.recommendText}}" class="recommend-badge">
+              {{item.recommendText}}
+            </view> -->
+            
+            <view class="recipe-info">
+              <view class="recipe-name">{{item.name}}</view>
+              <view class="recipe-promotion">{{item.promotion}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 加载中 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <van-loading type="spinner" size="48rpx" color="#E9503F">加载中...</van-loading>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && recipes.length === 0}}">
+      <text class="empty-icon">🍽️</text>
+      <text class="empty-text">暂无食谱</text>
+    </view>
+  </view>
+</view>
+

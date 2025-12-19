@@ -1,0 +1,91 @@
+<!--pages/recipe-detail/recipe-detail.wxml-->
+<view class="recipe-detail-page">
+  <scroll-view scroll-y class="content-scroll" wx:if="{{!loading && recipeDetail}}">
+    <!-- 食谱基本信息卡片 -->
+    <view class="recipe-header-card">
+      <view class="header-image-wrapper">
+        <image class="header-image" src="{{recipeDetail.picUrl}}" mode="aspectFill" />
+        
+        <!-- 推荐标签 -->
+        <!-- <view wx:if="{{recipeDetail.recommendText}}" class="recommend-badge">
+          {{recipeDetail.recommendText}}
+        </view> -->
+      </view>
+      
+      <view class="header-info">
+        <view class="recipe-title">{{recipeDetail.name}}</view>
+        <view class="recipe-desc">{{recipeDetail.promotion}}</view>
+      </view>
+    </view>
+
+    <!-- 天数选择器 -->
+    <view class="day-selector-card" wx:if="{{dailyMeals.length > 0}}">
+      <scroll-view scroll-x class="day-scroll" show-scrollbar="{{false}}">
+        <view class="day-list">
+          <view 
+            wx:for="{{dailyMeals}}" 
+            wx:key="id"
+            class="day-item {{selectedDayId === item.id ? 'active' : ''}}"
+            bindtap="selectDay"
+            data-day-id="{{item.id}}"
+          >
+            <view class="day-name">{{item.dayName}}</view>
+            <view class="day-calories" wx:if="{{item.totalCalories}}">{{item.totalCalories}}kcal</view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 饮食安排 -->
+    <view class="meal-plan-card" wx:if="{{meals.length > 0}}">
+      <view 
+        wx:for="{{meals}}" 
+        wx:key="type"
+        class="meal-section"
+      >
+        <view class="meal-header">
+          <view class="meal-title-row">
+            <text class="meal-icon">{{item.icon}}</text>
+            <text class="meal-name">{{item.name}}</text>
+          </view>
+          <view class="meal-calories" wx:if="{{item.calories > 0}}">
+            {{item.calories}} kcal
+          </view>
+        </view>
+        
+        <view class="food-list">
+          <view 
+            wx:for="{{item.foods}}" 
+            wx:key="index"
+            wx:for-item="food"
+            class="food-item"
+          >
+            <view class="food-name">{{food.foodName}}</view>
+            <view class="food-amount">{{food.foodCount}}{{food.unit}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 食谱介绍 -->
+    <view class="recipe-intro-card" wx:if="{{recipeDetail.intro}}">
+      <view class="intro-title">食谱介绍</view>
+      <view class="intro-content">{{recipeDetail.intro}}</view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view style="height: 60rpx;"></view>
+  </scroll-view>
+
+  <!-- 加载中 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <van-loading type="spinner" size="48rpx" color="#E9503F">加载中...</van-loading>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && !recipeDetail}}">
+    <text class="empty-icon">😕</text>
+    <text class="empty-text">食谱不存在</text>
+  </view>
+</view>
+

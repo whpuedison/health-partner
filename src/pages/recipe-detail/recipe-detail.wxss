@@ -1,0 +1,255 @@
+/* pages/recipe-detail/recipe-detail.wxss */
+.recipe-detail-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+/* 内容滚动区 */
+.content-scroll {
+  height: 100vh;
+  padding: 32rpx 24rpx;
+  box-sizing: border-box;
+}
+
+/* 食谱头部卡片 */
+.recipe-header-card {
+  background: var(--white);
+  border-radius: 24rpx;
+  margin-bottom: 32rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.header-image-wrapper {
+  position: relative;
+  padding: 24rpx 24rpx 0;
+}
+
+.header-image {
+  width: 100%;
+  border-radius: 20rpx;
+  background: #f5f7fa;
+}
+
+.recommend-badge {
+  position: absolute;
+  top: 40rpx;
+  right: 40rpx;
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+  color: var(--white);
+  font-size: 22rpx;
+  font-weight: 600;
+  padding: 8rpx 20rpx;
+  border-radius: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(255, 107, 107, 0.4);
+}
+
+.header-info {
+  padding: 32rpx;
+}
+
+.recipe-title {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 16rpx;
+  line-height: 1.4;
+}
+
+.recipe-desc {
+  font-size: 28rpx;
+  color: #718096;
+  line-height: 1.6;
+}
+
+/* 天数选择器卡片 */
+.day-selector-card {
+  width: 100%;
+  background: var(--white);
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-sizing: border-box;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.day-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.day-list {
+  display: inline-flex;
+  gap: 16rpx;
+}
+
+.day-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 140rpx;
+  padding: 20rpx 28rpx;
+  border-radius: 20rpx;
+  background: #f5f7fa;
+  white-space: nowrap;
+  transition: all 0.3s;
+}
+
+.day-item.active {
+  background: var(--gradient-tomato);
+  color: var(--white);
+  box-shadow: 0 8rpx 20rpx rgba(233, 80, 63, 0.35);
+  transform: translateY(-2rpx);
+}
+
+.day-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8rpx;
+}
+
+.day-item.active .day-name {
+  color: var(--white);
+}
+
+.day-calories {
+  font-size: 22rpx;
+  color: #718096;
+}
+
+.day-item.active .day-calories {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 饮食安排卡片 */
+.meal-plan-card {
+  background: var(--white);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.meal-section {
+  margin-bottom: 40rpx;
+}
+
+.meal-section:last-child {
+  margin-bottom: 0;
+}
+
+.meal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 24rpx;
+  background: linear-gradient(135deg, #FFF5F0 0%, #FFFBF7 100%);
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.meal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.meal-icon {
+  font-size: 40rpx;
+}
+
+.meal-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.meal-calories {
+  font-size: 26rpx;
+  color: var(--tomato-red);
+  font-weight: 600;
+}
+
+.food-list {
+  padding: 0 12rpx;
+}
+
+.food-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 12rpx;
+  border-bottom: 1rpx solid #f5f7fa;
+}
+
+.food-item:last-child {
+  border-bottom: none;
+}
+
+.food-name {
+  font-size: 28rpx;
+  color: #2d3748;
+  flex: 1;
+}
+
+.food-amount {
+  font-size: 26rpx;
+  color: #718096;
+  margin-left: 24rpx;
+}
+
+/* 食谱介绍卡片 */
+.recipe-intro-card {
+  background: var(--white);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.intro-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 24rpx;
+}
+
+.intro-content {
+  font-size: 28rpx;
+  color: #718096;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 160rpx 0;
+  color: #718096;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 160rpx 0;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #718096;
+}
+

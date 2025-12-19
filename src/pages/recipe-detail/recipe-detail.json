@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "van-loading": "@vant/weapp/loading/index"
+  },
+  "navigationBarTitleText": "食谱详情",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black"
+}
+

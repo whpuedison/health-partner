@@ -49,6 +49,11 @@ const API = {
   WEIGHT_LATEST: '/api/v1/user/weight/latest', // 新增：获取最近体重记录
   // 反馈
   FEEDBACK: '/api/v1/feedback',
+  // 食谱相关
+  RECIPE_GROUPS: '/api/v1/recipe/groups',
+  RECIPE_LIST: '/api/v1/recipe/list',
+  RECIPE_DETAIL: '/api/v1/recipe/detail',
+  RECIPE_DAILY_MEAL: '/api/v1/recipe/daily-meal',
 };
 
 module.exports = { API };

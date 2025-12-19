@@ -13,7 +13,9 @@
     "pages/exercise/exercise",
     "pages/post/post",
     "pages/charts/charts",
-    "pages/measure/measure"
+    "pages/measure/measure",
+    "pages/recipe/recipe",
+    "pages/recipe-detail/recipe-detail"
   ],
   "window": {
     "backgroundTextStyle": "light",
