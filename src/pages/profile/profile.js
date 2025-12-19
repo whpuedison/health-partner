@@ -4,7 +4,7 @@ const { Http } = require('../../utils/http');
 const { API } = require('../../config/api');
 
 const app = getApp();
-const connectEmail = 'whpuedison@163.com'
+const connectEmail = 'minguangkeji2025@163.com'
 
 Page({
   data: {
