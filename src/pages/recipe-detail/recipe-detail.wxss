@@ -179,26 +179,76 @@
 
 .food-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 20rpx 12rpx;
   border-bottom: 1rpx solid #f5f7fa;
+  gap: 20rpx;
 }
 
 .food-item:last-child {
   border-bottom: none;
 }
 
-.food-name {
-  font-size: 28rpx;
-  color: #2d3748;
+/* 食物图片 */
+.food-image {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 16rpx;
+  background: #f5f7fa;
+  flex-shrink: 0;
+}
+
+.food-image-placeholder {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(135deg, #FFF5F0 0%, #FFFBF7 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.placeholder-text {
+  font-size: 48rpx;
+  opacity: 0.5;
+}
+
+/* 食物信息 */
+.food-info {
   flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 96rpx;
+}
+
+.food-name {
+  font-size: 30rpx;
+  color: #2d3748;
+  font-weight: 600;
+  line-height: 1.4;
+  flex: 1;
+  padding-right: 20rpx;
+}
+
+.food-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8rpx;
+  flex-shrink: 0;
 }
 
 .food-amount {
-  font-size: 26rpx;
+  font-size: 22rpx;
   color: #718096;
-  margin-left: 24rpx;
+}
+
+.food-cal {
+  font-size: 22rpx;
+  color: var(--tomato-red);
+  letter-spacing: 0.5rpx;
 }
 
 /* 食谱介绍卡片 */

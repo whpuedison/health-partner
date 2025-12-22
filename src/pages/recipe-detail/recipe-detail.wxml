@@ -60,8 +60,25 @@
             wx:for-item="food"
             class="food-item"
           >
-            <view class="food-name">{{food.foodName}}</view>
-            <view class="food-amount">{{food.foodCount}}{{food.unit}}</view>
+            <!-- 食物图片 -->
+            <image 
+              wx:if="{{food.foodImgUrl}}" 
+              class="food-image" 
+              src="{{food.foodImgUrl}}" 
+              mode="aspectFill"
+            />
+            <view wx:else class="food-image-placeholder">
+              <text class="placeholder-text">🍽️</text>
+            </view>
+            
+            <!-- 食物信息 -->
+            <view class="food-info">
+              <view class="food-name">{{food.foodName}}</view>
+              <view class="food-detail">
+                <text wx:if="{{food.foodCalories > 0}}" class="food-cal">{{food.foodCalories}}kcal</text>
+                <text class="food-amount">{{food.foodCount}}{{food.unit}}</text>
+              </view>
+            </view>
           </view>
         </view>
       </view>
