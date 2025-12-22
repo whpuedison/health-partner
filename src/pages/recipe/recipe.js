@@ -56,8 +56,15 @@ Page({
 
     try {
       const res = await Http.get(API.RECIPE_LIST, { groupId });
+      
+      // 为每个食谱分配随机背景色索引
+      const recipes = (res?.data || []).map(recipe => ({
+        ...recipe,
+        bgIndex: Math.floor(Math.random() * 7) // 0-6 随机索引
+      }));
+      
       this.setData({
-        recipes: res?.data || [],
+        recipes: recipes,
         loading: false
       });
     } catch (error) {

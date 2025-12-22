@@ -22,7 +22,7 @@
         <view 
           wx:for="{{recipes}}" 
           wx:key="id"
-          class="recipe-card"
+          class="recipe-card recipe-card-bg-{{item.bgIndex}}"
           bindtap="goToDetail"
           data-recipe-id="{{item.id}}"
         >
