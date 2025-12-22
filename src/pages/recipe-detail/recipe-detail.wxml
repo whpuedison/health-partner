@@ -25,12 +25,11 @@
           <view 
             wx:for="{{dailyMeals}}" 
             wx:key="id"
-            class="day-item {{selectedDayId === item.id ? 'active' : ''}}"
+            class="day-item {{selectedDayId === item.id ? 'selected' : ''}}"
             bindtap="selectDay"
             data-day-id="{{item.id}}"
           >
-            <view class="day-name">{{item.dayName}}</view>
-            <view class="day-calories" wx:if="{{item.totalCalories}}">{{item.totalCalories}}kcal</view>
+            <text class="day-name">{{item.dayName}}</text>
           </view>
         </view>
       </scroll-view>

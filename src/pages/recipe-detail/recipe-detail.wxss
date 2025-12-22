@@ -71,7 +71,6 @@
   box-sizing: border-box;
   margin-bottom: 32rpx;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
-  overflow: hidden;
 }
 
 .day-scroll {
@@ -81,47 +80,33 @@
 
 .day-list {
   display: inline-flex;
-  gap: 16rpx;
+  gap: 12rpx;
 }
 
 .day-item {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-width: 140rpx;
-  padding: 20rpx 28rpx;
-  border-radius: 20rpx;
-  background: #f5f7fa;
-  white-space: nowrap;
+  padding: 16rpx 20rpx;
+  border-radius: 16rpx;
   transition: all 0.3s;
+  flex-shrink: 0;
 }
 
-.day-item.active {
-  background: var(--gradient-tomato);
-  color: var(--white);
-  box-shadow: 0 8rpx 20rpx rgba(233, 80, 63, 0.35);
-  transform: translateY(-2rpx);
+.day-item.selected {
+  background: var(--tomato-red);
+  box-shadow: 0 4rpx 12rpx rgba(233, 80, 63, 0.3);
+}
+
+.day-item.selected .day-name {
+  color: white;
 }
 
 .day-name {
-  font-size: 28rpx;
+  font-size: 26rpx;
   font-weight: 600;
   color: #2d3748;
-  margin-bottom: 8rpx;
-}
-
-.day-item.active .day-name {
-  color: var(--white);
-}
-
-.day-calories {
-  font-size: 22rpx;
-  color: #718096;
-}
-
-.day-item.active .day-calories {
-  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
 }
 
 /* 饮食安排卡片 */
