@@ -32,46 +32,50 @@
     </view>
 
     <!-- 饮食安排 -->
-    <view class="meal-plan-card" wx:if="{{meals.length > 0}}">
+    <view class="meal-plan-section" wx:if="{{meals.length > 0}}">
       <view 
         wx:for="{{meals}}" 
         wx:key="type"
-        class="meal-section"
+        class="meal-card"
       >
         <view class="meal-header">
           <view class="meal-title-row">
-            <text class="meal-icon">{{item.icon}}</text>
-            <text class="meal-name">{{item.name}}</text>
-          </view>
-          <view class="meal-calories" wx:if="{{item.calories > 0}}">
-            {{item.calories}} kcal
+            <view class="meal-icon-wrapper">
+              <text class="meal-icon">{{item.icon}}</text>
+            </view>
+            <view class="meal-info">
+              <text class="meal-name">{{item.name}}</text>
+              <text class="meal-calories" wx:if="{{item.calories > 0}}">{{item.calories}} kcal</text>
+            </view>
           </view>
         </view>
         
-        <view class="food-list">
+        <view class="food-grid">
           <view 
             wx:for="{{item.foods}}" 
             wx:key="index"
             wx:for-item="food"
-            class="food-item"
+            class="food-card"
           >
             <!-- 食物图片 -->
-            <image 
-              wx:if="{{food.foodImgUrl}}" 
-              class="food-image" 
-              src="{{food.foodImgUrl}}" 
-              mode="aspectFill"
-            />
-            <view wx:else class="food-image-placeholder">
-              <text class="placeholder-text">🍽️</text>
+            <view class="food-image-wrapper">
+              <image 
+                wx:if="{{food.foodImgUrl}}" 
+                class="food-image" 
+                src="{{food.foodImgUrl}}" 
+                mode="aspectFill"
+              />
+              <view wx:else class="food-image-placeholder">
+                <text class="placeholder-icon">🍽️</text>
+              </view>
             </view>
             
             <!-- 食物信息 -->
-            <view class="food-info">
+            <view class="food-content">
               <view class="food-name">{{food.foodName}}</view>
-              <view class="food-detail">
-                <text wx:if="{{food.foodCalories > 0}}" class="food-cal">{{food.foodCalories}}kcal</text>
+              <view class="food-meta">
                 <text class="food-amount">{{food.foodCount}}{{food.unit}}</text>
+                <text wx:if="{{food.foodCalories > 0}}" class="food-cal">{{food.foodCalories}}kcal</text>
               </view>
             </view>
           </view>

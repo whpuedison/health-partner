@@ -83,10 +83,11 @@
 
 .header-image {
   width: 100%;
-  height: 400rpx;
+  height: 430rpx;
   object-fit: cover;
   object-position: center top;
   display: block;
+  border-radius: 30%;
 }
 
 /* 天数选择器卡片 */
@@ -136,131 +137,166 @@
   white-space: nowrap;
 }
 
-/* 饮食安排卡片 */
-.meal-plan-card {
+/* 饮食安排区域 */
+.meal-plan-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  margin-bottom: 32rpx;
+}
+
+.meal-card {
   background: var(--white);
   border-radius: 24rpx;
-  padding: 32rpx;
-  margin-bottom: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
-}
-
-.meal-section {
-  margin-bottom: 40rpx;
-}
-
-.meal-section:last-child {
-  margin-bottom: 0;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
 }
 
 .meal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20rpx 24rpx;
-  background: linear-gradient(135deg, #FFF5F0 0%, #FFFBF7 100%);
-  border-radius: 16rpx;
-  margin-bottom: 20rpx;
+  padding: 24rpx 28rpx;
+  background: linear-gradient(135deg, #FFFBF7 0%, #FFF5F0 100%);
+  border-bottom: 1rpx solid rgba(233, 80, 63, 0.08);
 }
 
 .meal-title-row {
   display: flex;
   align-items: center;
-  gap: 12rpx;
+  gap: 14rpx;
 }
 
-.meal-icon {
-  font-size: 40rpx;
-}
-
-.meal-name {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #2d3748;
-}
-
-.meal-calories {
-  font-size: 26rpx;
-  color: var(--tomato-red);
-  font-weight: 600;
-}
-
-.food-list {
-  padding: 0 12rpx;
-}
-
-.food-item {
-  display: flex;
-  align-items: center;
-  padding: 20rpx 12rpx;
-  border-bottom: 1rpx solid #f5f7fa;
-  gap: 20rpx;
-}
-
-.food-item:last-child {
-  border-bottom: none;
-}
-
-/* 食物图片 */
-.food-image {
-  width: 96rpx;
-  height: 96rpx;
+.meal-icon-wrapper {
+  width: 60rpx;
+  height: 60rpx;
   border-radius: 16rpx;
-  background: #f5f7fa;
-  flex-shrink: 0;
-}
-
-.food-image-placeholder {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 16rpx;
-  background: linear-gradient(135deg, #FFF5F0 0%, #FFFBF7 100%);
+  background: linear-gradient(135deg, #FFE8E0 0%, #FFD4C4 100%);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(233, 80, 63, 0.15);
+}
+
+.meal-icon {
+  font-size: 32rpx;
+}
+
+.meal-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.meal-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1a202c;
+  letter-spacing: 0.5rpx;
+}
+
+.meal-calories {
+  font-size: 22rpx;
+  color: var(--tomato-red);
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+/* 食物网格 */
+.food-grid {
+  padding: 16rpx 16rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.food-card {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 12rpx;
+  background: #FAFBFC;
+  border-radius: 14rpx;
+  transition: all 0.3s;
+}
+
+.food-card:active {
+  background: #F5F7FA;
+  transform: scale(0.98);
+}
+
+/* 食物图片 */
+.food-image-wrapper {
   flex-shrink: 0;
 }
 
-.placeholder-text {
-  font-size: 48rpx;
-  opacity: 0.5;
+.food-image {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 14rpx;
+  background: #fff;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
 }
 
-/* 食物信息 */
-.food-info {
+.food-image-placeholder {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 14rpx;
+  background: linear-gradient(135deg, #FFF9F0 0%, #FFEFE0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.placeholder-icon {
+  font-size: 40rpx;
+  opacity: 0.4;
+}
+
+/* 食物内容 */
+.food-content {
   flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 96rpx;
+  gap: 16rpx;
+  min-width: 0;
 }
 
 .food-name {
-  font-size: 30rpx;
+  font-size: 26rpx;
   color: #2d3748;
   font-weight: 600;
   line-height: 1.4;
   flex: 1;
-  padding-right: 20rpx;
+  min-width: 0;
 }
 
-.food-detail {
+.food-meta {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 8rpx;
+  gap: 6rpx;
   flex-shrink: 0;
 }
 
 .food-amount {
   font-size: 22rpx;
   color: #718096;
+  font-weight: 500;
+  padding: 4rpx 12rpx;
+  background: rgba(113, 128, 150, 0.08);
+  border-radius: 8rpx;
+  white-space: nowrap;
 }
 
 .food-cal {
   font-size: 22rpx;
   color: var(--tomato-red);
-  letter-spacing: 0.5rpx;
+  font-weight: 600;
+  padding: 4rpx 12rpx;
+  background: rgba(233, 80, 63, 0.08);
+  border-radius: 8rpx;
+  white-space: nowrap;
 }
 
 /* 食谱介绍卡片 */
