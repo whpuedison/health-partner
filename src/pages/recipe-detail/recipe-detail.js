@@ -4,6 +4,7 @@ const { API } = require('../../config/api');
 Page({
   data: {
     recipeId: null,
+    bgIndex: 0,
     recipeDetail: null,
     dailyMeals: [],
     selectedDayId: null,
@@ -12,9 +13,12 @@ Page({
   },
 
   onLoad(options) {
-    const { recipeId } = options;
+    const { recipeId, bgIndex } = options;
     if (recipeId) {
-      this.setData({ recipeId });
+      this.setData({ 
+        recipeId,
+        bgIndex: bgIndex ? parseInt(bgIndex) : 0
+      });
       this.loadRecipeDetail(recipeId);
     }
   },

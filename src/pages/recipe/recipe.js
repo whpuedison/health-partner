@@ -57,10 +57,10 @@ Page({
     try {
       const res = await Http.get(API.RECIPE_LIST, { groupId });
       
-      // 为每个食谱分配随机背景色索引
-      const recipes = (res?.data || []).map(recipe => ({
+      // 为每个食谱按顺序分配背景色索引（0-6循环）
+      const recipes = (res?.data || []).map((recipe, index) => ({
         ...recipe,
-        bgIndex: Math.floor(Math.random() * 7) // 0-6 随机索引
+        bgIndex: index % 7 // 按顺序循环使用7个颜色
       }));
       
       this.setData({
@@ -78,8 +78,9 @@ Page({
    */
   goToDetail(e) {
     const recipeId = e.currentTarget.dataset.recipeId;
+    const bgIndex = e.currentTarget.dataset.bgIndex;
     wx.navigateTo({
-      url: `/pages/recipe-detail/recipe-detail?recipeId=${recipeId}`
+      url: `/pages/recipe-detail/recipe-detail?recipeId=${recipeId}&bgIndex=${bgIndex}`
     });
   }
 });

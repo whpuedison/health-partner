@@ -25,20 +25,16 @@
           class="recipe-card recipe-card-bg-{{item.bgIndex}}"
           bindtap="goToDetail"
           data-recipe-id="{{item.id}}"
+          data-bg-index="{{item.bgIndex}}"
         >
-          <view class="card-inner">
-            <!-- <image class="recipe-image" src="{{item.picUrl}}" mode="aspectFill" /> -->
-            
-            <!-- 推荐标签 -->
-            <!-- <view wx:if="{{item.recommendText}}" class="recommend-badge">
-              {{item.recommendText}}
-            </view> -->
-            
-            <view class="recipe-info">
+          <view class="recipe-content-card">
               <view class="recipe-name">{{item.name}}</view>
               <view class="recipe-promotion">{{item.promotion}}</view>
+              <!-- 图片容器 -->
+              <view class="recipe-image-container">
+                <image class="recipe-image" src="{{item.picUrl}}" mode="aspectFill" />
+              </view>
             </view>
-          </view>
         </view>
       </view>
     </scroll-view>

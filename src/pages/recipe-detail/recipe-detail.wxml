@@ -2,17 +2,15 @@
 <view class="recipe-detail-page">
   <scroll-view scroll-y class="content-scroll" wx:if="{{!loading && recipeDetail}}">
     <!-- 食谱基本信息卡片 -->
-    <view wx:if="{{false}}" class="recipe-header-card">
-      <view class="header-image-wrapper">
-        <image class="header-image" src="{{recipeDetail.picUrl}}" mode="aspectFill" />
-        <view wx:if="{{recipeDetail.recommendText}}" class="recommend-badge">
-          {{recipeDetail.recommendText}}
-        </view>
-      </view>
-      
-      <view class="header-info">
+    <view class="recipe-header-card recipe-header-bg-{{bgIndex}}">
+      <view class="header-content">
         <view class="recipe-title">{{recipeDetail.name}}</view>
         <view class="recipe-desc">{{recipeDetail.promotion}}</view>
+        
+        <!-- 图片容器 -->
+        <view class="header-image-container">
+          <image class="header-image" src="{{recipeDetail.picUrl}}" mode="aspectFill" />
+        </view>
       </view>
     </view>
 
