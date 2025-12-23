@@ -66,6 +66,8 @@
 .recipe-card {
   background: transparent;
   transition: all 0.3s;
+  overflow: hidden;
+  border-radius: 24rpx;
 }
 
 .recipe-card:active {
@@ -76,7 +78,7 @@
 .recipe-content-card {
   position: relative;
   border-radius: 24rpx;
-  padding: 40rpx 32rpx 0;
+  padding: 32rpx 32rpx 0;
   box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
   overflow: hidden;
 }
@@ -126,7 +128,7 @@
   line-height: 1.5;
   opacity: 0.85;
   font-weight: 400;
-  margin-bottom: 24rpx;
+  margin-bottom: 12rpx;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
