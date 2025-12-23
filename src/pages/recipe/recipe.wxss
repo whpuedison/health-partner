@@ -152,7 +152,7 @@
   object-fit: cover;
   object-position: center top;
   display: block;
-  border-radius: 30%;
+  border-radius: 35%;
 }
 
 /* 加载状态 */
