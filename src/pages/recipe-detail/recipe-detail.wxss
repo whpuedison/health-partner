@@ -145,7 +145,7 @@
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  padding: 16rpx 20rpx;
+  padding: 16rpx 9.5rpx;
   border-radius: 16rpx;
   transition: all 0.3s;
   flex-shrink: 0;
@@ -382,3 +382,393 @@
   color: #718096;
 }
 
+
+
+/* ==================== 打卡相关样式 ==================== */
+
+/* 打卡进度区域 */
+.check-in-progress {
+  padding: 24rpx;
+  background: linear-gradient(135deg, #FFF9F5 0%, #FFF5F0 100%);
+  border-radius: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.progress-title {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.progress-icon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.progress-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.progress-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+.action-btn {
+  font-size: 24rpx;
+  color: var(--tomato-red);
+  padding: 8rpx 16rpx;
+  background: rgba(233, 80, 63, 0.1);
+  border-radius: 8rpx;
+}
+
+/* 进度条 */
+.progress-bar-container {
+  position: relative;
+  margin-bottom: 16rpx;
+}
+
+.progress-bar {
+  height: 8rpx;
+  background: rgba(233, 80, 63, 0.1);
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF6B6B 0%, #E9503F 100%);
+  border-radius: 4rpx;
+  transition: width 0.3s ease;
+}
+
+.progress-dot {
+  flex: 1;
+  height: 16rpx;
+  border-radius: 8rpx;
+  background: rgba(233, 80, 63, 0.2);
+  transition: all 0.3s;
+  min-width: 8rpx;
+}
+
+.progress-dot.checked {
+  background: var(--tomato-red);
+  box-shadow: 0 2rpx 8rpx rgba(233, 80, 63, 0.4);
+  transform: scale(1.1);
+}
+
+.progress-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+}
+
+.info-text {
+  font-size: 24rpx;
+  color: #718096;
+}
+
+.info-divider {
+  color: #cbd5e0;
+}
+
+/* 天数选择器增强 */
+.day-item.checked-day {
+  background: rgba(233, 80, 63, 0.1);
+  border-color: var(--tomato-red);
+}
+
+/* 打卡按钮 */
+.check-in-btn-container {
+  margin-top: 24rpx;
+}
+
+.check-in-btn {
+  width: 100%;
+  height: 88rpx;
+  background: linear-gradient(135deg, #FF6B6B 0%, #E9503F 100%);
+  color: white;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 16rpx;
+  border: none;
+  box-shadow: 0 8rpx 24rpx rgba(233, 80, 63, 0.3);
+  transition: all 0.3s;
+}
+
+.check-in-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 16rpx rgba(233, 80, 63, 0.3);
+}
+
+.check-in-btn.checked {
+  background: #e2e8f0;
+  color: #a0aec0;
+  box-shadow: none;
+}
+
+.check-in-btn[disabled] {
+  opacity: 1;
+}
+
+/* 弹窗遮罩 */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-container {
+  width: 90%;
+  max-width: 600rpx;
+  animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100rpx);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 32rpx;
+  padding: 48rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-icon {
+  font-size: 80rpx;
+  margin-bottom: 24rpx;
+}
+
+.modal-icon.celebrate {
+  animation: celebrate 0.6s ease-in-out;
+}
+
+@keyframes celebrate {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.2) rotate(-10deg);
+  }
+  75% {
+    transform: scale(1.2) rotate(10deg);
+  }
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 24rpx;
+}
+
+.modal-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 32rpx;
+}
+
+.info-line {
+  font-size: 26rpx;
+  color: #718096;
+  line-height: 1.6;
+}
+
+/* 关闭按钮 */
+.modal-close {
+  position: absolute;
+  top: 24rpx;
+  right: 24rpx;
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f7fafc;
+  transition: all 0.3s;
+  z-index: 10;
+}
+
+.modal-close:active {
+  background: #edf2f7;
+  transform: scale(0.95);
+}
+
+.close-icon {
+  font-size: 32rpx;
+  color: #718096;
+  font-weight: 300;
+}
+
+/* 圆形进度环 */
+.progress-ring {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+  margin: 24rpx 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #f7fafc;
+}
+
+.ring-progress {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  mask: radial-gradient(transparent 60%, black 60%);
+  -webkit-mask: radial-gradient(transparent 60%, black 60%);
+}
+
+.ring-inner {
+  position: relative;
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.ring-percent {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: var(--tomato-red);
+}
+
+/* 统计信息 */
+.modal-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32rpx;
+  margin: 24rpx 0;
+  padding: 24rpx;
+  background: #f7fafc;
+  border-radius: 16rpx;
+  width: 100%;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.stat-value {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: var(--tomato-red);
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #718096;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: #e2e8f0;
+}
+
+/* 激励文案 */
+.encouragement-text {
+  font-size: 28rpx;
+  color: #4a5568;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* 弹窗按钮 */
+.modal-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-top: 32rpx;
+}
+
+.modal-btn {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 16rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+  transition: all 0.3s;
+}
+
+.modal-btn.primary {
+  background: linear-gradient(135deg, #FF6B6B 0%, #E9503F 100%);
+  color: white;
+  box-shadow: 0 8rpx 24rpx rgba(233, 80, 63, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-btn.primary:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 16rpx rgba(233, 80, 63, 0.3);
+}
+
+.modal-btn.secondary {
+  background: #f7fafc;
+  color: #718096;
+}
+
+.modal-btn.secondary:active {
+  background: #edf2f7;
+}

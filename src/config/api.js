@@ -57,6 +57,10 @@ const API = {
   RECIPE_FAVORITE_ADD: '/api/v1/recipe/favorite',
   RECIPE_FAVORITE_REMOVE: '/api/v1/recipe/favorite',
   RECIPE_FAVORITE_CHECK: '/api/v1/recipe/favorite/check',
+  // 食谱打卡相关
+  RECIPE_CHECKIN_PROGRESS: '/api/v1/recipe/check-in/progress',
+  RECIPE_CHECKIN: '/api/v1/recipe/check-in',
+  RECIPE_CHECKIN_RESET: '/api/v1/recipe/check-in/reset',
 };
 
 module.exports = { API };
