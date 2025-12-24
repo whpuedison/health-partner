@@ -504,6 +504,9 @@
   border: none;
   box-shadow: 0 8rpx 24rpx rgba(233, 80, 63, 0.3);
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .check-in-btn:active {

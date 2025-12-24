@@ -303,7 +303,8 @@ Page({
     
     try {
       if (isFavorite) {
-        await Http.delete(API.RECIPE_FAVORITE_REMOVE, { openId, recipeId });
+        // 使用 POST 请求，通过 query 参数指定 method=DELETE
+        await Http.post(API.RECIPE_FAVORITE_REMOVE, { openId, recipeId });
         wx.showToast({ title: '已取消收藏', icon: 'success' });
         this.setData({ isFavorite: false });
       } else {
