@@ -175,12 +175,19 @@
 }
 
 .empty-icon {
-  font-size: 120rpx;
+  font-size: 40rpx;
+  color: var(--tomato-red);
   margin-bottom: 24rpx;
 }
 
 .empty-text {
   font-size: 28rpx;
   color: #718096;
+  margin-bottom: 12rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: #a0aec0;
 }
 

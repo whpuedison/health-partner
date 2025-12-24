@@ -45,7 +45,13 @@
     </view>
 
     <!-- 空状态 -->
-    <view class="empty-state" wx:if="{{!loading && recipes.length === 0}}">
+    <view class="empty-state" wx:if="{{!loading && showEmpty}}">
+      <text class="empty-text">还没有收藏的食谱</text>
+      <text class="empty-hint">快去收藏你喜欢的食谱吧~</text>
+    </view>
+
+    <!-- 普通空状态 -->
+    <view class="empty-state" wx:if="{{!loading && !showEmpty && recipes.length === 0}}">
       <text class="empty-icon">🍽️</text>
       <text class="empty-text">暂无食谱</text>
     </view>

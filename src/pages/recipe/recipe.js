@@ -6,11 +6,19 @@ Page({
     groups: [],
     selectedGroupId: null,
     recipes: [],
-    loading: false
+    loading: false,
+    showEmpty: false // 是否显示空态
   },
 
   onLoad() {
     this.loadGroups();
+  },
+
+  onShow() {
+    // 如果当前选中的是"我的食谱"，重新加载以刷新收藏状态
+    if (this.data.selectedGroupId === 0) {
+      this.loadRecipes(0);
+    }
   },
 
   /**
@@ -52,10 +60,13 @@ Page({
    * 加载食谱列表
    */
   async loadRecipes(groupId) {
-    this.setData({ loading: true });
+    this.setData({ loading: true, showEmpty: false });
 
     try {
-      const res = await Http.get(API.RECIPE_LIST, { groupId });
+      const app = getApp();
+      const openId = app.globalData.openId || wx.getStorageSync('openId');
+      
+      const res = await Http.get(API.RECIPE_LIST, { groupId, openId });
       
       // 为每个食谱按顺序分配背景色索引（0-6循环）
       const recipes = (res?.data || []).map((recipe, index) => ({
@@ -63,9 +74,13 @@ Page({
         bgIndex: index % 7 // 按顺序循环使用7个颜色
       }));
       
+      // 如果是"我的食谱"且没有数据，显示空态
+      const showEmpty = groupId === 0 && recipes.length === 0;
+      
       this.setData({
         recipes: recipes,
-        loading: false
+        loading: false,
+        showEmpty: showEmpty
       });
     } catch (error) {
       console.error('加载食谱失败:', error);

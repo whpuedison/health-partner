@@ -4,6 +4,11 @@
     <!-- 食谱基本信息卡片 -->
     <view class="recipe-header-card recipe-header-bg-{{bgIndex}}">
       <view class="header-content">
+        <!-- 收藏按钮 -->
+        <view class="favorite-btn" bindtap="toggleFavorite">
+          <text class="favorite-icon {{isFavorite ? 'favorited' : ''}}">{{isFavorite ? '★' : '☆'}}</text>
+        </view>
+        
         <view class="recipe-title">{{recipeDetail.name}}</view>
         <view class="recipe-desc">{{recipeDetail.promotion}}</view>
         
@@ -44,8 +49,8 @@
               <text class="meal-icon">{{item.icon}}</text>
             </view>
             <view class="meal-info">
-              <text class="meal-name">{{item.name}}</text>
               <text class="meal-calories" wx:if="{{item.calories > 0}}">{{item.calories}} kcal</text>
+              <text class="meal-name">{{item.name}}</text>
             </view>
           </view>
         </view>

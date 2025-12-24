@@ -54,6 +54,9 @@ const API = {
   RECIPE_LIST: '/api/v1/recipe/list',
   RECIPE_DETAIL: '/api/v1/recipe/detail',
   RECIPE_DAILY_MEAL: '/api/v1/recipe/daily-meal',
+  RECIPE_FAVORITE_ADD: '/api/v1/recipe/favorite',
+  RECIPE_FAVORITE_REMOVE: '/api/v1/recipe/favorite',
+  RECIPE_FAVORITE_CHECK: '/api/v1/recipe/favorite/check',
 };
 
 module.exports = { API };

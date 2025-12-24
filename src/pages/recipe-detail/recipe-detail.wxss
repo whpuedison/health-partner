@@ -49,7 +49,37 @@
 }
 
 .header-content {
+  position: relative;
   padding: 40rpx 32rpx 0;
+}
+
+/* 收藏按钮 */
+.favorite-btn {
+  position: absolute;
+  top: 24rpx;
+  right: 24rpx;
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  z-index: 10;
+}
+
+.favorite-btn:active {
+  transform: scale(0.9);
+}
+
+.favorite-icon {
+  font-size: 40rpx;
+  color: #fff;
+  transition: all 0.3s;
+}
+
+.favorite-icon.favorited {
+  color: var(--tomato-red);
+  text-shadow: 0 2rpx 8rpx rgba(255, 215, 0, 0.4);
 }
 
 .recipe-title {
@@ -180,10 +210,11 @@
 }
 
 .meal-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4rpx;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12rpx;
 }
 
 .meal-name {
