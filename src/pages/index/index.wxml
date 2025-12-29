@@ -222,7 +222,36 @@
         </view>
     </view>
 
-    <!-- 5. 今日运动记录 -->
+    <!-- 5. 减脂食谱推荐 -->
+    <view class="dashboard-card diet-recipe-card">
+        <view class="card-title-row" bindtap="navigateTo" data-url="/pages/recipe/recipe">
+            <text class="card-title">🥗 减脂食谱</text>
+            <view class="title-right">
+                <text class="more-link">更多食谱</text>
+                <van-icon name="arrow" size="12px" color="#999" />
+            </view>
+        </view>
+        <view class="divider-line"></view>
+        <scroll-view class="recipe-scroll" scroll-x="true" enable-flex="true">
+            <view 
+                class="recipe-scroll-item recipe-card-bg-{{index % 7}}" 
+                wx:for="{{recommendedRecipes}}" 
+                wx:key="id" 
+                bindtap="navigateTo" 
+                data-url="/pages/recipe-detail/recipe-detail?recipeId={{item.id}}&bgIndex={{index % 7}}"
+            >
+                <view class="recipe-scroll-content">
+                    <view class="recipe-scroll-name">{{item.title}}</view>
+                    <view class="recipe-scroll-calories">{{item.calories}}</view>
+                    <view class="recipe-scroll-image-container">
+                        <image class="recipe-scroll-image" src="{{item.image}}" mode="aspectFill"></image>
+                    </view>
+                </view>
+            </view>
+        </scroll-view>
+    </view>
+
+    <!-- 6. 今日运动记录 -->
     <view class="dashboard-card list-card">
         <view class="card-title-row" bindtap="navigateTo" data-url="/pages/exercise/exercise">
         <text class="card-title">🏃 今日运动</text>

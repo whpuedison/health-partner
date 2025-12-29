@@ -57,6 +57,7 @@ const API = {
   RECIPE_FAVORITE_ADD: '/api/v1/recipe/favorite',
   RECIPE_FAVORITE_REMOVE: '/api/v1/recipe/favorite/remove',
   RECIPE_FAVORITE_CHECK: '/api/v1/recipe/favorite/check',
+  RECIPE_RECOMMEND: '/api/v1/recipe/recommend',
   // 食谱打卡相关
   RECIPE_CHECKIN_PROGRESS: '/api/v1/recipe/check-in/progress',
   RECIPE_CHECKIN: '/api/v1/recipe/check-in',

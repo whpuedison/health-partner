@@ -72,6 +72,9 @@ Page({
     
     // 功能锁定
     isLocked: true, // 默认锁定
+
+    // 7. 推荐食谱
+    recommendedRecipes: [],
   },
 
   onShow() {
@@ -80,6 +83,7 @@ Page({
     }
     // 每次显示刷新数据
     this.loadTodayData();
+    this.loadRecommendedRecipes();
   },
 
   // 检查分享状态
@@ -111,9 +115,6 @@ Page({
         page: 'pages/index/index'
     }).then(res => {
         if (res.success) {
-            // 记录成功后，如果是首次分享，可能需要更新状态
-            // 但因为分享是异步的且用户可能取消，这里直接更新解锁状态也是一种策略（鼓励分享）
-            // 用户要求：分享好友/朋友圈都算。点击即算尝试分享。
             this.setData({ isLocked: false });
             wx.showToast({
                 title: '解锁成功',
@@ -132,14 +133,27 @@ Page({
       });
       return;
     }
-    // 如果没锁，这种绑定如果是在容器上，内部按钮事件会冒泡，
-    // 需要在具体跳转逻辑里判断 isLocked。
-    // 但是更好的做法是用蒙层通过 catchtap 拦截点击。
   },
 
   navigateTo(e) {
       const url = e.currentTarget.dataset.url;
       if (url) wx.navigateTo({ url });
+  },
+
+  // 加载推荐食谱
+  loadRecommendedRecipes() {
+    Http.get(API.RECIPE_RECOMMEND).then(res => {
+        if (res.data) {
+            // Map backend fields to frontend expected fields
+            const recommendedRecipes = res.data.map(item => ({
+                id: item.id,
+                title: item.name, // backend name -> frontend title
+                calories: item.promotion || item.intro || '', // promotion often used for short tags
+                image: item.picUrl
+            }));
+            this.setData({ recommendedRecipes });
+        }
+    })
   },
 
   // 核心数据加载
