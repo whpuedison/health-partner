@@ -7,7 +7,7 @@
 
 /* 侧边栏 */
 .sidebar {
-  width: 160rpx;
+  width: 208rpx;
   height: 100vh;
   background: var(--white);
   box-shadow: 2rpx 0 8rpx rgba(0, 0, 0, 0.03);
@@ -148,7 +148,7 @@
 
 .recipe-image {
   width: 100%;
-  height: 350rpx;
+  height: 310rpx;
   object-fit: cover;
   object-position: center top;
   display: block;

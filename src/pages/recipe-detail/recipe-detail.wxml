@@ -37,7 +37,7 @@
         </view>
         
         <view class="progress-info">
-          <text class="info-text">第{{checkInProgress.checkedDays}}天 / 共{{checkInProgress.totalDays}}天</text>
+          <text class="info-text">第{{checkInProgress.checkedDays}}天 / 共{{dailyMeals.length}}天</text>
           <text class="info-divider">•</text>
           <text class="info-text">完成度 {{checkInProgress.completionRate}}%</text>
         </view>
