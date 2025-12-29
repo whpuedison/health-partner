@@ -84,122 +84,125 @@
         </view>
     </view>
 
-    <!-- 2. 今日饮食记录 (折叠收纳) -->
-    <view class="dashboard-card list-card">
-        <!-- Corner Cutout Entry -->
+    <!-- 2. 今日饮食记录 (折叠收纳) - Wrapped for Clip-Path Sibling Structure -->
+    <view class="recipe-wrapper" style="position: relative;">
+        <!-- Corner Cutout Entry (Sibling, acting as Tenon) -->
         <view wx:if="{{!isLocked}}" class="recipe-corner-entry" bindtap="navigateTo" data-url="/pages/recipe/recipe">
             <text>减脂食谱</text>
         </view>
 
-        <view class="card-title-row" bindtap="navigateTo" data-url="/pages/diet/diet">
-        <text class="card-title">🍽️ 今日饮食</text>
-        <!-- <view class="title-right">
-            <text class="total-cal">{{calorieData.intake}} kcal</text>
-            <van-icon name="arrow" />
-        </view> -->
-        </view>
-        <view wx:if="{{dietRecords.breakfast.list.length > 0}}" class="divider-line"></view>
-
-        <!-- Locked Overlay -->
-        <view class="locked-overlay" wx:if="{{isLocked}}" catchtap="onLockedFeatureTap">
-            <view class="lock-icon">🔒</view>
-            <!-- <text>分享后解锁该功能</text> -->
-        </view>
-        
-        <view class="record-list" wx:if="{{dietRecords.hasRecords}}">
-        <!-- 早餐 -->
-        <view class="meal-accordion" wx:if="{{dietRecords.breakfast.list.length > 0}}">
-            <view class="accordion-head" bindtap="toggleMealSection" data-meal="breakfast">
-                <view class="head-left">
-                    <text class="meal-icon">☀️</text>
-                    <text class="head-title">早餐</text>
+        <!-- Main Card (Sibling, acting as Mortise with clip-path) -->
+        <view class="dashboard-card list-card recipe-card">
+            <view class="card-title-row" bindtap="navigateTo" data-url="/pages/diet/diet">
+            <text class="card-title">🍽️ 今日饮食</text>
+            <!-- <view class="title-right">
+                <text class="total-cal">{{calorieData.intake}} kcal</text>
+                <van-icon name="arrow" />
+            </view> -->
+            </view>
+            <view wx:if="{{dietRecords.breakfast.list.length > 0}}" class="divider-line"></view>
+    
+            <!-- Locked Overlay -->
+            <view class="locked-overlay" wx:if="{{isLocked}}" catchtap="onLockedFeatureTap">
+                <view class="lock-icon">🔒</view>
+                <!-- <text>分享后解锁该功能</text> -->
+            </view>
+            
+            <view class="record-list" wx:if="{{dietRecords.hasRecords}}">
+            <!-- 早餐 -->
+            <view class="meal-accordion" wx:if="{{dietRecords.breakfast.list.length > 0}}">
+                <view class="accordion-head" bindtap="toggleMealSection" data-meal="breakfast">
+                    <view class="head-left">
+                        <text class="meal-icon">☀️</text>
+                        <text class="head-title">早餐</text>
+                    </view>
+                    <view class="head-right">
+                        <text class="head-cal">{{dietRecords.breakfast.calories}}</text>
+                        <van-icon name="{{expandedMeal.breakfast ? 'arrow-up' : 'arrow-down'}}" size="12px" color="#999" />
+                    </view>
                 </view>
-                <view class="head-right">
-                    <text class="head-cal">{{dietRecords.breakfast.calories}}</text>
-                    <van-icon name="{{expandedMeal.breakfast ? 'arrow-up' : 'arrow-down'}}" size="12px" color="#999" />
+                <view class="accordion-content {{expandedMeal.breakfast ? 'expanded' : ''}}">
+                    <view class="food-item" wx:for="{{dietRecords.breakfast.list}}" wx:key="id">
+                    <text class="food-name">{{item.foodName}}</text>
+                    <text class="food-cal">{{item.calories}}</text>
+                    </view>
                 </view>
             </view>
-            <view class="accordion-content {{expandedMeal.breakfast ? 'expanded' : ''}}">
-                <view class="food-item" wx:for="{{dietRecords.breakfast.list}}" wx:key="id">
-                <text class="food-name">{{item.foodName}}</text>
-                <text class="food-cal">{{item.calories}}</text>
+            
+            <!-- 午餐 -->
+            <view class="meal-accordion" wx:if="{{dietRecords.lunch.list.length > 0}}">
+                <view class="accordion-head" bindtap="toggleMealSection" data-meal="lunch">
+                    <view class="head-left">
+                        <text class="meal-icon">🌤️</text>
+                        <text class="head-title">午餐</text>
+                    </view>
+                    <view class="head-right">
+                        <text class="head-cal">{{dietRecords.lunch.calories}}</text>
+                        <van-icon name="{{expandedMeal.lunch ? 'arrow-up' : 'arrow-down'}}" size="12px" color="#999" />
+                    </view>
+                </view>
+                <view class="accordion-content {{expandedMeal.lunch ? 'expanded' : ''}}">
+                    <view class="food-item" wx:for="{{dietRecords.lunch.list}}" wx:key="id">
+                    <text class="food-name">{{item.foodName}}</text>
+                    <text class="food-cal">{{item.calories}}</text>
+                    </view>
                 </view>
             </view>
-        </view>
-        
-        <!-- 午餐 -->
-        <view class="meal-accordion" wx:if="{{dietRecords.lunch.list.length > 0}}">
-            <view class="accordion-head" bindtap="toggleMealSection" data-meal="lunch">
-                <view class="head-left">
-                    <text class="meal-icon">🌤️</text>
-                    <text class="head-title">午餐</text>
+            
+            <!-- 晚餐 -->
+            <view class="meal-accordion" wx:if="{{dietRecords.dinner.list.length > 0}}">
+                <view class="accordion-head" bindtap="toggleMealSection" data-meal="dinner">
+                    <view class="head-left">
+                        <text class="meal-icon">🌙</text>
+                        <text class="head-title">晚餐</text>
+                    </view>
+                    <view class="head-right">
+                        <text class="head-cal">{{dietRecords.dinner.calories}}</text>
+                        <van-icon name="{{expandedMeal.dinner ? 'arrow-up' : 'arrow-down'}}" size="12px" color="#999" />
+                    </view>
                 </view>
-                <view class="head-right">
-                    <text class="head-cal">{{dietRecords.lunch.calories}}</text>
-                    <van-icon name="{{expandedMeal.lunch ? 'arrow-up' : 'arrow-down'}}" size="12px" color="#999" />
-                </view>
-            </view>
-            <view class="accordion-content {{expandedMeal.lunch ? 'expanded' : ''}}">
-                <view class="food-item" wx:for="{{dietRecords.lunch.list}}" wx:key="id">
-                <text class="food-name">{{item.foodName}}</text>
-                <text class="food-cal">{{item.calories}}</text>
-                </view>
-            </view>
-        </view>
-        
-        <!-- 晚餐 -->
-        <view class="meal-accordion" wx:if="{{dietRecords.dinner.list.length > 0}}">
-            <view class="accordion-head" bindtap="toggleMealSection" data-meal="dinner">
-                <view class="head-left">
-                    <text class="meal-icon">🌙</text>
-                    <text class="head-title">晚餐</text>
-                </view>
-                <view class="head-right">
-                    <text class="head-cal">{{dietRecords.dinner.calories}}</text>
-                    <van-icon name="{{expandedMeal.dinner ? 'arrow-up' : 'arrow-down'}}" size="12px" color="#999" />
+                <view class="accordion-content {{expandedMeal.dinner ? 'expanded' : ''}}">
+                    <view class="food-item" wx:for="{{dietRecords.dinner.list}}" wx:key="id">
+                    <text class="food-name">{{item.foodName}}</text>
+                    <text class="food-cal">{{item.calories}}</text>
+                    </view>
                 </view>
             </view>
-            <view class="accordion-content {{expandedMeal.dinner ? 'expanded' : ''}}">
-                <view class="food-item" wx:for="{{dietRecords.dinner.list}}" wx:key="id">
-                <text class="food-name">{{item.foodName}}</text>
-                <text class="food-cal">{{item.calories}}</text>
+    
+            <!-- 加餐 -->
+            <view class="meal-accordion" wx:if="{{dietRecords.snack.list.length > 0}}">
+                <view class="accordion-head" bindtap="toggleMealSection" data-meal="snack">
+                    <view class="head-left">
+                        <text class="meal-icon">🍎</text>
+                        <text class="head-title">加餐</text>
+                    </view>
+                    <view class="head-right">
+                        <text class="head-cal">{{dietRecords.snack.calories}}</text>
+                        <van-icon name="{{expandedMeal.snack ? 'arrow-up' : 'arrow-down'}}" size="12px" color="#999" />
+                    </view>
+                </view>
+                <view class="accordion-content {{expandedMeal.snack ? 'expanded' : ''}}">
+                    <view class="food-item" wx:for="{{dietRecords.snack.list}}" wx:key="id">
+                    <text class="food-name">{{item.foodName}}</text>
+                    <text class="food-cal">{{item.calories}}</text>
+                    </view>
                 </view>
             </view>
-        </view>
-
-        <!-- 加餐 -->
-        <view class="meal-accordion" wx:if="{{dietRecords.snack.list.length > 0}}">
-            <view class="accordion-head" bindtap="toggleMealSection" data-meal="snack">
-                <view class="head-left">
-                    <text class="meal-icon">🍎</text>
-                    <text class="head-title">加餐</text>
-                </view>
-                <view class="head-right">
-                    <text class="head-cal">{{dietRecords.snack.calories}}</text>
-                    <van-icon name="{{expandedMeal.snack ? 'arrow-up' : 'arrow-down'}}" size="12px" color="#999" />
-                </view>
             </view>
-            <view class="accordion-content {{expandedMeal.snack ? 'expanded' : ''}}">
-                <view class="food-item" wx:for="{{dietRecords.snack.list}}" wx:key="id">
-                <text class="food-name">{{item.foodName}}</text>
-                <text class="food-cal">{{item.calories}}</text>
-                </view>
+            
+            <view class="empty-state" wx:elif="{{!isLocked}}">
+                <image class="diet-icon" mode="widthFix" src="https://whpuedison.online/images/diet_placehold.png"></image>
             </view>
-        </view>
-        </view>
-        
-        <view class="empty-state" wx:elif="{{!isLocked}}">
-            <image class="diet-icon" mode="widthFix" src="https://whpuedison.online/images/diet_placehold.png"></image>
-        </view>
-
-        <!-- 底部快捷入口 -->
-        <view class="quick-entry-row">
-        <view class="ai-btn" bindtap="navigateTo" data-url="/pages/diet/diet?mode=text">
-            <text>✏️ AI文字识别</text>
-        </view>
-        <view class="ai-btn camera" bindtap="navigateTo" data-url="/pages/diet/diet?mode=camera">
-            <text>📷 AI拍照识别</text>
-        </view>
+    
+            <!-- 底部快捷入口 -->
+            <view class="quick-entry-row">
+            <view class="ai-btn" bindtap="navigateTo" data-url="/pages/diet/diet?mode=text">
+                <text>✏️ AI文字识别</text>
+            </view>
+            <view class="ai-btn camera" bindtap="navigateTo" data-url="/pages/diet/diet?mode=camera">
+                <text>📷 AI拍照识别</text>
+            </view>
+            </view>
         </view>
     </view>
 
