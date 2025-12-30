@@ -87,7 +87,7 @@
     <!-- 2. 今日饮食记录 (折叠收纳) - Wrapped for Clip-Path Sibling Structure -->
     <view class="recipe-wrapper" style="position: relative;">
         <!-- Corner Cutout Entry (Sibling, acting as Tenon) -->
-        <view wx:if="{{!isLocked}}" class="recipe-corner-entry" bindtap="navigateTo" data-url="/pages/recipe/recipe">
+        <view class="recipe-corner-entry" bindtap="navigateTo" data-url="/pages/recipe/recipe">
             <text>减脂食谱</text>
         </view>
 
@@ -190,7 +190,7 @@
             </view>
             </view>
             
-            <view class="empty-state" wx:elif="{{!isLocked}}">
+            <view wx:else class="empty-state">
                 <image class="diet-icon" mode="widthFix" src="https://whpuedison.online/images/diet_placehold.png"></image>
             </view>
     
