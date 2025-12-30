@@ -15,7 +15,8 @@
     "pages/charts/charts",
     "pages/measure/measure",
     "pages/recipe/recipe",
-    "pages/recipe-detail/recipe-detail"
+    "pages/recipe-detail/recipe-detail",
+    "pages/member/member"
   ],
   "window": {
     "backgroundTextStyle": "light",

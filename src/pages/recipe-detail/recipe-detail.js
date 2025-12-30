@@ -19,6 +19,9 @@ Page({
     showCheckInModal: false, // 是否显示打卡成功弹窗
     checkInResult: null, // 打卡结果数据
     currentDayChecked: false, // 当前天是否已打卡
+    
+    // 会员相关
+    isMember: false, // 是否是会员
   },
 
   onLoad(options) {
@@ -51,11 +54,15 @@ Page({
       if (detailRes?.data) {
         const dailyMeals = detailRes.data?.dailyMeals || [];
         
+        // 检查会员状态
+        const isMember = detailRes.data?.userInfo?.isMember || false;
+        
         this.setData({
           recipeDetail: detailRes.data,
           dailyMeals: dailyMeals,
           isFavorite: detailRes.data?.isFavorite || false,
           checkInProgress: progressRes?.data || null,
+          isMember: isMember,
           loading: false
         });
 
@@ -358,6 +365,15 @@ Page({
       wx.hideLoading();
       console.error('加载饮食安排失败:', error);
     }
+  },
+
+  /**
+   * 跳转到会员页面
+   */
+  onNavigateToMember() {
+    wx.navigateTo({
+      url: '/pages/member/member'
+    })
   }
 });
 

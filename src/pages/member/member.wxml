@@ -1,0 +1,95 @@
+<!-- pages/member/member.wxml -->
+<view class="member-page">
+  <!-- 核心页头 (去背景) -->
+  <view class="header-section">
+    <view class="header-content">
+      <!-- 会员卡片 (居中 & 丰富信息) -->
+      <view class="vip-card-box">
+        <view class="vip-card {{isMember ? 'is-active' : ''}}">
+          <view class="card-bg-mesh"></view>
+          
+          <view class="card-body">
+            <view class="brand-line">
+              <view class="h-line"></view>
+              <text class="brand">番茄控卡 • VIP</text>
+              <view class="h-line"></view>
+            </view>
+            
+            <view class="card-status-label" wx:if="{{isMember}}">
+              <text class="tag">ACTIVE</text>
+              <text class="date">尊享期至 {{memberExpireAt}}</text>
+            </view>
+            <text class="card-title" wx:else>未激活</text>
+
+            <view class="card-stats">
+              <view class="stat">
+                <text class="num">2000+</text>
+                <text class="txt">食物推荐</text>
+              </view>
+              <view class="sep"></view>
+              <view class="stat">
+                <text class="num">AI</text>
+                <text class="txt">智能分析</text>
+              </view>
+              <view class="sep"></view>
+              <view class="stat">
+                <text class="num">PRO</text>
+                <text class="txt">数据周报</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="card-footer" wx:if="{{!isMember}}">
+            <text class="expiry">加入会员，解锁以上全部功能</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="content-container">
+    <!-- 套餐选择 (横向展示) -->
+    <view class="section-card" wx:if="{{!isIOS}}">
+      <view class="section-title">选择会员方案</view>
+      <view class="plan-list">
+        <view 
+          class="plan-item {{selectedProductId === item.id ? 'selected' : ''}}" 
+          wx:for="{{products}}" 
+          wx:key="id"
+          bindtap="selectProduct"
+          data-id="{{item.id}}"
+        >
+          <view class="plan-tag" wx:if="{{item.recommend}}">推荐</view>
+          <text class="plan-name">{{item.name}}</text>
+          <view class="plan-price">
+            <text class="symbol">¥</text>
+            <text class="amount">{{item.price}}</text>
+          </view>
+          <text class="plan-daily">折合 ¥{{item.dailyPrice}}/天</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- iOS 提示 -->
+    <view wx:if="{{isIOS}}" class="ios-notice">
+      <text class="icon">⚠️</text>
+      <text>由于平台规范，iOS 用户暂不支持通过小程序开通会员。</text>
+    </view>
+  </view>
+
+  <!-- 底部支付栏 (延续标准按钮风格) -->
+  <view class="bottom-action" wx:if="{{!isIOS}}">
+    <view class="pay-bar">
+      <view class="price-info">
+        <text class="label">实付</text>
+        <view class="val">
+          <text class="symbol">¥</text>
+          <text class="amount">{{selectedProductPrice}}</text>
+        </view>
+      </view>
+      <button class="pay-button" bindtap="onBuyMember">立即开通会员</button>
+    </view>
+  </view>
+
+  <view class="safe-area-inset"></view>
+</view>

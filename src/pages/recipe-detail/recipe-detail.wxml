@@ -89,7 +89,13 @@
           </view>
         </view>
         
-        <view class="food-grid">
+        <view class="food-grid" style="position: relative;">
+          <!-- 会员锁定遮罩 -->
+          <view class="locked-overlay" wx:if="{{!isMember}}" catchtap="onNavigateToMember">
+            <view class="lock-icon">🔒</view>
+            <text>会员专享</text>
+          </view>
+          
           <view 
             wx:for="{{item.foods}}" 
             wx:key="index"
@@ -151,13 +157,13 @@
         <text class="modal-title">开始你的饮食计划</text>
         
         <view class="modal-info" wx:if="{{checkInProgress && !checkInProgress.isCompleted}}">
-          <text class="info-line">你上次打卡到：第{{checkInProgress.lastCheckedDay}}天（共{{checkInProgress.totalDays}}天）</text>
-          <text class="info-line">完成度：{{checkInProgress.completionRate}}%</text>
+          <text class="info-line">你上次打卡到:第{{checkInProgress.lastCheckedDay}}天(共{{checkInProgress.totalDays}}天)</text>
+          <text class="info-line">完成度:{{checkInProgress.completionRate}}%</text>
         </view>
         
         <view class="modal-info" wx:if="{{checkInProgress && checkInProgress.isCompleted}}">
           <text class="info-line">🎊 你已完成全部打卡</text>
-          <text class="info-line">开启新的挑战吧！</text>
+          <text class="info-line">开启新的挑战吧!</text>
         </view>
         
         <view class="modal-actions">
@@ -169,7 +175,7 @@
             从第{{checkInProgress.nextDay}}天继续
           </button>
           <button class="modal-btn secondary" bindtap="onRestartCheckIn">
-            重新开始（第1天）
+            重新开始(第1天)
           </button>
         </view>
       </view>
@@ -186,7 +192,7 @@
         </view>
         
         <text class="modal-icon celebrate">✨</text>
-        <text class="modal-title">打卡成功！</text>
+        <text class="modal-title">打卡成功!</text>
         
         <!-- 圆形进度环 -->
         <view class="progress-ring">
@@ -220,4 +226,3 @@
     </view>
   </view>
 </view>
-

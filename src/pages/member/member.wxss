@@ -1,0 +1,415 @@
+/* Pages: Unified Health Membership Redesign */
+
+.member-page {
+  min-height: 100vh;
+  background-color: var(--bg-light);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 装饰性背景底纹 */
+.member-page::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: -100rpx;
+  width: 600rpx;
+  height: 600rpx;
+  background: radial-gradient(circle, rgba(233, 80, 63, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 沉浸式头部 - 延续 index/profile 风格 */
+.header-section {
+  padding: 40rpx 32rpx 40rpx; /* 大幅缩小页头留白 */
+  position: relative;
+  z-index: 1;
+}
+
+/* 移除用户简介样式 */
+
+/* 会员卡片 - 延续 user-card 风格但更精致 */
+.vip-card-box {
+  margin-top: 20rpx;
+}
+
+.vip-card {
+  background: linear-gradient(135deg, #222 0%, #333 100%);
+  border-radius: 32rpx;
+  padding: 24rpx 40rpx; /* 再次压缩上下内边距，使其更轻盈精致 */
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16rpx 48rpx rgba(0, 0, 0, 0.12);
+  color: #F1E0AD;
+}
+
+.vip-card.is-active {
+  background: linear-gradient(135deg, #FF6B6B 0%, #E9503F 100%);
+  color: #FFFFFF;
+}
+
+.card-bg-mesh {
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 140%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40rpx;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  gap: 16rpx; /* 进一步收紧，减少头重感 */
+  margin-bottom: 20rpx;
+}
+
+.brand-line {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  width: 100%;
+}
+
+.h-line {
+  flex: 1;
+  height: 1rpx;
+  background: currentColor;
+  opacity: 0.2;
+}
+
+.brand {
+  font-size: 22rpx;
+  font-weight: bold;
+  letter-spacing: 2rpx;
+  opacity: 0.8;
+}
+
+.card-title {
+  font-size: 40rpx; /* 进一步调小字号，增加精致感 */
+  font-weight: 900;
+  letter-spacing: 8rpx; /* 减小间距，使字体更紧凑、不松散 */
+  text-align: center;
+}
+
+.card-status-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.card-status-label .tag {
+  font-size: 16rpx;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2rpx 12rpx;
+  border-radius: 4rpx;
+  letter-spacing: 2rpx;
+  font-weight: bold;
+}
+
+.card-status-label .date {
+  font-size: 26rpx;
+  font-weight: bold;
+}
+
+.card-stats {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  padding: 16rpx 0;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.08);
+}
+
+.vip-card:not(.is-active) .card-stats {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+}
+
+.stat .num {
+  font-size: 32rpx;
+  font-weight: bold;
+  font-family: 'DIN Condensed', sans-serif;
+}
+
+.stat .txt {
+  font-size: 18rpx;
+  opacity: 0.6;
+}
+
+.sep {
+  width: 1rpx;
+  height: 40rpx;
+  background: currentColor;
+  opacity: 0.1;
+  align-self: center;
+}
+
+.card-footer {
+  text-align: center;
+  font-size: 22rpx;
+  opacity: 0.6;
+}
+
+/* 内容区域 */
+.content-container {
+  padding: 0 32rpx;
+  margin-top: 20rpx; /* 改为正向边距，避免“强行”上推造成的头重感 */
+  position: relative;
+  z-index: 2;
+  padding-bottom: 240rpx;
+}
+
+.section-card {
+  background: #FFFBF7; /* 回归首页的暖色调，显得更丰满、温馨 */
+  border-radius: 32rpx;
+  padding: 40rpx 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 20rpx rgba(233, 80, 63, 0.04);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: var(--gray-dark);
+  margin-bottom: 32rpx;
+}
+
+/* 会员权益列表 */
+.benefits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.icon-box {
+  width: 80rpx;
+  height: 80rpx;
+  background: var(--bg-light);
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+}
+
+.text-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.item-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--gray-dark);
+}
+
+.item-desc {
+  font-size: 24rpx;
+  color: var(--gray-light);
+}
+
+.check-box {
+  color: var(--tomato-red);
+  font-weight: bold;
+}
+
+
+/* 会员方案列表 */
+
+.plan-list {
+  display: flex;
+  gap: 16rpx;
+  justify-content: space-between;
+}
+
+.plan-item {
+  flex: 1; /* 平分空间，一行展示 */
+  border: 4rpx solid #F8F3EE;
+  background: #FFFBF7;
+  border-radius: 28rpx;
+  padding: 40rpx 8rpx; /* 略微缩减内边距以适应宽度 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-sizing: border-box;
+  min-width: 0; /* 防止内容撑开 */
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.04), 0 2rpx 4rpx rgba(0, 0, 0, 0.02); /* 添加轻微立体感 */
+}
+
+.plan-item.selected {
+  border-color: var(--tomato-red);
+  background: var(--pale-orange);
+  transform: translateY(-4rpx); /* 选中时略微浮起 */
+  box-shadow: 0 16rpx 40rpx rgba(233, 80, 63, 0.12), 0 4rpx 10rpx rgba(233, 80, 63, 0.08); /* 强化选中态阴影 */
+}
+
+.plan-tag {
+  position: absolute;
+  top: -16rpx;
+  left: 20rpx;
+  background: var(--gradient-tomato);
+  color: var(--white);
+  font-size: 20rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 12rpx;
+  font-weight: bold;
+}
+
+.plan-name {
+  font-size: 26rpx;
+  color: var(--gray-dark);
+  margin-bottom: 16rpx;
+}
+
+.plan-price {
+  display: flex;
+  align-items: baseline;
+  color: var(--tomato-red);
+  margin-bottom: 8rpx;
+}
+
+.plan-price .symbol {
+  font-size: 24rpx;
+  font-weight: bold;
+}
+
+.plan-price .amount {
+  font-size: 42rpx; /* 适配更窄的卡片 */
+  font-weight: bold;
+  font-family: 'DIN Condensed', -apple-system, system-ui, sans-serif;
+}
+
+.plan-daily {
+  font-size: 20rpx;
+  color: var(--gray-light);
+}
+
+/* 底部支付栏 */
+.bottom-action {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(env(safe-area-inset-bottom) - 16rpx); /* 修正用户修改的危险负值，保持舒适间距 */
+  box-shadow: 0 -10rpx 40rpx rgba(0, 0, 0, 0.08); /* 加强底部阴影，增加“根基”感 */
+  z-index: 100;
+}
+
+.pay-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.price-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-info .label {
+  font-size: 22rpx;
+  color: var(--gray-light);
+}
+
+.price-info .val {
+  display: flex;
+  align-items: baseline;
+  color: var(--tomato-red);
+}
+
+.price-info .symbol {
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.price-info .amount {
+  font-size: 52rpx;
+  font-weight: bold;
+  font-family: 'DIN Condensed', sans-serif;
+}
+
+.pay-button {
+  background: var(--gradient-tomato);
+  color: var(--white);
+  font-size: 30rpx;
+  font-weight: bold;
+  padding: 0 60rpx;
+  height: 96rpx;
+  line-height: 96rpx;
+  border-radius: 48rpx;
+  margin: 0;
+  box-shadow: 0 12rpx 32rpx rgba(233, 80, 63, 0.25);
+  animation: payBreathe 2s infinite ease-in-out; /* 添加呼吸动画 */
+}
+
+@keyframes payBreathe {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 12rpx 32rpx rgba(233, 80, 63, 0.25);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 16rpx 48rpx rgba(233, 80, 63, 0.4);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 12rpx 32rpx rgba(233, 80, 63, 0.25);
+  }
+}
+
+.pay-button:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+/* iOS Notice */
+.ios-notice {
+  padding: 32rpx;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 20rpx;
+  display: flex;
+  gap: 16rpx;
+  font-size: 26rpx;
+  color: var(--gray-medium);
+  line-height: 1.5;
+}
+
+.ios-notice .icon {
+  font-size: 32rpx;
+}
+
+.safe-area-inset {
+  height: env(safe-area-inset-bottom);
+}
