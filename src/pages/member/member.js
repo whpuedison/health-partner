@@ -94,7 +94,20 @@ Page({
     try {
       wx.showLoading({ title: '创建订单中...' })
       
-      const openId = wx.getStorageSync('openId')
+      let openId = wx.getStorageSync('openId')
+      if (!openId && app.globalData.openId) {
+        openId = app.globalData.openId
+        wx.setStorageSync('openId', openId)
+      }
+
+      if (!openId) {
+        wx.hideLoading()
+        wx.showToast({ title: '无法获取用户信息，请重试', icon: 'none' })
+        // 尝试重新登录
+        app.login()
+        return
+      }
+
       const res = await Http.post('/api/v1/member/orders', { 
         openId,
         productId: selectedProductId 
@@ -104,12 +117,6 @@ Page({
       
       // 调起微信支付
       const { paymentParams } = res.data
-      
-      // 如果是模拟环境，直接调用模拟支付
-      if (paymentParams.paySign === 'mock_sign') {
-        this.mockPayment(res.data.orderNo)
-        return
-      }
       
       // 真实支付
       wx.requestPayment({
@@ -129,23 +136,6 @@ Page({
       wx.hideLoading()
       console.error('购买失败:', error)
       wx.showToast({ title: error.message || '购买失败', icon: 'none' })
-    }
-  },
-
-  async mockPayment(orderNo) {
-    try {
-      wx.showLoading({ title: '模拟支付中...' })
-      await Http.post('/api/v1/member/mock-pay', { orderNo })
-      wx.hideLoading()
-      
-      wx.showToast({ title: '支付成功(模拟)', icon: 'success' })
-      setTimeout(() => {
-        this.loadUserInfo()
-      }, 1000)
-    } catch (error) {
-      wx.hideLoading()
-      console.error('模拟支付失败:', error)
-      wx.showToast({ title: '支付失败', icon: 'none' })
     }
   },
 
