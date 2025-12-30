@@ -4,7 +4,7 @@
 // 注意：小程序无法访问 localhost，需要使用本机 IP 地址
 // 获取本机 IP：在终端运行 ifconfig (macOS/Linux) 或 ipconfig (Windows)
 // const BASE_URL = 'https://whpuedison.online'; // 替换为实际的服务器地址
-const BASE_URL = 'http://127.0.0.1:3000'; // 替换为实际的服务器地址
+const BASE_URL = 'http://10.247.18.103:3000'; // 替换为实际的服务器地址
 const TIMEOUT = 10000;
 const LONG_TIMEOUT = 300000; // 长时间请求超时（5分钟），用于图片识别等
 
