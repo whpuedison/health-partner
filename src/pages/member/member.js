@@ -10,7 +10,8 @@ Page({
     memberExpireAt: null,
     isIOS: false,
     selectedProductId: null, // 当前选中的商品ID
-    selectedProductPrice: '0.00' // 当前选中的商品价格
+    selectedProductPrice: '0.00', // 当前选中的商品价格
+    isSubmitting: false // 防止重复提交
   },
 
   onLoad() {
@@ -84,6 +85,8 @@ Page({
 
   async onBuyMember() {
     const { selectedProductId } = this.data
+    // 使用实例变量作为同步锁，防止 setData 异步导致的竞态问题
+    if (this._isSubmitting) return
     if (!selectedProductId) return
     
     if (this.data.isIOS) {
@@ -94,6 +97,10 @@ Page({
       })
       return
     }
+
+    // 双重锁定：实例变量用于逻辑阻断，setData 用于 UI 反馈
+    this._isSubmitting = true
+    this.setData({ isSubmitting: true })
 
     try {
       wx.showLoading({ title: '创建订单中...' })
@@ -109,6 +116,8 @@ Page({
         wx.showToast({ title: '无法获取用户信息，请重试', icon: 'none' })
         // 尝试重新登录
         app.login()
+        this._isSubmitting = false
+        this.setData({ isSubmitting: false })
         return
       }
 
@@ -133,11 +142,22 @@ Page({
         },
         fail: (err) => {
           console.error('支付失败:', err)
-          wx.showToast({ title: '支付取消', icon: 'none' })
+          // 只有支付失败/取消才提示，否则可能覆盖成功的提示
+          if (err.errMsg.indexOf('cancel') === -1) {
+             wx.showToast({ title: '支付失败', icon: 'none' })
+          } else {
+             wx.showToast({ title: '已取消支付', icon: 'none' })
+          }
+        },
+        complete: () => {
+             this._isSubmitting = false
+             this.setData({ isSubmitting: false })
         }
       })
     } catch (error) {
       wx.hideLoading()
+      this._isSubmitting = false
+      this.setData({ isSubmitting: false })
       console.error('购买失败:', error)
       wx.showToast({ title: error.message || '购买失败', icon: 'none' })
     }
