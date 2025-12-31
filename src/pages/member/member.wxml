@@ -48,7 +48,7 @@
 
   <view class="content-container">
     <!-- 套餐选择 (横向展示) -->
-    <view class="section-card" wx:if="{{!isIOS}}">
+    <view class="section-card">
       <view class="section-title">选择会员方案</view>
       <view class="plan-list">
         <view 
@@ -69,15 +69,15 @@
       </view>
     </view>
 
-    <!-- iOS 提示 -->
-    <view wx:if="{{isIOS}}" class="ios-notice">
+    <!-- iOS 提示 (可移除或保留作为备注) -->
+    <!-- <view wx:if="{{isIOS}}" class="ios-notice">
       <text class="icon">⚠️</text>
       <text>由于平台规范，iOS 用户暂不支持通过小程序开通会员。</text>
-    </view>
+    </view> -->
   </view>
 
-  <!-- 底部支付栏 (延续标准按钮风格) -->
-  <view class="bottom-action" wx:if="{{!isIOS}}">
+  <!-- 底部支付栏 (全平台显示) -->
+  <view class="bottom-action">
     <view class="pay-bar">
       <view class="price-info">
         <text class="label">实付</text>
@@ -86,7 +86,17 @@
           <text class="amount">{{selectedProductPrice}}</text>
         </view>
       </view>
-      <button class="pay-button" bindtap="onBuyMember">立即开通会员</button>
+      <button class="pay-button" bindtap="onBuyMember" disabled="{{isSubmitting}}" wx:if="{{!isIOS}}">立即开通会员</button>
+      
+      <!-- iOS 客服引导按钮 -->
+      <button 
+        class="pay-button ios-contact-btn" 
+        open-type="contact" 
+        wx:if="{{isIOS}}"
+        session-from='{"productId":"{{selectedProductId}}"}'
+      >
+        联系客服开通
+      </button>
     </view>
   </view>
 

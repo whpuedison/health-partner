@@ -74,7 +74,7 @@ Page({
   // 选择商品
   selectProduct(e) {
     const { id } = e.currentTarget.dataset
-    if (this.data.isIOS) return // iOS 不允许选择
+    // iOS 也可以选择查看
     
     const product = this.data.products.find(p => p.id === id)
     this.setData({ 
