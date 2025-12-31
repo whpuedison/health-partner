@@ -46,11 +46,6 @@
   color: #F1E0AD;
 }
 
-.vip-card.is-active {
-  background: linear-gradient(135deg, #FF6B6B 0%, #E9503F 100%);
-  color: #FFFFFF;
-}
-
 .card-bg-mesh {
   position: absolute;
   top: -50%;
@@ -123,6 +118,7 @@
 .card-status-label .date {
   font-size: 26rpx;
   font-weight: bold;
+  margin-top: 25rpx;
 }
 
 .card-stats {

@@ -82,12 +82,14 @@ Page({
         const bmi = calculateBMI(profile.weight, profile.height);
         
         this.setData({
-          profile: {
+           profile: {
             height: profile.height || 0,
             weight: profile.weight || 0,
             age: profile.age || 0,
             bmi: bmi > 0 ? parseFloat(bmi.toFixed(1)) : 0,
-          },
+            isMember: profile.isMember,
+            memberExpireAt: this.formatExpireDate(profile.memberExpireAt)
+          }
         });
       }
     }).catch((error) => {
@@ -221,6 +223,21 @@ Page({
     }, 100);
   },
 
+  // 跳转到会员页面
+  onNavigateToMember() {
+    console.log('跳转到会员详情页');
+    wx.navigateTo({
+      url: '/pages/member/member',
+      fail: (err) => {
+        console.error('跳转会员页失败:', err);
+        wx.showToast({
+          title: '即将开放',
+          icon: 'none'
+        });
+      }
+    });
+  },
+
   // 菜单项点击
   onMenuTap(e) {
     const id = e.currentTarget.dataset.id;
@@ -351,5 +368,11 @@ Page({
             query: `referrerId=${openId}&channel=wechat`,
             imageUrl: 'https://whpuedison.online/images/tomato.jpg'
           };
-     }
+     },
+     
+     formatExpireDate(dateStr) {
+        if (!dateStr) return ''
+        const date = new Date(dateStr)
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+      }
 });

@@ -5,7 +5,7 @@
     <view class="header-content">
       <!-- 会员卡片 (居中 & 丰富信息) -->
       <view class="vip-card-box">
-        <view class="vip-card {{isMember ? 'is-active' : ''}}">
+        <view class="vip-card">
           <view class="card-bg-mesh"></view>
           
           <view class="card-body">
@@ -16,8 +16,7 @@
             </view>
             
             <view class="card-status-label" wx:if="{{isMember}}">
-              <text class="tag">ACTIVE</text>
-              <text class="date">尊享期至 {{memberExpireAt}}</text>
+              <text class="date">有效期至 {{memberExpireAt}}</text>
             </view>
             <text class="card-title" wx:else>未激活</text>
 

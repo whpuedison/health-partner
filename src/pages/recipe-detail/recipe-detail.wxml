@@ -92,8 +92,8 @@
         <view class="food-grid" style="position: relative;">
           <!-- 会员锁定遮罩 -->
           <view class="locked-overlay" wx:if="{{!isMember}}" catchtap="onNavigateToMember">
-            <view class="lock-icon">🔒</view>
-            <text>会员专享</text>
+            <view class="lock-icon">🔓</view>
+            <text>解锁食谱</text>
           </view>
           
           <view 

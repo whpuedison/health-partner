@@ -1,28 +1,37 @@
 <!--pages/profile/profile.wxml-->
 <view class="profile-page">
   <!-- 用户信息卡片 -->
+  <!-- 用户信息卡片 -->
   <view class="user-card">
-    <view class="user-header">
+    <!-- 顶部：头像和昵称 -->
+    <view class="card-header">
       <block wx:if="{{hasUserInfo}}">
         <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
-        <view class="user-info">
-          <text class="nickname">{{userInfo.nickName}}</text>
-          <view class="user-data">
-            <text class="data-item">身高 {{profile.height}}cm</text>
-            <text class="data-divider">|</text>
-            <text class="data-item">体重 {{profile.weight}}kg</text>
-            <text class="data-divider">|</text>
-            <text class="data-item">BMI {{profile.bmi}}</text>
+        <view class="user-identity" bindtap="onNavigateToMember">
+          <view class="identity-top">
+            <text class="nickname">{{userInfo.nickName}}</text>
+            <view class="vip-badge" wx:if="{{profile.isMember}}">
+              <!-- <text class="vip-icon">👑</text> -->
+              <text class="vip-text">VIP</text>
+            </view>
+          </view>
+          <view class="identity-bottom" wx:if="{{profile.isMember}}">
+             <text class="expire-date">有效期至 {{profile.memberExpireAt}}</text>
+             <!-- <text class="arrow">›</text> -->
+          </view>
+          <view class="identity-bottom" wx:else>
+            <text class="guest-tip">未开通会员</text>
+            <!-- <text class="arrow">›</text> -->
           </view>
         </view>
       </block>
       <block wx:else>
-        <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+         <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
           <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="avatar-placeholder" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
           <view wx:else class="avatar-placeholder">👤</view>
         </button>
-        <view class="user-info">
-          <input 
+        <view class="user-identity">
+           <input 
             class="nickname-input" 
             type="nickname" 
             placeholder="点击设置昵称"
@@ -30,8 +39,29 @@
             bindblur="onNicknameInput"
             value="{{nickname || (userInfo && userInfo.nickName) || ''}}"
           />
+           <view class="identity-bottom">
+            <text class="guest-tip">登录后查看更多信息</text>
+          </view>
         </view>
       </block>
+    </view>
+    
+    <!-- 底部：身体数据 -->
+    <view class="stats-grid">
+      <view class="stat-box">
+        <text class="stat-value">{{profile.height}}<text class="stat-unit">cm</text></text>
+        <text class="stat-label">身高</text>
+      </view>
+      <view class="vertical-divider"></view>
+      <view class="stat-box">
+        <text class="stat-value">{{profile.weight}}<text class="stat-unit">kg</text></text>
+        <text class="stat-label">体重</text>
+      </view>
+      <view class="vertical-divider"></view>
+      <view class="stat-box">
+        <text class="stat-value">{{profile.bmi}}</text>
+        <text class="stat-label">BMI</text>
+      </view>
     </view>
   </view>
 

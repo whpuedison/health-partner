@@ -54,12 +54,16 @@ Page({
       if (!openId) return
       
       const res = await Http.get('/api/v1/user/profile', { openId })
-      const isMember = res.data.memberExpireAt && new Date(res.data.memberExpireAt) > new Date()
+      
+      // 后端已经计算了 isMember，直接使用，避免前端时间解析差异
+      // 同时格式化日期用于展示
+      const isMember = res.data.isMember
+      const formattedDate = this.formatExpireDate(res.data.memberExpireAt)
       
       this.setData({
         userInfo: res.data,
         isMember,
-        memberExpireAt: res.data.memberExpireAt
+        memberExpireAt: formattedDate
       })
     } catch (error) {
       console.error('加载用户信息失败:', error)
