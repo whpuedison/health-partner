@@ -318,9 +318,14 @@
   right: 0;
   background: var(--white);
   padding: 24rpx 32rpx;
-  padding-bottom: calc(env(safe-area-inset-bottom) - 16rpx); /* 修正用户修改的危险负值，保持舒适间距 */
+  padding-bottom: calc(env(safe-area-inset-bottom) - 16rpx);
   box-shadow: 0 -10rpx 40rpx rgba(0, 0, 0, 0.08); /* 加强底部阴影，增加“根基”感 */
   z-index: 100;
+}
+
+/* 安卓设备不需要底部安全区 */
+.bottom-action.android {
+  padding-bottom: 36rpx;
 }
 
 .pay-bar {
