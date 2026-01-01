@@ -2,7 +2,7 @@
 
 .member-page {
   min-height: 100vh;
-  background-color: var(--bg-light);
+  background-color: #fff;
   display: flex;
   flex-direction: column;
   position: relative;
