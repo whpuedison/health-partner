@@ -20,7 +20,7 @@
              <!-- <text class="arrow">›</text> -->
           </view>
           <view class="identity-bottom" wx:else>
-            <text class="guest-tip">未开通会员</text>
+            <text class="guest-tip">解锁会员功能</text>
             <!-- <text class="arrow">›</text> -->
           </view>
         </view>

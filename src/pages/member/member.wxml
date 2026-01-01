@@ -1,9 +1,8 @@
 <!-- pages/member/member.wxml -->
 <view class="member-page">
-  <!-- 核心页头 (去背景) -->
-  <view class="header-section">
-    <view class="header-content">
-      <!-- 会员卡片 (居中 & 丰富信息) -->
+  <view class="main-card">
+    <!-- 会员卡片 -->
+    <view class="header-section">
       <view class="vip-card-box">
         <view class="vip-card">
           <view class="card-bg-mesh"></view>
@@ -11,7 +10,7 @@
           <view class="card-body">
             <view class="brand-line">
               <view class="h-line"></view>
-              <text class="brand">番茄控卡 • VIP</text>
+              <text class="brand">番茄控卡会员</text>
               <view class="h-line"></view>
             </view>
             
@@ -44,61 +43,42 @@
         </view>
       </view>
     </view>
-  </view>
 
-  <view class="content-container">
-    <!-- 套餐选择 (横向展示) -->
-    <view class="section-card">
-      <view class="section-title">选择会员方案</view>
-      <view class="plan-list">
-        <view 
-          class="plan-item {{selectedProductId === item.id ? 'selected' : ''}}" 
-          wx:for="{{products}}" 
-          wx:key="id"
-          bindtap="selectProduct"
-          data-id="{{item.id}}"
-        >
-          <view class="plan-tag" wx:if="{{item.recommend}}">推荐</view>
-          <text class="plan-name">{{item.name}}</text>
-          <view class="plan-price">
-            <text class="symbol">¥</text>
-            <text class="amount">{{item.price}}</text>
+    <view class="content-container">
+      <!-- 套餐选择 -->
+      <view class="section-card">
+        <view class="plan-list">
+          <view 
+            class="plan-item {{selectedProductId === item.id ? 'selected' : ''}}" 
+            wx:for="{{products}}" 
+            wx:key="id"
+            bindtap="selectProduct"
+            data-id="{{item.id}}"
+          >
+            <view class="plan-tag" wx:if="{{item.recommend}}">推荐</view>
+            <text class="plan-name">{{item.name}}</text>
+            <view class="plan-price">
+              <text class="symbol">¥</text>
+              <text class="amount">{{item.price}}</text>
+            </view>
+            <text class="plan-daily">折合 ¥{{item.dailyPrice}}/天</text>
           </view>
-          <text class="plan-daily">折合 ¥{{item.dailyPrice}}/天</text>
         </view>
       </view>
-    </view>
 
-    <!-- iOS 提示 (可移除或保留作为备注) -->
-    <!-- <view wx:if="{{isIOS}}" class="ios-notice">
-      <text class="icon">⚠️</text>
-      <text>由于平台规范，iOS 用户暂不支持通过小程序开通会员。</text>
-    </view> -->
-  </view>
-
-  <!-- 底部支付栏 (全平台显示) -->
-  <view class="bottom-action {{isIOS ? '' : 'android'}}">
-    <view class="pay-bar">
-      <view class="price-info">
-        <text class="label">实付</text>
-        <view class="val">
-          <text class="symbol">¥</text>
-          <text class="amount">{{selectedProductPrice}}</text>
-        </view>
-      </view>
-      <button class="pay-button" bindtap="onBuyMember" disabled="{{isSubmitting}}" wx:if="{{!isIOS}}">立即开通会员</button>
+      <!-- 支付按钮 -->
+      <button class="pay-button" bindtap="onBuyMember" disabled="{{isSubmitting}}" wx:if="{{!isIOS}}">
+        立即开通 ¥{{selectedProductPrice}}
+      </button>
       
       <!-- iOS 客服引导按钮 -->
       <button 
         class="pay-button ios-contact-btn" 
         open-type="contact" 
         wx:if="{{isIOS}}"
-        session-from='{"productId":"{{selectedProductId}}"}'
       >
         联系客服开通
       </button>
     </view>
   </view>
-
-  <view class="safe-area-inset"></view>
 </view>

@@ -35,6 +35,14 @@ Page({
     }
   },
 
+  onShow() {
+    // 从会员页返回时刷新用户状态
+    const { recipeId } = this.data;
+    if (recipeId) {
+      this.loadRecipeData(recipeId);
+    }
+  },
+
   /**
    * 加载食谱数据（包含详情和打卡进度）
    */
