@@ -136,13 +136,35 @@ Page({
       const { paymentParams } = res.data
       
       // 真实支付
+      const orderId = res.data.orderId
       wx.requestPayment({
         ...paymentParams,
         success: () => {
           wx.showToast({ title: '支付成功', icon: 'success' })
-          setTimeout(() => {
-            this.loadUserInfo()
-          }, 1000)
+          
+          // 轮询订单状态（最多5次，每次2秒，共10秒）
+          let retryCount = 0
+          const checkOrderStatus = () => {
+            Http.get('/api/v1/member/order-status', { orderId })
+              .then(statusRes => {
+                if (statusRes.data.status === 'success') {
+                  // 订单已成功，刷新会员信息
+                  this.loadUserInfo()
+                } else if (retryCount < 5) {
+                  // 继续轮询
+                  retryCount++
+                  setTimeout(checkOrderStatus, 2000)  // 2秒间隔
+                } else {
+                  // 超过5次仍未成功，直接刷新（可能回调还没到）
+                  this.loadUserInfo()
+                }
+              })
+              .catch(() => {
+                // 查询失败，直接刷新
+                this.loadUserInfo()
+              })
+          }
+          checkOrderStatus()
         },
         fail: (err) => {
           console.error('支付失败:', err)
