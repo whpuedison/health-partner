@@ -24,6 +24,10 @@ Page({
     this.loadUserInfo()
   },
 
+  onShow() {
+    this.loadUserInfo()
+  },
+
   async loadProducts() {
     try {
       const res = await Http.get('/api/v1/member/products')
